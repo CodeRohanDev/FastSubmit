@@ -1,0 +1,78 @@
+import { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = 'https://fastsubmit.hostspica.com'
+  
+  // Static pages
+  const staticPages = [
+    '',
+    '/about',
+    '/login',
+    '/signup',
+    '/privacy',
+    '/terms',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: route === '' ? 1 : 0.8,
+  }))
+
+  // Documentation pages
+  const docPages = [
+    '/docs',
+    '/docs/quickstart',
+    '/docs/api',
+    '/docs/authentication',
+    '/docs/domain-verification',
+    '/docs/errors',
+    '/docs/examples',
+    '/docs/field-types',
+    '/docs/forms',
+    '/docs/limits',
+    '/docs/submissions',
+    '/docs/submit-endpoint',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  // Landing pages (high priority for SEO)
+  const landingPages = [
+    '/form-builder',
+    '/google-forms-alternative',
+    '/templates',
+    '/survey-maker',
+    '/contact-form-builder',
+    '/quiz-maker',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }))
+
+  // Blog pages
+  const blogPages = [
+    '/blog',
+    '/blog/google-forms-alternative-2025',
+    '/blog/how-to-create-online-form',
+    '/blog/form-builder-guide-2025',
+    '/blog/contact-form-best-practices',
+    '/blog/survey-design-tips',
+    '/blog/form-vs-survey-difference',
+    '/blog/free-form-builder-comparison',
+    '/blog/form-spam-protection',
+    '/blog/mobile-friendly-forms',
+    '/blog/form-analytics-guide',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  return [...staticPages, ...landingPages, ...blogPages, ...docPages]
+}

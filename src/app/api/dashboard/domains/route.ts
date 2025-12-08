@@ -1,27 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb, adminAuth } from '@/lib/firebase-admin'
+import { adminDb } from '@/lib/firebase-admin'
 import { generateVerificationToken, normalizeDomain } from '@/lib/dns-verification'
-
-// Helper to verify ID token from cookie
-async function verifySession(request: NextRequest): Promise<string | null> {
-  try {
-    const idToken = request.cookies.get('__session')?.value
-    if (!idToken) return null
-    
-    const decodedToken = await adminAuth.verifyIdToken(idToken)
-    return decodedToken.uid
-  } catch {
-    return null
-  }
-}
+import { verifySessionWithEmailCheck } from '@/lib/auth-helpers'
 
 // GET /api/dashboard/domains - List all domains for logged-in user
 export async function GET(request: NextRequest) {
   try {
-    const userId = await verifySession(request)
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await verifySessionWithEmailCheck(request)
+    if (!session) {
+      return NextResponse.json({ error: 'Email verification required' }, { status: 403 })
     }
+    
+    const userId = session.uid
 
     const domainsSnapshot = await adminDb
       .collection('verifiedDomains')
@@ -57,10 +47,12 @@ export async function GET(request: NextRequest) {
 // POST /api/dashboard/domains - Add a new domain
 export async function POST(request: NextRequest) {
   try {
-    const userId = await verifySession(request)
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await verifySessionWithEmailCheck(request)
+    if (!session) {
+      return NextResponse.json({ error: 'Email verification required' }, { status: 403 })
     }
+    
+    const userId = session.uid
 
     const body = await request.json()
     const { domain } = body

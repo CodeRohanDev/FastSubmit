@@ -3,9 +3,10 @@ import { adminDb } from '@/lib/firebase-admin'
 import { Form } from '@/types'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 
 // Helper to verify ownership using Admin SDK
-async function verifyFormOwnership(formId: string, apiKey: string): Promise<{ error?: string; status?: number; form?: Form }> {
+async function verifyFormOwnership(formId: string, userId: string): Promise<{ error?: string; status?: number; form?: Form }> {
   const formDoc = await adminDb.collection('forms').doc(formId).get()
   if (!formDoc.exists) return { error: 'Form not found', status: 404 }
   
@@ -14,7 +15,7 @@ async function verifyFormOwnership(formId: string, apiKey: string): Promise<{ er
   // Check if soft-deleted
   if (formData?.deleted) return { error: 'Form not found', status: 404 }
   
-  if (formData?.apiKey !== apiKey) return { error: 'Unauthorized', status: 403 }
+  if (formData?.userId !== userId) return { error: 'Unauthorized', status: 403 }
   
   return { form: { id: formDoc.id, ...formData } as Form }
 }
@@ -39,7 +40,12 @@ export async function GET(
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const result = await verifyFormOwnership(params.formId, apiKey)
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
+      return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
+    }
+
+    const result = await verifyFormOwnership(params.formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -130,7 +136,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const result = await verifyFormOwnership(params.formId, apiKey)
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
+      return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
+    }
+
+    const result = await verifyFormOwnership(params.formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }

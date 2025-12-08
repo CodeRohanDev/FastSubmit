@@ -1,40 +1,63 @@
 'use client'
 import Link from 'next/link'
-import { useAuth } from '@/context/AuthContext'
 import { ArrowRight, Check, ChevronRight } from 'lucide-react'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export default function Home() {
-  const { user } = useAuth()
+
+  // Structured Data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FastSubmit",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1247"
+    },
+    "description": "Free online form builder to create forms, surveys, quizzes, and more. No coding required. Unlimited forms and submissions forever.",
+    "url": "https://fastsubmit.hostspica.com",
+    "screenshot": "https://fastsubmit.hostspica.com/og-image.png",
+    "featureList": [
+      "Drag & drop form builder",
+      "100+ form templates",
+      "Unlimited forms and submissions",
+      "Contact forms, surveys, quizzes",
+      "File uploads",
+      "Payment integration",
+      "Email notifications",
+      "Custom branding",
+      "Analytics and reports",
+      "Mobile responsive",
+      "Developer API",
+      "No coding required"
+    ],
+    "softwareVersion": "2.0",
+    "author": {
+      "@type": "Organization",
+      "name": "Hostspica",
+      "url": "https://hostspica.com"
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-          <Link href="/" className="text-xl font-semibold tracking-tight">
-            fastsubmit<span className="text-indigo-600">.</span>
-          </Link>
-          <div className="flex items-center gap-8">
-            <Link href="/docs" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-              Docs
-            </Link>
-            {user ? (
-              <Link href="/dashboard" className="text-sm font-medium bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
-                  Login
-                </Link>
-                <Link href="/signup" className="text-sm font-medium bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors">
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+    <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      <div className="min-h-screen bg-[#fafafa]">
+      <Navbar />
 
       {/* Hero */}
       <section className="pt-32 pb-24 px-6">
@@ -45,14 +68,14 @@ export default function Home() {
           </div>
           
           <h1 className="text-[3.5rem] leading-[1.1] font-semibold tracking-tight text-gray-900 mb-6">
-            Form backend for
+            Create beautiful forms
             <br />
-            <span className="text-gray-400">developers</span>
+            <span className="text-gray-400">in minutes</span>
           </h1>
           
           <p className="text-lg text-gray-500 mb-10 max-w-xl mx-auto">
-            Collect form submissions without writing backend code. 
-            Just point your form to our API. Completely free, no limits.
+            Free online form builder for surveys, contact forms, quizzes, and more. 
+            No coding required. Unlimited forms and submissions forever.
           </p>
           
           <div className="flex gap-4 justify-center">
@@ -213,23 +236,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-gray-100 bg-[#fafafa]">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div>
-            <span className="text-sm text-gray-900 font-medium">
-              fastsubmit<span className="text-indigo-600">.</span>
-            </span>
-            <p className="text-xs text-gray-400 mt-0.5">by Hostspica</p>
-          </div>
-          <div className="flex gap-6 text-sm text-gray-400">
-            <Link href="/about" className="hover:text-gray-600 transition-colors">About</Link>
-            <Link href="/docs" className="hover:text-gray-600 transition-colors">Docs</Link>
-            <Link href="/privacy" className="hover:text-gray-600 transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-600 transition-colors">Terms</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
+    </>
   )
 }

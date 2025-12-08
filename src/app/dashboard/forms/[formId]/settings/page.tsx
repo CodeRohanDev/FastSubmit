@@ -5,11 +5,10 @@ import Link from 'next/link'
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Form, FormField, VerifiedDomain } from '@/types'
-import { generateApiKey } from '@/lib/utils'
 import { 
-  ArrowLeft, Trash2, RefreshCw, Plus, GripVertical, Save,
+  ArrowLeft, Trash2, Plus, GripVertical, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Clock, ExternalLink
+  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle
 } from 'lucide-react'
 
 const fieldTypes = [
@@ -40,10 +39,6 @@ export default function FormSettingsPage() {
   
   // Domain verification states
   const [verifiedDomains, setVerifiedDomains] = useState<VerifiedDomain[]>([])
-  const [showAddDomain, setShowAddDomain] = useState(false)
-  const [newDomain, setNewDomain] = useState('')
-  const [addingDomain, setAddingDomain] = useState(false)
-  const [verifyingDomain, setVerifyingDomain] = useState<string | null>(null)
   const [selectedDomains, setSelectedDomains] = useState<string[]>([])
   const [requireVerification, setRequireVerification] = useState(false)
 
@@ -71,69 +66,16 @@ export default function FormSettingsPage() {
   }, [formId])
 
   const fetchVerifiedDomains = async () => {
-    if (!form?.apiKey) return
     try {
-      const res = await fetch('/api/v1/domains', {
-        headers: { 'x-api-key': form.apiKey }
-      })
+      const res = await fetch('/api/dashboard/domains')
       if (res.ok) {
         const data = await res.json()
-        setVerifiedDomains(data.domains || [])
+        // Only show verified domains
+        setVerifiedDomains((data.domains || []).filter((d: VerifiedDomain) => d.verified))
       }
     } catch (error) {
       console.error('Failed to fetch domains:', error)
     }
-  }
-
-  const handleAddDomain = async () => {
-    if (!newDomain.trim() || !form?.apiKey) return
-    setAddingDomain(true)
-    try {
-      const res = await fetch('/api/v1/domains', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': form.apiKey
-        },
-        body: JSON.stringify({ domain: newDomain.trim() })
-      })
-      
-      if (res.ok) {
-        const data = await res.json()
-        setMessage({ type: 'success', text: 'Domain added. Please verify via DNS.' })
-        setNewDomain('')
-        setShowAddDomain(false)
-        await fetchVerifiedDomains()
-      } else {
-        const error = await res.json()
-        setMessage({ type: 'error', text: error.error || 'Failed to add domain' })
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to add domain' })
-    }
-    setAddingDomain(false)
-  }
-
-  const handleVerifyDomain = async (domainId: string) => {
-    if (!form?.apiKey) return
-    setVerifyingDomain(domainId)
-    try {
-      const res = await fetch(`/api/v1/domains/${domainId}/verify`, {
-        method: 'POST',
-        headers: { 'x-api-key': form.apiKey }
-      })
-      
-      const data = await res.json()
-      if (data.verified) {
-        setMessage({ type: 'success', text: 'Domain verified successfully!' })
-        await fetchVerifiedDomains()
-      } else {
-        setMessage({ type: 'error', text: data.error || 'Verification failed. Check DNS records.' })
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Verification failed' })
-    }
-    setVerifyingDomain(null)
   }
 
   const toggleDomainSelection = (domain: string) => {
@@ -241,18 +183,7 @@ export default function FormSettingsPage() {
     setSaving(false)
   }
 
-  const regenerateApiKey = async () => {
-    if (!formId || !confirm('Regenerate API key? The old key will stop working.')) return
-    try {
-      const newKey = generateApiKey()
-      await updateDoc(doc(db, 'forms', formId as string), { apiKey: newKey })
-      setForm(prev => prev ? { ...prev, apiKey: newKey } : null)
-      setMessage({ type: 'success', text: 'API key regenerated' })
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to regenerate key' })
-    }
-  }
+
 
   const handleDelete = async () => {
     if (!formId) return
@@ -448,7 +379,7 @@ export default function FormSettingsPage() {
         
         <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg mb-4">
           <p className="text-xs text-blue-900 mb-2">
-            Restrict form submissions to verified domains only. Add your domain and verify ownership via DNS TXT record.
+            Restrict form submissions to verified domains only. Select from your verified domains below.
           </p>
           <label className="flex items-center gap-2 cursor-pointer">
             <input 
@@ -461,108 +392,68 @@ export default function FormSettingsPage() {
           </label>
         </div>
 
-        {verifiedDomains.length > 0 && (
+        {verifiedDomains.length > 0 ? (
           <div className="space-y-2 mb-3">
             {verifiedDomains.map((domain) => (
-              <div key={domain.id} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
-                <div className="flex items-center gap-3 flex-1">
-                  <input
-                    type="checkbox"
-                    checked={selectedDomains.includes(domain.domain)}
-                    onChange={() => toggleDomainSelection(domain.domain)}
-                    disabled={!domain.verified}
-                    className="w-4 h-4 rounded border-gray-300 text-gray-900 disabled:opacity-50"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900">{domain.domain}</span>
-                      {domain.verified ? (
-                        <span className="flex items-center gap-1 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
-                          <CheckCircle size={10} /> Verified
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-[10px] bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded">
-                          <Clock size={10} /> Pending
-                        </span>
-                      )}
-                    </div>
-                    {!domain.verified && (
-                      <div className="mt-1 text-xs text-gray-500">
-                        Add TXT record: <code className="bg-gray-100 px-1 py-0.5 rounded text-[10px]">fastsubmit-verify={domain.verificationToken}</code>
-                      </div>
-                    )}
+              <label 
+                key={domain.id} 
+                className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg hover:border-gray-300 cursor-pointer transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedDomains.includes(domain.domain)}
+                  onChange={() => toggleDomainSelection(domain.domain)}
+                  className="w-4 h-4 rounded border-gray-300 text-gray-900"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900">{domain.domain}</span>
+                    <span className="flex items-center gap-1 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                      <CheckCircle size={10} /> Verified
+                    </span>
                   </div>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Verified on {new Date(domain.verifiedAt!).toLocaleDateString()}
+                  </p>
                 </div>
-                {!domain.verified && (
-                  <button
-                    onClick={() => handleVerifyDomain(domain.id)}
-                    disabled={verifyingDomain === domain.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-                  >
-                    {verifyingDomain === domain.id ? (
-                      <div className="w-3 h-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                    ) : (
-                      <>
-                        <CheckCircle size={12} /> Verify
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
+              </label>
             ))}
           </div>
-        )}
-
-        {!showAddDomain ? (
-          <button
-            onClick={() => setShowAddDomain(true)}
-            className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus size={16} /> Add domain
-          </button>
         ) : (
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <label className="block text-xs text-gray-600 mb-2">Domain name</label>
-            <input
-              type="text"
-              value={newDomain}
-              onChange={(e) => setNewDomain(e.target.value)}
-              placeholder="example.com"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm mb-3"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={handleAddDomain}
-                disabled={addingDomain || !newDomain.trim()}
-                className="flex-1 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-800 transition-colors disabled:opacity-50"
-              >
-                {addingDomain ? 'Adding...' : 'Add domain'}
-              </button>
-              <button
-                onClick={() => { setShowAddDomain(false); setNewDomain('') }}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-white transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-3">
-              After adding, you'll need to add a DNS TXT record to verify ownership.{' '}
-              <a href="/docs/domain-verification" target="_blank" className="text-gray-900 hover:underline inline-flex items-center gap-1">
-                Learn more <ExternalLink size={10} />
-              </a>
-            </p>
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg mb-3 text-center">
+            <p className="text-sm text-gray-600 mb-2">No verified domains yet</p>
+            <p className="text-xs text-gray-500">Add and verify domains in Settings to use them here</p>
           </div>
         )}
+
+        <Link
+          href="/dashboard/settings"
+          className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add domain in Settings
+        </Link>
       </div>
 
-      {/* API Key */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <label className="block text-sm font-medium text-gray-700 mb-2">API Key</label>
-        <div className="flex gap-2 items-center">
-          <code className="flex-1 bg-white px-3 py-2 rounded border border-gray-200 text-xs font-mono overflow-x-auto">{form.apiKey}</code>
-          <button onClick={regenerateApiKey} className="flex items-center gap-1.5 px-3 py-2 text-xs text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-white transition-colors">
-            <RefreshCw size={14} /> Regenerate
-          </button>
+      {/* API Access Info */}
+      <div className="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-indigo-900 mb-1">API Access</p>
+            <p className="text-xs text-indigo-700 mb-2">
+              Use your user API key from Settings to access this form via API. One key works for all your forms!
+            </p>
+            <Link
+              href="/dashboard/settings"
+              className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+            >
+              Go to Settings →
+            </Link>
+          </div>
         </div>
       </div>
 

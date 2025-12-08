@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
-import { verifyApiKeyWithCache } from '@/lib/api-key-cache'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { verifyDomainViaDNS } from '@/lib/dns-verification'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
@@ -21,8 +21,8 @@ export async function POST(
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
@@ -33,7 +33,7 @@ export async function POST(
     }
 
     const domainData = domainDoc.data()
-    if (domainData?.userId !== authResult.userId) {
+    if (domainData?.userId !== userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
@@ -69,13 +69,11 @@ export async function POST(
       })
     }
 
-    // Verification failed
+    // Verification failed - return user-friendly error
     return NextResponse.json({
       success: false,
       verified: false,
-      error: verificationResult.error,
-      foundRecords: verificationResult.foundRecords,
-      expectedRecord: `fastsubmit-verify=${domainData.verificationToken}`
+      error: verificationResult.error || 'Verification failed. Please check your DNS records and try again.'
     }, { status: 400 })
   } catch (error) {
     console.error('Verification error:', error)

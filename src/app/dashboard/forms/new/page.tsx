@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
+import { getTemplateById } from '@/lib/form-templates'
 import { collection, addDoc, serverTimestamp, query, where, limit, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { FormField, VerifiedDomain } from '@/types'
@@ -28,12 +29,25 @@ type FieldType = typeof fieldTypes[number]['value']
 export default function NewFormPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const [name, setName] = useState('')
-  const [fields, setFields] = useState<FormField[]>([
-    { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-    { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com' },
-    { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...' },
-  ])
+  const searchParams = useSearchParams()
+  const templateId = searchParams.get('template')
+  
+  // Load template if provided
+  const template = templateId ? getTemplateById(templateId) : null
+  
+  const [name, setName] = useState(template?.name || '')
+  const [fields, setFields] = useState<FormField[]>(
+    template 
+      ? template.fields.map((field, index) => ({
+          ...field,
+          id: field.name || `field_${index}`,
+        }))
+      : [
+          { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
+          { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com' },
+          { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...' },
+        ]
+  )
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [expandedField, setExpandedField] = useState<string | null>(null)

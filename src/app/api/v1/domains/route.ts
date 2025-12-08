@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
-import { verifyApiKeyWithCache } from '@/lib/api-key-cache'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { generateVerificationToken, normalizeDomain } from '@/lib/dns-verification'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
@@ -18,14 +18,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
     const domainsSnapshot = await adminDb
       .collection('verifiedDomains')
-      .where('userId', '==', authResult.userId)
+      .where('userId', '==', userId)
       .get()
 
     const domains = domainsSnapshot.docs.map(doc => {
@@ -63,8 +63,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     // Check if domain already exists for this user
     const existingSnapshot = await adminDb
       .collection('verifiedDomains')
-      .where('userId', '==', authResult.userId)
+      .where('userId', '==', userId)
       .where('domain', '==', normalizedDomain)
       .limit(1)
       .get()
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     const verificationToken = generateVerificationToken()
     const docRef = await adminDb.collection('verifiedDomains').add({
       domain: normalizedDomain,
-      userId: authResult.userId,
+      userId: userId,
       verificationToken,
       verified: false,
       createdAt: new Date(),

@@ -79,7 +79,7 @@ export async function verifyDomainViaDNS(domain: string, expectedToken: string):
 
     return {
       verified: false,
-      error: `Token mismatch. Expected: ${expectedToken}, Found: ${foundToken}`,
+      error: 'The verification token in your DNS does not match. Please check that you added the correct TXT record.',
       foundRecords: flatRecords
     }
   } catch (error: any) {

@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
-import { verifyApiKeyWithCache } from '@/lib/api-key-cache'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 
 // Helper to verify form ownership
-async function verifyFormOwnership(formId: string, apiKey: string) {
+async function verifyFormOwnership(formId: string, userId: string) {
   const formDoc = await adminDb.collection('forms').doc(formId).get()
   if (!formDoc.exists) return { error: 'Form not found', status: 404 }
   
   const formData = formDoc.data()
-  if (formData?.apiKey !== apiKey) return { error: 'Unauthorized', status: 403 }
+  if (formData?.userId !== userId) return { error: 'Unauthorized', status: 403 }
   
   return { form: { id: formDoc.id, ...formData } }
 }
@@ -31,7 +31,12 @@ export async function PUT(
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const result = await verifyFormOwnership(params.formId, apiKey)
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
+      return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
+    }
+
+    const result = await verifyFormOwnership(params.formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -43,16 +48,10 @@ export async function PUT(
       return NextResponse.json({ error: 'allowedDomains must be an array' }, { status: 400 })
     }
 
-    // Verify that all domains are verified for this user
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
-      return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
-    }
-
     // Get user's verified domains
     const verifiedDomainsSnapshot = await adminDb
       .collection('verifiedDomains')
-      .where('userId', '==', authResult.userId)
+      .where('userId', '==', userId)
       .where('verified', '==', true)
       .get()
 

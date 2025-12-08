@@ -71,38 +71,12 @@ export async function POST(
       })
     }
 
-    // Check if there's ANY fastsubmit token in DNS (user might have old token)
-    // If found, update our database to match and verify
-    if (result.foundRecords) {
-      const anyFastsubmitRecord = result.foundRecords.find(r => r.includes('fastsubmit-verify='))
-      if (anyFastsubmitRecord) {
-        const tokenMatch = anyFastsubmitRecord.match(/fastsubmit-verify=(.+)/)
-        const foundToken = tokenMatch ? tokenMatch[1].trim() : null
-        
-        if (foundToken && foundToken.startsWith('fastsubmit-verify-')) {
-          // Valid fastsubmit token found - update database and verify
-          await adminDb.collection('verifiedDomains').doc(domainId).update({
-            verified: true,
-            verificationToken: foundToken,
-            verifiedAt: new Date(),
-            updatedAt: new Date(),
-          })
-
-          return NextResponse.json({
-            success: true,
-            verified: true,
-            message: 'Domain verified successfully (token updated from DNS)'
-          })
-        }
-      }
-    }
-
+    // Verification failed - return user-friendly error
     return NextResponse.json({
       success: false,
       verified: false,
-      error: result.error || 'Verification failed',
-      foundRecords: result.foundRecords
-    })
+      error: result.error || 'Verification failed. Please check your DNS records and try again.'
+    }, { status: 400 })
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

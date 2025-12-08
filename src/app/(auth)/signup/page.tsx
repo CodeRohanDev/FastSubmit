@@ -8,7 +8,7 @@ import { auth, db } from '@/lib/firebase'
 import { useAuth } from '@/context/AuthContext'
 import { ArrowRight } from 'lucide-react'
 
-async function saveUserToFirestore(uid: string, userData: { email: string; name: string; photoURL?: string }) {
+async function saveUserToFirestore(uid: string, userData: { email: string; name: string; photoURL?: string; emailVerified?: boolean }) {
   const userRef = doc(db, 'users', uid)
   const userSnap = await getDoc(userRef)
   if (!userSnap.exists()) {
@@ -49,10 +49,23 @@ export default function SignupPage() {
     setError('')
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      
       await saveUserToFirestore(userCredential.user.uid, {
         email: userCredential.user.email || email,
         name: email.split('@')[0],
+        emailVerified: false,
       })
+      
+      // Get the ID token for API call
+      const token = await userCredential.user.getIdToken()
+      document.cookie = `__session=${token}; path=/; max-age=3600; samesite=strict`
+      
+      // Send verification code via API
+      await fetch('/api/auth/send-verification-code', {
+        method: 'POST',
+      })
+      
+      // Redirect to dashboard (verification banner will show there)
       router.push('/dashboard')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Signup failed')
@@ -67,6 +80,10 @@ export default function SignupPage() {
       const provider = new GoogleAuthProvider()
       provider.setCustomParameters({ prompt: 'select_account' })
       const result = await signInWithPopup(auth, provider)
+      
+      // Google accounts are already verified by Google
+      // No need to send verification email
+      
       await saveUserToFirestore(result.user.uid, {
         email: result.user.email || '',
         name: result.user.displayName || result.user.email?.split('@')[0] || 'User',

@@ -16,9 +16,10 @@ const navSections = [
   {
     title: 'API Reference',
     items: [
+      { href: '/docs/api', label: 'API Overview', icon: Code },
+      { href: '/docs/submit-endpoint', label: 'Submit Endpoint', icon: Send },
       { href: '/docs/forms', label: 'Forms API', icon: FileText },
       { href: '/docs/submissions', label: 'Submissions API', icon: Database },
-      { href: '/docs/submit-endpoint', label: 'Submit Endpoint', icon: Send },
     ],
   },
   {

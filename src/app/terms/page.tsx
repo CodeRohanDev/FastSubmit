@@ -1,19 +1,11 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <nav className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center gap-4">
-          <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowLeft size={20} />
-          </Link>
-          <Link href="/" className="text-xl font-semibold tracking-tight">
-            fastsubmit<span className="text-indigo-600">.</span>
-          </Link>
-        </div>
-      </nav>
+      <Navbar variant="simple" />
 
       <main className="max-w-3xl mx-auto px-6 pt-24 pb-16">
         <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-2">Terms of Service</h1>
@@ -229,19 +221,7 @@ export default function TermsPage() {
         </div>
       </main>
 
-      <footer className="py-8 px-6 border-t border-gray-100 bg-[#fafafa]">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div>
-            <span className="text-sm text-gray-900 font-medium">fastsubmit<span className="text-indigo-600">.</span></span>
-            <p className="text-xs text-gray-400 mt-0.5">by Hostspica</p>
-          </div>
-          <div className="flex gap-6 text-sm text-gray-400">
-            <Link href="/privacy" className="hover:text-gray-600 transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-600 transition-colors">Terms</Link>
-            <Link href="/docs" className="hover:text-gray-600 transition-colors">Docs</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

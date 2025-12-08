@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
 import { generateApiKey } from '@/lib/utils'
 import { getSubmitEndpoint } from '@/lib/config'
-import { verifyApiKeyWithCache } from '@/lib/api-key-cache'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 
@@ -30,14 +30,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'API key required. Pass via x-api-key header or apiKey query param' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
     const formsSnapshot = await adminDb
       .collection('forms')
-      .where('userId', '==', authResult.userId)
+      .where('userId', '==', userId)
       .get()
 
     // Filter out soft-deleted forms
@@ -88,8 +88,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'API key required in x-api-key header' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
@@ -118,8 +118,7 @@ export async function POST(request: NextRequest) {
     const docRef = await adminDb.collection('forms').add({
       name: name.trim(),
       fields,
-      userId: authResult.userId,
-      apiKey: generateApiKey(),
+      userId: userId,
       createdAt: new Date(),
       updatedAt: new Date(),
     })

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
-import { verifyApiKeyWithCache } from '@/lib/api-key-cache'
+import { verifyUserApiKey } from '@/lib/user-api-key'
 import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 
@@ -20,8 +20,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const authResult = await verifyApiKeyWithCache(apiKey)
-    if (!authResult) {
+    const userId = await verifyUserApiKey(apiKey)
+    if (!userId) {
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
@@ -35,7 +35,7 @@ export async function DELETE(
     }
 
     const domainData = domainDoc.data()
-    if (domainData?.userId !== authResult.userId) {
+    if (domainData?.userId !== userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 

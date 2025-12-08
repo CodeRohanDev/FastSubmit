@@ -94,7 +94,7 @@ export default function FormDetailPage() {
   }
 
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -120,32 +120,29 @@ export default function FormDetailPage() {
         </div>
       </div>
 
-      {/* Endpoint & API Key */}
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-[#fafafa] rounded-xl p-5">
-          <p className="text-sm text-gray-500 mb-2">Endpoint</p>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 text-sm font-mono text-gray-900 truncate">{apiEndpoint}</code>
-            <button
-              onClick={() => copyToClipboard(apiEndpoint, 'endpoint')}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {copied === 'endpoint' ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-            </button>
-          </div>
+      {/* Endpoint */}
+      <div className="bg-[#fafafa] rounded-xl p-5 mb-8">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm text-gray-500">Form Endpoint</p>
+          <Link
+            href="/dashboard/settings"
+            className="text-xs text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+          >
+            Get API Key →
+          </Link>
         </div>
-        <div className="bg-[#fafafa] rounded-xl p-5">
-          <p className="text-sm text-gray-500 mb-2">API Key</p>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 text-sm font-mono text-gray-900 truncate">{form.apiKey}</code>
-            <button
-              onClick={() => copyToClipboard(form.apiKey, 'apikey')}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {copied === 'apikey' ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 text-sm font-mono text-gray-900 truncate">{apiEndpoint}</code>
+          <button
+            onClick={() => copyToClipboard(apiEndpoint, 'endpoint')}
+            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {copied === 'endpoint' ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+          </button>
         </div>
+        <p className="text-xs text-gray-500 mt-2">
+          Use your user API key from Settings to access this form via API
+        </p>
       </div>
 
       {/* Submissions */}
