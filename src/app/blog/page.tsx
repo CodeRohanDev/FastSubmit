@@ -1,78 +1,105 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Calendar, Clock } from 'lucide-react'
+import { ArrowRight, Calendar, Clock, Globe, Share2, Code } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Blog - Form Builder Tips, Tutorials & Guides | FastSubmit',
-  description: 'Learn how to create better forms, surveys, and quizzes. Tips, tutorials, and best practices for form builders and online surveys.',
-  keywords: ['form builder blog', 'survey tips', 'form design', 'online forms tutorial'],
+  description: 'Learn how to create better forms for websites, social media, and online sharing. Tips, tutorials, and best practices for form builders.',
+  keywords: ['form builder blog', 'website forms', 'social media forms', 'form design', 'online forms tutorial'],
 }
 
 const blogPosts = [
   {
     slug: 'google-forms-alternative-2025',
     title: 'Best Google Forms Alternatives in 2025: Top 10 Options Compared',
-    excerpt: 'Looking for a Google Forms alternative? Discover the top 10 form builders that offer better features, design, and pricing than Google Forms.',
+    excerpt: 'Looking for a Google Forms alternative? Discover the top 10 form builders that offer better features, design, and multi-platform support.',
     date: '2024-12-08',
     readTime: '8 min read',
     category: 'Comparisons',
-    image: '📊'
+    image: '📊',
+    tags: ['website', 'social', 'online']
   },
   {
     slug: 'how-to-create-online-form',
     title: 'How to Create an Online Form in 5 Minutes (No Coding Required)',
-    excerpt: 'Step-by-step guide to creating professional online forms without any coding. Perfect for beginners and non-technical users.',
+    excerpt: 'Step-by-step guide to creating professional online forms for websites, social media, and sharing. Perfect for beginners.',
     date: '2024-12-08',
     readTime: '6 min read',
     category: 'Tutorials',
-    image: '📝'
+    image: '📝',
+    tags: ['website', 'online']
+  },
+  {
+    slug: 'social-media-forms-guide',
+    title: 'How to Use Forms for Social Media Lead Generation',
+    excerpt: 'Learn how to create and share forms on Instagram, Facebook, Twitter, and LinkedIn to generate leads and grow your audience.',
+    date: '2024-12-08',
+    readTime: '7 min read',
+    category: 'Social Media',
+    image: '📱',
+    tags: ['social']
+  },
+  {
+    slug: 'embed-forms-website',
+    title: 'How to Embed Forms on Your Website: Complete Guide',
+    excerpt: 'Everything you need to know about embedding forms on WordPress, Shopify, Webflow, and any HTML website.',
+    date: '2024-12-08',
+    readTime: '8 min read',
+    category: 'Website',
+    image: '🌐',
+    tags: ['website']
   },
   {
     slug: 'form-builder-guide-2025',
     title: 'The Ultimate Guide to Online Form Builders in 2025',
-    excerpt: 'Everything you need to know about online form builders. Features, pricing, comparisons, and how to choose the right one for your needs.',
+    excerpt: 'Everything you need to know about online form builders. Features, pricing, comparisons, and how to choose the right one.',
     date: '2024-12-08',
     readTime: '10 min read',
     category: 'Guides',
-    image: '📚'
+    image: '📚',
+    tags: ['website', 'social', 'online']
   },
   {
     slug: 'contact-form-best-practices',
     title: 'Contact Form Best Practices: 15 Tips to Increase Conversions',
-    excerpt: 'Learn the best practices for designing contact forms that convert. Proven tips to increase form submissions and reduce abandonment.',
+    excerpt: 'Learn the best practices for designing contact forms that convert. Proven tips for websites and social media.',
     date: '2024-12-08',
     readTime: '7 min read',
     category: 'Best Practices',
-    image: '📬'
+    image: '📬',
+    tags: ['website', 'online']
+  },
+  {
+    slug: 'instagram-bio-link-forms',
+    title: 'How to Create Forms for Instagram Bio Links',
+    excerpt: 'Create beautiful, mobile-optimized forms perfect for your Instagram bio link. Capture leads and grow your following.',
+    date: '2024-12-08',
+    readTime: '5 min read',
+    category: 'Social Media',
+    image: '📸',
+    tags: ['social']
+  },
+  {
+    slug: 'form-api-integration',
+    title: 'Form API Integration: A Developer\'s Guide',
+    excerpt: 'Learn how to integrate forms into your apps using REST APIs. Webhooks, authentication, and best practices.',
+    date: '2024-12-08',
+    readTime: '9 min read',
+    category: 'Developer',
+    image: '💻',
+    tags: ['api']
   },
   {
     slug: 'survey-design-tips',
     title: '10 Survey Design Tips for Better Response Rates',
-    excerpt: 'Create surveys that people actually want to complete. Expert tips for designing engaging surveys with higher response rates.',
+    excerpt: 'Create surveys that people actually want to complete. Expert tips for designing engaging surveys.',
     date: '2024-12-08',
     readTime: '6 min read',
     category: 'Tips',
-    image: '📊'
-  },
-  {
-    slug: 'form-vs-survey-difference',
-    title: 'Forms vs Surveys: What\'s the Difference and When to Use Each',
-    excerpt: 'Understand the key differences between forms and surveys, and learn when to use each type for maximum effectiveness.',
-    date: '2024-12-08',
-    readTime: '5 min read',
-    category: 'Guides',
-    image: '🤔'
-  },
-  {
-    slug: 'free-form-builder-comparison',
-    title: 'Best Free Form Builders in 2025: Complete Comparison',
-    excerpt: 'Compare the best free form builders available today. Features, limitations, and which one is right for your needs.',
-    date: '2024-12-08',
-    readTime: '9 min read',
-    category: 'Comparisons',
-    image: '⚖️'
+    image: '📊',
+    tags: ['website', 'social', 'online']
   },
   {
     slug: 'form-spam-protection',
@@ -81,27 +108,24 @@ const blogPosts = [
     date: '2024-12-08',
     readTime: '6 min read',
     category: 'Security',
-    image: '🛡️'
-  },
-  {
-    slug: 'mobile-friendly-forms',
-    title: 'How to Create Mobile-Friendly Forms That Convert',
-    excerpt: 'Mobile optimization is crucial for form success. Learn how to create forms that work perfectly on smartphones and tablets.',
-    date: '2024-12-08',
-    readTime: '7 min read',
-    category: 'Design',
-    image: '📱'
-  },
-  {
-    slug: 'form-analytics-guide',
-    title: 'Form Analytics: What to Track and How to Improve Conversions',
-    excerpt: 'Master form analytics to boost conversions. Learn which metrics matter and how to use data to optimize your forms.',
-    date: '2024-12-08',
-    readTime: '8 min read',
-    category: 'Analytics',
-    image: '📈'
+    image: '🛡️',
+    tags: ['website', 'online']
   },
 ]
+
+const tagIcons: Record<string, React.ReactNode> = {
+  website: <Globe size={10} className="text-blue-600" />,
+  social: <Share2 size={10} className="text-pink-600" />,
+  online: <Globe size={10} className="text-green-600" />,
+  api: <Code size={10} className="text-purple-600" />,
+}
+
+const tagColors: Record<string, string> = {
+  website: 'bg-blue-50',
+  social: 'bg-pink-50',
+  online: 'bg-green-50',
+  api: 'bg-purple-50',
+}
 
 export default function BlogPage() {
   return (
@@ -111,12 +135,26 @@ export default function BlogPage() {
       {/* Hero */}
       <section className="pt-32 pb-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-6">
             FastSubmit Blog
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Tips, tutorials, and best practices for creating better forms, surveys, and quizzes
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+            Tips, tutorials, and best practices for creating forms for websites, social media, and online sharing
           </p>
+          
+          {/* Category filters */}
+          <div className="flex flex-wrap justify-center gap-2">
+            <button className="px-4 py-2 rounded-full text-sm bg-gray-900 text-white">All Posts</button>
+            <button className="px-4 py-2 rounded-full text-sm bg-white text-gray-600 border border-gray-200 hover:border-gray-300 flex items-center gap-1">
+              <Globe size={14} className="text-blue-600" /> Website
+            </button>
+            <button className="px-4 py-2 rounded-full text-sm bg-white text-gray-600 border border-gray-200 hover:border-gray-300 flex items-center gap-1">
+              <Share2 size={14} className="text-pink-600" /> Social Media
+            </button>
+            <button className="px-4 py-2 rounded-full text-sm bg-white text-gray-600 border border-gray-200 hover:border-gray-300 flex items-center gap-1">
+              <Code size={14} className="text-purple-600" /> Developer
+            </button>
+          </div>
         </div>
       </section>
 
@@ -130,9 +168,16 @@ export default function BlogPage() {
                 href={`/blog/${post.slug}`}
                 className="group"
               >
-                <article className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all h-full flex flex-col">
-                  <div className="aspect-[16/9] bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-6xl">
+                <article className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all h-full flex flex-col">
+                  <div className="aspect-[16/9] bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-5xl relative">
                     {post.image}
+                    <div className="absolute top-3 right-3 flex gap-1">
+                      {post.tags.map((tag) => (
+                        <span key={tag} className={`w-5 h-5 ${tagColors[tag]} rounded-full flex items-center justify-center`}>
+                          {tagIcons[tag]}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-center gap-3 mb-3">
@@ -170,7 +215,7 @@ export default function BlogPage() {
       {/* CTA */}
       <section className="py-20 px-6 bg-gray-900">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
             Ready to create your form?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
@@ -178,14 +223,14 @@ export default function BlogPage() {
           </p>
           <Link 
             href="/signup" 
-            className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl font-medium hover:bg-gray-100 transition-colors text-lg"
+            className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-medium hover:bg-gray-100 transition-colors"
           >
             Get Started Free <ArrowRight size={20} />
           </Link>
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="extended" />
     </div>
   )
 }

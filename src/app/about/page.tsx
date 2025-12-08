@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Zap, Users, Globe, Heart } from 'lucide-react'
+import { Zap, Users, Globe, Heart, Share2, Code, Smartphone } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
@@ -10,15 +10,15 @@ export default function AboutPage() {
 
       <main className="max-w-3xl mx-auto px-6 pt-24 pb-16">
         <h1 className="text-3xl font-semibold tracking-tight text-gray-900 mb-2">About FastSubmit</h1>
-        <p className="text-sm text-gray-500 mb-8">Built by developers, for developers</p>
+        <p className="text-sm text-gray-500 mb-8">Forms for every platform, built for everyone</p>
 
         <div className="space-y-8 text-gray-600">
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Our Mission</h2>
             <p className="leading-relaxed">
-              FastSubmit by Hostspica was created to solve a simple problem: collecting form submissions shouldn&apos;t 
-              require building and maintaining backend infrastructure. We believe developers should focus on building 
-              great products, not wrestling with form backends.
+              FastSubmit by Hostspica was created to make form building simple and accessible for everyone. 
+              Whether you need forms for your website, social media, or to share online — we&apos;ve got you covered. 
+              One platform, endless possibilities.
             </p>
           </section>
 
@@ -26,39 +26,81 @@ export default function AboutPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">What We Offer</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
+                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Website Embeds</h3>
+                  <p className="text-xs text-gray-500">Add beautiful forms to any website with simple embed code.</p>
+                </div>
+              </div>
+              <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
+                <div className="w-10 h-10 rounded-lg bg-pink-50 flex items-center justify-center shrink-0">
+                  <Share2 className="w-5 h-5 text-pink-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Social Media</h3>
+                  <p className="text-xs text-gray-500">Share forms on Instagram, Facebook, Twitter, and more.</p>
+                </div>
+              </div>
+              <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
+                <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                  <Code className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Developer API</h3>
+                  <p className="text-xs text-gray-500">Full REST API for custom integrations and apps.</p>
+                </div>
+              </div>
+              <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
+                <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
+                  <Smartphone className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Online Forms</h3>
+                  <p className="text-xs text-gray-500">Shareable forms via link, QR code, or email.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Why FastSubmit?</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
                 <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
                   <Zap className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 mb-1">Simple & Fast</h3>
-                  <p className="text-xs text-gray-500">Get your form endpoint in seconds. No complex setup required.</p>
+                  <p className="text-xs text-gray-500">Create and deploy forms in minutes. No complex setup.</p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
-                <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-                  <Users className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-1">Developer First</h3>
-                  <p className="text-xs text-gray-500">Built with developers in mind. Clean API, great docs.</p>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">For Everyone</h3>
+                  <p className="text-xs text-gray-500">No coding required. Perfect for creators and businesses.</p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
-                <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-                  <Globe className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 text-cyan-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-1">Always Available</h3>
-                  <p className="text-xs text-gray-500">Reliable infrastructure powered by Firebase/Google Cloud.</p>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Multi-Platform</h3>
+                  <p className="text-xs text-gray-500">One form works everywhere — websites, social, online.</p>
                 </div>
               </div>
               <div className="flex gap-3 p-4 bg-white border border-gray-100 rounded-lg">
-                <div className="w-10 h-10 rounded-lg bg-pink-50 flex items-center justify-center shrink-0">
-                  <Heart className="w-5 h-5 text-pink-600" />
+                <div className="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center shrink-0">
+                  <Heart className="w-5 h-5 text-rose-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-1">Free to Start</h3>
-                  <p className="text-xs text-gray-500">Generous free tier. No credit card required to get started.</p>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">Free Forever</h3>
+                  <p className="text-xs text-gray-500">Unlimited forms and submissions. No credit card needed.</p>
                 </div>
               </div>
             </div>
@@ -67,12 +109,13 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">About Hostspica</h2>
             <p className="leading-relaxed mb-3">
-              Hostspica is a technology company focused on building tools that make developers&apos; lives easier. 
+              Hostspica is a technology company focused on building tools that make everyone&apos;s digital life easier. 
               We create simple, reliable services that solve real problems without unnecessary complexity.
             </p>
             <p className="leading-relaxed">
-              FastSubmit is one of our products designed to eliminate the friction in web development. 
-              We&apos;re committed to providing high-quality, affordable tools that help you ship faster.
+              FastSubmit is one of our flagship products, designed to eliminate the friction in collecting 
+              information online. Whether you&apos;re a small business, content creator, or developer — 
+              we&apos;re here to help you succeed.
             </p>
           </section>
 
@@ -82,7 +125,13 @@ export default function AboutPage() {
               <li className="flex gap-3">
                 <span className="text-indigo-600 font-medium">•</span>
                 <div>
-                  <strong className="text-gray-900">Simplicity:</strong> We believe the best tools are the simplest ones.
+                  <strong className="text-gray-900">Simplicity:</strong> The best tools are the simplest ones.
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-indigo-600 font-medium">•</span>
+                <div>
+                  <strong className="text-gray-900">Accessibility:</strong> Great tools should be available to everyone.
                 </div>
               </li>
               <li className="flex gap-3">
@@ -95,12 +144,6 @@ export default function AboutPage() {
                 <span className="text-indigo-600 font-medium">•</span>
                 <div>
                   <strong className="text-gray-900">Privacy:</strong> Your data is yours. We don&apos;t sell or misuse it.
-                </div>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-indigo-600 font-medium">•</span>
-                <div>
-                  <strong className="text-gray-900">Transparency:</strong> Clear pricing, clear terms, no hidden surprises.
                 </div>
               </li>
             </ul>

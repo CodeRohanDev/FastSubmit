@@ -18,6 +18,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.8,
   }))
 
+  // Use Cases pages (high priority for SEO)
+  const useCasePages = [
+    '/use-cases/website-embed',
+    '/use-cases/social-media',
+    '/use-cases/developer-api',
+    '/use-cases/online-forms',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }))
+
   // Documentation pages
   const docPages = [
     '/docs',
@@ -67,6 +80,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blog/form-spam-protection',
     '/blog/mobile-friendly-forms',
     '/blog/form-analytics-guide',
+    '/blog/social-media-forms-guide',
+    '/blog/embed-forms-website',
+    '/blog/instagram-bio-link-forms',
+    '/blog/form-api-integration',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -74,5 +91,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...landingPages, ...blogPages, ...docPages]
+  return [...staticPages, ...useCasePages, ...landingPages, ...blogPages, ...docPages]
 }
