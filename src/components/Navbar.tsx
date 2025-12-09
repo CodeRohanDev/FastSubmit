@@ -23,8 +23,11 @@ export default function Navbar({ variant = 'default' }: NavbarProps) {
   return (
     <nav className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50 border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-        <Link href="/" className="text-xl font-semibold tracking-tight">
-          fastsubmit<span className="text-indigo-600">.</span>
+        <Link href="/" className="flex flex-col">
+          <span className="text-xl font-semibold tracking-tight leading-none">
+            fastsubmit<span className="text-indigo-600">.</span>
+          </span>
+          <span className="text-[10px] text-gray-400 tracking-wide">by hostspica</span>
         </Link>
 
         {/* Desktop Navigation */}

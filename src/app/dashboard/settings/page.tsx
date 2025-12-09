@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
-import { collection, query, where, limit, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+
 import Link from 'next/link'
-import { ExternalLink, Shield, CheckCircle, Clock, Plus, Trash2, X, Copy, Check, Globe, AlertCircle } from 'lucide-react'
+import { ExternalLink, Shield, CheckCircle, Clock, Plus, Trash2, X, Copy, Check, Globe, AlertCircle, Bell, Mail } from 'lucide-react'
+import { NotificationSettings } from '@/types'
 import { VerifiedDomain } from '@/types'
 
 export default function SettingsPage() {
@@ -21,6 +21,14 @@ export default function SettingsPage() {
   const [deletingDomain, setDeletingDomain] = useState<string | null>(null)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [copiedToken, setCopiedToken] = useState<string | null>(null)
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
+    emailNotifications: false,
+    notificationInterval: 1440, // 24 hours in minutes
+    lastNotifiedAt: null,
+    notificationEmail: '',
+  })
+  const [loadingNotifications, setLoadingNotifications] = useState(true)
+  const [savingNotifications, setSavingNotifications] = useState(false)
 
   const copyToClipboard = async (text: string, tokenId: string) => {
     await navigator.clipboard.writeText(text)
@@ -62,10 +70,42 @@ export default function SettingsPage() {
       }
       
       setLoadingDomains(false)
+      
+      // Fetch notification settings
+      try {
+        const notifRes = await fetch('/api/dashboard/notifications')
+        if (notifRes.ok) {
+          const data = await notifRes.json()
+          setNotificationSettings(data.settings)
+        }
+      } catch (error) {
+        console.error('Error fetching notification settings:', error)
+      }
+      setLoadingNotifications(false)
     }
     
     fetchData()
   }, [user])
+
+  const handleSaveNotifications = async () => {
+    setSavingNotifications(true)
+    try {
+      const res = await fetch('/api/dashboard/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notificationSettings),
+      })
+      
+      if (res.ok) {
+        setMessage({ type: 'success', text: 'Notification settings saved!' })
+      } else {
+        setMessage({ type: 'error', text: 'Failed to save notification settings' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to save notification settings' })
+    }
+    setSavingNotifications(false)
+  }
 
   const handleRegenerateApiKey = async () => {
     if (!confirm('Regenerate API key? Your old key will stop working immediately.')) return
@@ -201,6 +241,87 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Email Notifications Section */}
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
+          Email Notifications
+        </h2>
+        
+        {loadingNotifications ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-gray-900"></div>
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            {/* Toggle */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                  notificationSettings.emailNotifications ? 'bg-green-100' : 'bg-gray-100'
+                }`}>
+                  <Bell size={20} className={notificationSettings.emailNotifications ? 'text-green-600' : 'text-gray-400'} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Submission Notifications</p>
+                  <p className="text-xs text-gray-500">Get email digests when you receive new submissions</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setNotificationSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  notificationSettings.emailNotifications ? 'bg-green-500' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                  notificationSettings.emailNotifications ? 'translate-x-7' : 'translate-x-1'
+                }`} />
+              </button>
+            </div>
+
+            {/* Settings (only show when enabled) */}
+            {notificationSettings.emailNotifications && (
+              <>
+                {/* Notification Email */}
+                <div className="p-4 border-b border-gray-100">
+                  <label className="block text-sm font-medium text-gray-900 mb-1">Notification Email</label>
+                  <p className="text-xs text-gray-500 mb-2">Where to send notification emails</p>
+                  <div className="flex items-center gap-2">
+                    <Mail size={16} className="text-gray-400" />
+                    <input
+                      type="email"
+                      value={notificationSettings.notificationEmail || ''}
+                      onChange={(e) => setNotificationSettings(prev => ({ ...prev, notificationEmail: e.target.value }))}
+                      placeholder={user?.email || 'your@email.com'}
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Daily Info */}
+                <div className="p-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Clock size={16} className="text-gray-400" />
+                    <span>You'll receive a daily digest at 12:00 AM IST if there are new submissions.</span>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Save Button */}
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <button
+                onClick={handleSaveNotifications}
+                disabled={savingNotifications}
+                className="w-full bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+              >
+                {savingNotifications ? 'Saving...' : 'Save Notification Settings'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Verified Domains Section */}

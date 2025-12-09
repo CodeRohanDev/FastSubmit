@@ -14,6 +14,12 @@ interface FormField {
   options?: string[]
 }
 
+interface FormBranding {
+  logo?: string
+  companyName?: string
+  tagline?: string
+}
+
 interface PublicForm {
   id: string
   name: string
@@ -22,6 +28,7 @@ interface PublicForm {
     redirectUrl?: string
     successMessage?: string
   }
+  branding?: FormBranding
 }
 
 export default function PublicFormPage() {
@@ -232,6 +239,38 @@ export default function PublicFormPage() {
       <div className={`max-w-2xl mx-auto ${embedded ? '' : 'py-8 md:py-12'}`}>
         {/* Form Card */}
         <div className={`rounded-2xl overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${embedded ? '' : 'border border-gray-100'}`}>
+          {/* Custom Branding Section */}
+          {(form.branding?.logo || form.branding?.companyName || form.branding?.tagline) && (
+            <div className={`px-6 md:px-10 pt-8 pb-6 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
+              <div className="flex items-center gap-4">
+                {form.branding.logo && (
+                  <img 
+                    src={form.branding.logo} 
+                    alt={form.branding.companyName || 'Company logo'} 
+                    className="h-12 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
+                {(form.branding.companyName || form.branding.tagline) && (
+                  <div>
+                    {form.branding.companyName && (
+                      <h2 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {form.branding.companyName}
+                      </h2>
+                    )}
+                    {form.branding.tagline && (
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {form.branding.tagline}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Header Section */}
           <div className={`px-6 md:px-10 pt-10 pb-8 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
             <h1 className={`text-3xl md:text-4xl font-semibold tracking-tight mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>

@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { doc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Form, Submission } from '@/types'
-import { Copy, Download, Settings, Eye, Check, ArrowLeft, Code, X, Share2, ExternalLink, QrCode as QrCodeIcon } from 'lucide-react'
+import { Copy, Download, Settings, Eye, Check, ArrowLeft, Code, X, Share2, ExternalLink } from 'lucide-react'
 import { getSubmitEndpoint } from '@/lib/config'
 import Papa from 'papaparse'
+import ShareModal from '@/components/ShareModal'
 
 export default function FormDetailPage() {
   const { formId } = useParams()
@@ -17,6 +18,7 @@ export default function FormDetailPage() {
   const [copied, setCopied] = useState('')
   const [showEmbedModal, setShowEmbedModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
 
   const apiEndpoint = getSubmitEndpoint(formId as string)
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/f/${formId}` : `https://fastsubmit.hostspica.com/f/${formId}`
@@ -244,15 +246,7 @@ export default function FormDetailPage() {
                     </td>
                     <td className="px-5 py-4">
                       <button
-                        onClick={() => {
-                          const details = Object.entries(sub.data)
-                            .map(([key, value]) => {
-                              const field = form.fields.find(f => f.id === key)
-                              return `${field?.label || key}: ${value}`
-                            })
-                            .join('\n')
-                          alert(`Submission Details:\n\n${details}\n\nSubmitted: ${sub.submittedAt?.toLocaleString()}`)
-                        }}
+                        onClick={() => setSelectedSubmission(sub)}
                         className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
                       >
                         View
@@ -267,175 +261,75 @@ export default function FormDetailPage() {
       </div>
 
       {/* Share Modal */}
-      {showShareModal && (
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        shareUrl={shareUrl}
+        formName={form?.name || 'Form'}
+      />
+
+      {/* Submission Detail Modal */}
+      {selectedSubmission && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Share Form</h2>
-                <p className="text-sm text-gray-500 mt-1">Share this form via link or social media</p>
+                <h2 className="text-xl font-semibold text-gray-900">Submission Details</h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  {selectedSubmission.submittedAt?.toLocaleDateString()} at{' '}
+                  {selectedSubmission.submittedAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
               </div>
               <button
-                onClick={() => setShowShareModal(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={() => setSelectedSubmission(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
-              {/* Direct Link */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Direct Link</h3>
-                    <p className="text-sm text-gray-500">Share this link to collect responses</p>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(shareUrl, 'share')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors"
-                  >
-                    {copied === 'share' ? (
-                      <>
-                        <Check size={16} /> Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={16} /> Copy Link
-                      </>
-                    )}
-                  </button>
-                </div>
-                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
-                  <code className="flex-1 text-sm font-mono text-gray-900 truncate">{shareUrl}</code>
-                  <a
-                    href={shareUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                    title="Open in new tab"
-                  >
-                    <ExternalLink size={16} />
-                  </a>
-                </div>
-              </div>
-
-              {/* QR Code */}
-              <div className="border-t border-gray-200 pt-6">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">QR Code</h3>
-                    <p className="text-sm text-gray-500">Perfect for print materials and offline sharing</p>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-lg">
-                  <div className="w-48 h-48 bg-white rounded-lg flex items-center justify-center border-2 border-gray-200 mb-4">
-                    <QrCodeIcon size={48} className="text-gray-300" />
-                    <div className="absolute text-xs text-gray-400">QR Code Preview</div>
-                  </div>
-                  <p className="text-sm text-gray-500 text-center mb-3">
-                    Scan this QR code to open the form
-                  </p>
-                  <a
-                    href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(shareUrl)}`}
-                    download={`${form?.name || 'form'}-qr-code.png`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800 transition-colors"
-                  >
-                    <Download size={16} /> Download QR Code
-                  </a>
-                </div>
-              </div>
-
-              {/* Social Media Sharing */}
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Share on Social Media</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(form?.name || 'Check out this form')}&url=${encodeURIComponent(shareUrl)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 p-3 bg-[#1DA1F2] text-white rounded-lg hover:bg-[#1a8cd8] transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                    </svg>
-                    <span className="text-sm font-medium">Twitter</span>
-                  </a>
-
-                  <a
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 p-3 bg-[#1877F2] text-white rounded-lg hover:bg-[#166fe5] transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                    <span className="text-sm font-medium">Facebook</span>
-                  </a>
-
-                  <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 p-3 bg-[#0A66C2] text-white rounded-lg hover:bg-[#095196] transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                    <span className="text-sm font-medium">LinkedIn</span>
-                  </a>
-
-                  <button
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: form?.name || 'Form',
-                          text: 'Check out this form',
-                          url: shareUrl,
-                        })
-                      } else {
-                        copyToClipboard(shareUrl, 'share')
-                      }
-                    }}
-                    className="flex items-center justify-center gap-2 p-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors"
-                  >
-                    <Share2 size={20} />
-                    <span className="text-sm font-medium">More</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Usage Tips */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="text-sm font-semibold text-gray-900 mb-2">💡 Sharing Tips:</h4>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• Use the direct link for Instagram bio, email signatures, or anywhere</li>
-                  <li>• Download the QR code for flyers, business cards, or posters</li>
-                  <li>• Share on social media to reach a wider audience</li>
-                  <li>• Track submissions in real-time from your dashboard</li>
-                </ul>
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              <div className="space-y-4">
+                {form?.fields.map((field) => {
+                  const value = selectedSubmission.data[field.id]
+                  return (
+                    <div key={field.id} className="bg-gray-50 rounded-lg p-4">
+                      <label className="text-sm font-medium text-gray-500 block mb-1">
+                        {field.label}
+                      </label>
+                      <div className="text-gray-900">
+                        {value !== undefined && value !== null && value !== '' ? (
+                          typeof value === 'boolean' ? (
+                            value ? (
+                              <span className="inline-flex items-center gap-1 text-green-600">
+                                <Check size={16} /> Yes
+                              </span>
+                            ) : (
+                              <span className="text-gray-500">No</span>
+                            )
+                          ) : (
+                            <span className="whitespace-pre-wrap break-words">{String(value)}</span>
+                          )
+                        ) : (
+                          <span className="text-gray-400 italic">Not provided</span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
               <button
-                onClick={() => setShowShareModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                onClick={() => setSelectedSubmission(null)}
+                className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800 transition-colors"
               >
                 Close
               </button>
-              <a
-                href={shareUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors"
-              >
-                <ExternalLink size={16} /> Open Form
-              </a>
             </div>
           </div>
         </div>

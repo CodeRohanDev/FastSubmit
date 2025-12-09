@@ -147,18 +147,47 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
             )}
           </div>
 
-          <div className="border border-gray-200 rounded-lg p-6 bg-white">
-            {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-6 h-6 text-green-600" />
+          <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+            {/* Custom Branding Section */}
+            {(form.branding?.logo || form.branding?.companyName || form.branding?.tagline) && (
+              <div className="px-6 pt-6 pb-4 border-b border-gray-100 bg-gray-50">
+                <div className="flex items-center gap-3">
+                  {form.branding.logo && (
+                    <img 
+                      src={form.branding.logo} 
+                      alt={form.branding.companyName || 'Company logo'} 
+                      className="h-10 w-auto object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  )}
+                  {(form.branding.companyName || form.branding.tagline) && (
+                    <div>
+                      {form.branding.companyName && (
+                        <p className="text-sm font-semibold text-gray-900">{form.branding.companyName}</p>
+                      )}
+                      {form.branding.tagline && (
+                        <p className="text-xs text-gray-600">{form.branding.tagline}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Submitted!</h3>
-                <p className="text-sm text-gray-500 mb-4">Your form was submitted successfully.</p>
-                <button onClick={resetForm} className="text-sm text-gray-900 hover:underline">Submit another</button>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+            )}
+
+            <div className="p-6">
+              {submitted ? (
+                <div className="text-center py-8">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Submitted!</h3>
+                  <p className="text-sm text-gray-500 mb-4">Your form was submitted successfully.</p>
+                  <button onClick={resetForm} className="text-sm text-gray-900 hover:underline">Submit another</button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
                 {error && <div className="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm">{error}</div>}
                 {form.fields.map((field) => (
                   <div key={field.id}>
@@ -206,11 +235,12 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
                     )}
                   </div>
                 ))}
-                <button type="submit" disabled={submitting} className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                  {submitting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Submit'}
-                </button>
-              </form>
-            )}
+                  <button type="submit" disabled={submitting} className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                    {submitting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Submit'}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
           <p className="text-xs text-gray-400 mt-3 text-center">Submissions are saved to your dashboard.</p>
         </div>

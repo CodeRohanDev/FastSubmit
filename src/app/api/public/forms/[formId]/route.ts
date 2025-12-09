@@ -36,7 +36,8 @@ export async function GET(
       settings: {
         redirectUrl: formData?.settings?.redirectUrl,
         successMessage: formData?.settings?.successMessage,
-      }
+      },
+      branding: formData?.branding || {}
     })
   } catch (error) {
     console.error('Error fetching form:', error)

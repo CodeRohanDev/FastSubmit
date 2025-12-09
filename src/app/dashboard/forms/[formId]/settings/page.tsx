@@ -8,7 +8,7 @@ import { Form, FormField, VerifiedDomain } from '@/types'
 import { 
   ArrowLeft, Trash2, Plus, GripVertical, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle
+  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare
 } from 'lucide-react'
 
 const fieldTypes = [
@@ -41,6 +41,11 @@ export default function FormSettingsPage() {
   const [verifiedDomains, setVerifiedDomains] = useState<VerifiedDomain[]>([])
   const [selectedDomains, setSelectedDomains] = useState<string[]>([])
   const [requireVerification, setRequireVerification] = useState(false)
+  
+  // Branding states
+  const [brandingLogo, setBrandingLogo] = useState('')
+  const [brandingCompanyName, setBrandingCompanyName] = useState('')
+  const [brandingTagline, setBrandingTagline] = useState('')
 
   useEffect(() => {
     async function fetchForm() {
@@ -54,6 +59,9 @@ export default function FormSettingsPage() {
           setFields(data.fields || [])
           setSelectedDomains(data.allowedDomains || [])
           setRequireVerification(data.requireDomainVerification || false)
+          setBrandingLogo(data.branding?.logo || '')
+          setBrandingCompanyName(data.branding?.companyName || '')
+          setBrandingTagline(data.branding?.tagline || '')
         }
       } catch (error) {
         console.error('Error:', error)
@@ -173,6 +181,11 @@ export default function FormSettingsPage() {
         fields,
         allowedDomains: selectedDomains,
         requireDomainVerification: requireVerification,
+        branding: {
+          logo: brandingLogo.trim(),
+          companyName: brandingCompanyName.trim(),
+          tagline: brandingTagline.trim(),
+        },
         updatedAt: serverTimestamp(),
       })
       setMessage({ type: 'success', text: 'Changes saved' })
@@ -247,6 +260,97 @@ export default function FormSettingsPage() {
           onChange={(e) => setName(e.target.value)}
           className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
         />
+      </div>
+
+      {/* Custom Branding */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Building2 size={16} className="text-gray-600" />
+          <label className="text-sm font-medium text-gray-700">Custom branding</label>
+        </div>
+        
+        <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg mb-4">
+          <p className="text-xs text-purple-900">
+            Add your company logo, name, and tagline to display at the top of your form. This helps build trust and brand recognition.
+          </p>
+        </div>
+
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg p-4">
+          {/* Logo URL */}
+          <div>
+            <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+              <Image size={14} />
+              Logo URL
+            </label>
+            <input
+              type="url"
+              value={brandingLogo}
+              onChange={(e) => setBrandingLogo(e.target.value)}
+              placeholder="https://example.com/logo.png"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
+            <p className="text-xs text-gray-500 mt-1">Enter the URL of your logo image (recommended: 200x50px)</p>
+          </div>
+
+          {/* Company/Brand Name */}
+          <div>
+            <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+              <Building2 size={14} />
+              Company/Brand name
+            </label>
+            <input
+              type="text"
+              value={brandingCompanyName}
+              onChange={(e) => setBrandingCompanyName(e.target.value)}
+              placeholder="Acme Inc."
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
+          </div>
+
+          {/* Tagline */}
+          <div>
+            <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+              <MessageSquare size={14} />
+              Tagline
+            </label>
+            <input
+              type="text"
+              value={brandingTagline}
+              onChange={(e) => setBrandingTagline(e.target.value)}
+              placeholder="Building the future of technology"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
+          </div>
+
+          {/* Preview */}
+          {(brandingLogo || brandingCompanyName || brandingTagline) && (
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs text-gray-500 mb-3">Preview:</p>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="flex items-center gap-3">
+                  {brandingLogo && (
+                    <img 
+                      src={brandingLogo} 
+                      alt="Logo" 
+                      className="h-10 w-auto object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  )}
+                  <div>
+                    {brandingCompanyName && (
+                      <p className="text-sm font-semibold text-gray-900">{brandingCompanyName}</p>
+                    )}
+                    {brandingTagline && (
+                      <p className="text-xs text-gray-600">{brandingTagline}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Fields */}

@@ -7,6 +7,12 @@ export interface FormField {
   options?: string[] // for select type
 }
 
+export interface FormBranding {
+  logo?: string // URL to logo image
+  companyName?: string // Company/Brand name
+  tagline?: string // Tagline or description
+}
+
 export interface Form {
   id: string
   name: string
@@ -17,6 +23,7 @@ export interface Form {
   apiKey: string
   allowedDomains?: string[] // Domains allowed to submit to this form
   requireDomainVerification?: boolean // If true, only verified domains can submit
+  branding?: FormBranding // Custom branding for the form
 }
 
 export interface VerifiedDomain {
@@ -37,4 +44,12 @@ export interface Submission {
   userIP: string
   userAgent: string
   submittedAt: Date
+  notifiedAt?: Date | null
+}
+
+export interface NotificationSettings {
+  emailNotifications: boolean
+  notificationInterval: number // in minutes (e.g., 1, 5, 60, 180, 360, 720, 1440)
+  lastNotifiedAt?: Date | null
+  notificationEmail?: string
 }

@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'FastSubmit',
     images: [
       {
-        url: '/og-image.png',
+        url: '/api/og/home',
         width: 1200,
         height: 630,
         alt: 'FastSubmit - Forms for Every Platform',
@@ -65,8 +65,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FastSubmit - Free Form Builder for Websites & Social Media',
     description: 'Create forms for websites, social media, and online sharing. Free forever. No coding required.',
-    images: ['/twitter-image.png'],
-    creator: '@hostspica',
+    images: ['/api/og/home'],
+    creator: '@fastsubmit',
+    site: '@fastsubmit',
   },
   robots: {
     index: true,
@@ -80,11 +81,17 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/logo.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
   },
-  manifest: '/manifest.json',
   alternates: {
     canonical: 'https://fastsubmit.hostspica.com',
   },
