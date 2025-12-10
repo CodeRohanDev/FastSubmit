@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const response = NextResponse.next()
 
   // Protected dashboard routes
   if (pathname.startsWith('/dashboard')) {
@@ -26,13 +27,29 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  // Add SEO headers for public pages
+  if (!pathname.startsWith('/dashboard') && !pathname.startsWith('/api')) {
+    response.headers.set('x-robots-tag', 'index, follow')
+    response.headers.set('content-language', 'en-IN')
+    
+    // Add security headers
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-XSS-Protection', '1; mode=block')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  }
+
+  return response
 }
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/login',
-    '/signup',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

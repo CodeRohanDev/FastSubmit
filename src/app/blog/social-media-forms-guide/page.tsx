@@ -6,8 +6,8 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'How to Use Forms for Social Media Lead Generation | FastSubmit',
-  description: 'Learn how to create and share forms on Instagram, Facebook, Twitter, and LinkedIn to generate leads and grow your audience. Complete guide with examples.',
-  keywords: ['social media forms', 'instagram forms', 'facebook lead generation', 'social media marketing'],
+  description: 'Learn how to create and share forms on Instagram, Facebook, Twitter, and LinkedIn to generate leads and grow your audience. Free form builder for social media marketing.',
+  keywords: ['social media forms', 'instagram forms', 'facebook lead generation', 'social media marketing', 'form builder', 'free form builder', 'online form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'hostspica forms', 'forms hostspica', 'best form website', 'free form website', 'create free forms', 'easy forms'],
 }
 
 export default function SocialMediaFormsGuidePage() {

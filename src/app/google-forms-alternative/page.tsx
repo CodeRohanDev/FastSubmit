@@ -3,21 +3,158 @@ import Link from 'next/link'
 import { ArrowRight, Check, X } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 export const metadata: Metadata = {
-  title: 'Best Google Forms Alternative - Free & Unlimited | FastSubmit',
-  description: 'Looking for a Google Forms alternative? FastSubmit offers unlimited forms, custom branding, better design, and developer API. Free forever.',
-  keywords: ['google forms alternative', 'free google forms alternative', 'better than google forms', 'google forms competitor'],
+  title: 'Best Google Forms Alternative Free - Better Than Google Forms | FastSubmit',
+  description: 'Best free Google Forms alternative. Compare with Zoho Forms, Microsoft Forms. Unlimited forms, custom branding, form API, export to Excel, Word, PDF. Free forever, no credit card. Hostspica Forms.',
+  keywords: [
+    'form builder',
+    'free form builder',
+    'google forms',
+    'forms',
+    'quiz maker',
+    'online form builder',
+    'google form alternative',
+    'free online form',
+    'ai form builder',
+    'form builder free',
+    'form builder online',
+    'free form',
+    'online forms',
+    'free online forms',
+    'form maker',
+    'online form maker',
+    'best form maker',
+    'best form builder',
+    'cheapest form',
+    'cheapest form builder',
+    'cheapest forms',
+    'best forms',
+    'google form api',
+    'form api',
+    'free form api',
+    'form api free',
+    'best google form free',
+    'free google form',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to word',
+    'form to pdf',
+    'best form website',
+    'free form website',
+    'affordable forms',
+    'best free affordable forms',
+    'zoho forms',
+    'microsoft forms',
+    'free zoho forms',
+    'free microsoft forms',
+    'create free forms',
+    'easy forms'
+  ],
 }
 
 export default function GoogleFormsAlternativePage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is FastSubmit really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! FastSubmit is completely free forever. Unlimited forms, unlimited submissions, no hidden fees."
+        }
+      },
+      {
+        "@type": "Question", 
+        "name": "Do I need a Google account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No! Neither you nor your users need a Google account. FastSubmit works for everyone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I import my Google Forms?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "While we don't have automatic import yet, you can easily recreate your forms using our templates and drag & drop builder."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will my existing Google Forms links break?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your old Google Forms links will continue to work. You'll just need to update them to FastSubmit links when you're ready."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use my own domain?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! You can use custom domains like forms.yourdomain.com (coming soon)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a limit on submissions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No limits! Collect unlimited submissions on all your forms, forever."
+        }
+      }
+    ]
+  }
+
+  const comparisonSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Best Google Forms Alternative - Free & Unlimited | FastSubmit",
+    "description": "Looking for a Google Forms alternative? FastSubmit offers unlimited forms, custom branding, better design, and developer API. Free forever.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "datePublished": "2024-12-08",
+    "dateModified": "2024-12-10",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fastsubmit.hostspica.com/google-forms-alternative"
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
+      />
+      
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar />
 
       {/* Hero */}
       <section className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto">
+          <Breadcrumbs />
+          <div className="text-center">
           <div className="inline-flex items-center gap-2 text-sm text-indigo-600 mb-6 bg-indigo-50 px-4 py-2 rounded-full border border-indigo-200">
             ⚡ Better than Google Forms
           </div>
@@ -44,6 +181,7 @@ export default function GoogleFormsAlternativePage() {
             >
               Learn More
             </Link>
+          </div>
           </div>
         </div>
       </section>
@@ -333,5 +471,5 @@ export default function GoogleFormsAlternativePage() {
 
       <Footer />
     </div>
-  )
+    </>)
 }

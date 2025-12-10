@@ -6,13 +6,16 @@ import { useAuth } from '@/context/AuthContext'
 import { getTemplateById } from '@/lib/form-templates'
 import { collection, addDoc, serverTimestamp, query, where, limit, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { FormField, VerifiedDomain } from '@/types'
+import { FormField, VerifiedDomain, FormLogic } from '@/types'
 import { generateApiKey } from '@/lib/utils'
 import { 
   Plus, Trash2, GripVertical, ArrowLeft, Eye, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink
+  ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink,
+  Calculator, Zap
 } from 'lucide-react'
+import FormLogicBuilder from '@/components/FormLogicBuilder'
+import SmartFormRenderer from '@/components/SmartFormRenderer'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type, desc: 'Single line text' },
@@ -22,6 +25,7 @@ const fieldTypes = [
   { value: 'date', label: 'Date', icon: Calendar, desc: 'Date picker' },
   { value: 'select', label: 'Dropdown', icon: List, desc: 'Select options' },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare, desc: 'Yes/No toggle' },
+  { value: 'calculated', label: 'Calculated', icon: Calculator, desc: 'Auto-calculated value' },
 ] as const
 
 type FieldType = typeof fieldTypes[number]['value']
@@ -65,6 +69,16 @@ export default function NewFormPage() {
   const [addingDomain, setAddingDomain] = useState(false)
   const [verifyingDomain, setVerifyingDomain] = useState<string | null>(null)
   const [existingApiKey, setExistingApiKey] = useState<string | null>(null)
+  
+  // Form Logic state
+  const [formLogic, setFormLogic] = useState<FormLogic>({
+    rules: [],
+    globalSettings: {
+      enableAnimations: true,
+      showLogicIndicators: true,
+      debugMode: false,
+    }
+  })
 
   // Fetch verified domains on mount
   useEffect(() => {
@@ -267,6 +281,7 @@ export default function NewFormPage() {
       const docRef = await addDoc(collection(db, 'forms'), {
         name: name.trim(),
         fields,
+        logic: formLogic.rules.length > 0 ? formLogic : undefined,
         userId: user.uid,
         apiKey: generateApiKey(),
         allowedDomains: selectedDomains,
@@ -289,32 +304,34 @@ export default function NewFormPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
           </Link>
-          <h1 className="text-xl font-semibold tracking-tight">Create form</h1>
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight">Create form</h1>
         </div>
         <button
           type="button"
           onClick={() => setShowPreview(!showPreview)}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50 w-full sm:w-auto"
         >
-          <Eye size={16} />
+          <Eye size={14} className="sm:w-4 sm:h-4" />
           {showPreview ? 'Hide preview' : 'Preview'}
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-center justify-between text-sm">
-          <span>{error}</span>
-          <button onClick={() => setError('')} className="hover:text-red-800"><X size={16} /></button>
+        <div className="bg-red-50 text-red-600 px-3 sm:px-4 py-3 rounded-lg mb-4 sm:mb-6 flex items-start justify-between text-sm gap-3">
+          <span className="flex-1 min-w-0">{error}</span>
+          <button onClick={() => setError('')} className="hover:text-red-800 flex-shrink-0">
+            <X size={14} className="sm:w-4 sm:h-4" />
+          </button>
         </div>
       )}
 
-      <div className={`grid gap-8 ${showPreview ? 'lg:grid-cols-2' : ''}`}>
-        <div className="space-y-6">
+      <div className={`grid gap-6 sm:gap-8 ${showPreview ? 'lg:grid-cols-2' : ''}`}>
+        <div className="space-y-4 sm:space-y-6">
           {/* Form Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Form name</label>
@@ -322,14 +339,38 @@ export default function NewFormPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-sm"
               placeholder="e.g., Contact Form"
+            />
+          </div>
+
+          {/* Form Logic - Prominent Position */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-purple-600" />
+                <label className="text-sm font-medium text-gray-700">Smart Form Logic</label>
+                <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                  Premium Feature
+                </span>
+              </div>
+              {formLogic.rules.length > 0 && (
+                <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                  {formLogic.rules.length} rule{formLogic.rules.length !== 1 ? 's' : ''} active
+                </span>
+              )}
+            </div>
+            
+            <FormLogicBuilder
+              fields={fields}
+              logic={formLogic}
+              onLogicChange={setFormLogic}
             />
           </div>
 
           {/* Fields */}
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
               <label className="text-sm font-medium text-gray-700">Fields</label>
               <span className="text-xs text-gray-400">{fields.length} field{fields.length !== 1 ? 's' : ''}</span>
             </div>
@@ -351,44 +392,44 @@ export default function NewFormPage() {
                     } ${isExpanded ? 'bg-gray-50' : 'bg-white hover:border-gray-300'}`}
                   >
                     <div
-                      className="flex items-center gap-3 p-3 cursor-pointer"
+                      className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 cursor-pointer"
                       onClick={() => setExpandedField(isExpanded ? null : field.id)}
                     >
-                      <GripVertical className="text-gray-300 cursor-grab" size={16} />
-                      <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center">
-                        <FieldIcon className="w-3.5 h-3.5 text-gray-600" />
+                      <GripVertical className="text-gray-300 cursor-grab flex-shrink-0" size={14} />
+                      <div className="w-6 sm:w-7 h-6 sm:h-7 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <FieldIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-600" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-gray-900 truncate">{field.label}</span>
                           {field.required && (
-                            <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded">Required</span>
+                            <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded flex-shrink-0">Required</span>
                           )}
                         </div>
                         <span className="text-xs text-gray-400">{field.type}</span>
                       </div>
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
                         <button
                           onClick={(e) => { e.stopPropagation(); moveField(index, index - 1) }}
                           disabled={index === 0}
-                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"
+                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"
                         >
-                          <ChevronUp size={14} />
+                          <ChevronUp size={12} />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); moveField(index, index + 1) }}
                           disabled={index === fields.length - 1}
-                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"
+                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"
                         >
-                          <ChevronDown size={14} />
+                          <ChevronDown size={12} />
                         </button>
-                        {isExpanded ? <ChevronUp size={16} className="text-gray-400 ml-1" /> : <ChevronDown size={16} className="text-gray-400 ml-1" />}
+                        {isExpanded ? <ChevronUp size={14} className="text-gray-400 ml-1" /> : <ChevronDown size={14} className="text-gray-400 ml-1" />}
                       </div>
                     </div>
 
                     {isExpanded && (
-                      <div className="px-3 pb-3 pt-2 border-t border-gray-100 space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
+                      <div className="px-2.5 sm:px-3 pb-2.5 sm:pb-3 pt-2 border-t border-gray-100 space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs text-gray-500 mb-1">Label</label>
                             <input
@@ -409,7 +450,7 @@ export default function NewFormPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs text-gray-500 mb-1">Type</label>
                             <select
@@ -467,16 +508,44 @@ export default function NewFormPage() {
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between pt-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
+                        {field.type === 'calculated' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Calculation Formula</label>
                             <input
-                              type="checkbox"
-                              checked={field.required}
-                              onChange={(e) => updateField(index, { required: e.target.checked })}
-                              className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                              type="text"
+                              value={field.calculation || ''}
+                              onChange={(e) => updateField(index, { calculation: e.target.value })}
+                              placeholder="e.g., field1 + field2 * 0.1"
+                              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                             />
-                            <span className="text-xs text-gray-600">Required</span>
-                          </label>
+                            <p className="text-xs text-gray-400 mt-1">
+                              Use field IDs and basic math operators (+, -, *, /, parentheses)
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center gap-3">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={field.required}
+                                onChange={(e) => updateField(index, { required: e.target.checked })}
+                                className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                                disabled={field.type === 'calculated'}
+                              />
+                              <span className="text-xs text-gray-600">Required</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={field.defaultHidden || false}
+                                onChange={(e) => updateField(index, { defaultHidden: e.target.checked })}
+                                className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                              />
+                              <span className="text-xs text-gray-600">Hidden by default</span>
+                            </label>
+                          </div>
                           <div className="flex gap-1">
                             <button
                               onClick={() => duplicateField(index)}
@@ -494,6 +563,8 @@ export default function NewFormPage() {
                             </button>
                           </div>
                         </div>
+
+
                       </div>
                     )}
                   </div>
@@ -663,13 +734,13 @@ export default function NewFormPage() {
           <button
             onClick={handleSubmit}
             disabled={saving || !name.trim() || fields.length === 0}
-            className="w-full bg-gray-900 text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-gray-900 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
             ) : (
               <>
-                <Save size={16} /> Create form
+                <Save size={14} className="sm:w-4 sm:h-4" /> Create form
               </>
             )}
           </button>
@@ -677,55 +748,23 @@ export default function NewFormPage() {
 
         {showPreview && (
           <div className="lg:sticky lg:top-8 h-fit">
-            <div className="border border-gray-200 rounded-lg p-6 bg-white">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-gray-400">Preview</span>
+            <div className="border border-gray-200 rounded-lg p-4 sm:p-6 bg-white">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <span className="text-xs text-gray-400">Smart Preview</span>
+                <div className="flex items-center gap-1 text-xs text-purple-600">
+                  <Zap size={12} />
+                  <span>Live Logic</span>
+                </div>
               </div>
               
-              <div className="space-y-4">
-                <h4 className="text-lg font-semibold tracking-tight">{name || 'Untitled Form'}</h4>
-                {fields.map((field) => (
-                  <div key={field.id}>
-                    <label className="block text-sm text-gray-700 mb-1.5">
-                      {field.label}
-                      {field.required && <span className="text-red-500 ml-0.5">*</span>}
-                    </label>
-                    {field.type === 'textarea' ? (
-                      <textarea
-                        placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50"
-                        rows={3}
-                        disabled
-                      />
-                    ) : field.type === 'select' ? (
-                      <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50" disabled>
-                        <option value="">Select...</option>
-                        {field.options?.map((opt, i) => (
-                          <option key={i} value={opt}>{opt}</option>
-                        ))}
-                      </select>
-                    ) : field.type === 'checkbox' ? (
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" disabled />
-                        <span className="text-sm text-gray-600">{field.placeholder || 'Yes'}</span>
-                      </label>
-                    ) : (
-                      <input
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50"
-                        disabled
-                      />
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium opacity-50"
-                  disabled
-                >
-                  Submit
-                </button>
+              <div className="space-y-3 sm:space-y-4">
+                <h4 className="text-base sm:text-lg font-semibold tracking-tight">{name || 'Untitled Form'}</h4>
+                <SmartFormRenderer
+                  fields={fields}
+                  logic={formLogic}
+                  onSubmit={(data) => console.log('Preview submission:', data)}
+                  showLogicIndicators={true}
+                />
               </div>
             </div>
           </div>

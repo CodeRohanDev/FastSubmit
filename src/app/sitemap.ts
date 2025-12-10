@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/signup',
     '/privacy',
     '/terms',
+    '/humans.txt',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -91,5 +92,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...useCasePages, ...landingPages, ...blogPages, ...docPages]
+  // Template pages
+  const templatePages = [
+    '/templates/contact-forms',
+    '/templates/surveys',
+    '/templates/registration',
+    '/templates/lead-generation',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  return [...staticPages, ...useCasePages, ...landingPages, ...blogPages, ...docPages, ...templatePages]
 }

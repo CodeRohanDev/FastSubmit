@@ -7,7 +7,20 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'How to Create an Online Form in 5 Minutes (No Coding Required)',
   description: 'Learn how to create professional online forms in just 5 minutes without coding. Step-by-step guide with tips for better forms and higher conversions.',
-  keywords: ['how to create online form', 'create form online', 'online form maker', 'make online form'],
+  keywords: [
+    'how to create online form',
+    'create form online',
+    'online form maker',
+    'make online form',
+    'create free forms',
+    'easy forms',
+    'free online form',
+    'online forms',
+    'free online forms',
+    'form builder',
+    'free form builder',
+    'online form builder'
+  ],
 }
 
 export default function BlogPost() {

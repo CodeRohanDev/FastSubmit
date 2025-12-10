@@ -1,6 +1,12 @@
-import Link from 'next/link'
+import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service - FastSubmit Free Form Builder',
+  description: 'FastSubmit terms of service. Free form builder terms and conditions. Unlimited forms, submissions, and API access.',
+  keywords: ['terms of service', 'fastsubmit terms', 'form builder terms', 'free form builder'],
+}
 
 export default function TermsPage() {
   return (

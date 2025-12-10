@@ -5,9 +5,45 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Online Forms - Create Shareable Forms Like Google Forms | FastSubmit',
-  description: 'Create beautiful online forms and share via link, QR code, or email. Better than Google Forms with unlimited submissions, custom branding, and analytics.',
-  keywords: ['online form', 'shareable form', 'google forms alternative', 'survey form', 'questionnaire'],
+  title: 'Free Online Forms - Create & Share Forms Free | Best Form Maker',
+  description: 'Create free online forms and share via link, QR code, or email. Best free form maker alternative to Google Forms, Zoho Forms, Microsoft Forms. Unlimited submissions, export to Excel, Word, PDF. Free forever.',
+  keywords: [
+    'online forms',
+    'free online forms',
+    'free online form',
+    'online form builder',
+    'online form maker',
+    'forms',
+    'free form',
+    'form builder',
+    'free form builder',
+    'form builder free',
+    'form builder online',
+    'form maker',
+    'best form maker',
+    'best form builder',
+    'google forms',
+    'google form alternative',
+    'ai form builder',
+    'cheapest form',
+    'cheapest form builder',
+    'best forms',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to word',
+    'form to pdf',
+    'best form website',
+    'free form website',
+    'affordable forms',
+    'zoho forms',
+    'microsoft forms',
+    'free zoho forms',
+    'free microsoft forms',
+    'create free forms',
+    'easy forms',
+    'quiz maker'
+  ],
 }
 
 export default function OnlineFormsPage() {

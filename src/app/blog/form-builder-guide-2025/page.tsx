@@ -5,17 +5,44 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'The Ultimate Guide to Online Form Builders in 2025',
-  description: 'Complete guide to choosing and using online form builders. Learn about features, best practices, and how to create forms without coding.',
-  keywords: ['online form builder', 'form builder', 'best form builder', 'form builder guide'],
+  title: 'The Ultimate Guide to Online Form Builders in 2025 | Free Form Builder',
+  description: 'Complete guide to choosing and using online form builders. Learn about features, best practices, and how to create forms without coding. Best free form builder alternative to Google Forms.',
+  keywords: ['form builder', 'free form builder', 'online form builder', 'form builder free', 'form builder online', 'best form builder', 'best form maker', 'google forms', 'google form alternative', 'free online form', 'ai form builder', 'form maker', 'online form maker', 'cheapest form builder', 'best forms', 'hostspica forms', 'forms hostspica', 'create free forms', 'easy forms', 'zoho forms', 'microsoft forms'],
 }
 
 export default function BlogPost() {
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar />
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Complete Form Builder Guide 2025: Create Professional Forms",
+    "description": "Ultimate guide to building professional forms in 2025. Learn best practices, design tips, and optimization strategies.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "datePublished": "2024-12-10",
+    "dateModified": "2024-12-10",
+    "url": "https://fastsubmit.hostspica.com/blog/form-builder-guide-2025"
+  }
 
-      {/* Article */}
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar />
+
+        {/* Article */}
       <article className="pt-32 pb-20 px-6">
         <div className="max-w-3xl mx-auto">
           {/* Back Link */}
@@ -315,7 +342,8 @@ export default function BlogPost() {
         </div>
       </article>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

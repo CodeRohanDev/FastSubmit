@@ -11,7 +11,11 @@ const navItems = [
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void
+}
+
+export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { signOut, user } = useAuth()
@@ -21,9 +25,13 @@ export default function Sidebar() {
     router.push('/')
   }
 
+  const handleNavClick = () => {
+    onNavigate?.()
+  }
+
   return (
-    <aside className="w-60 bg-[#fafafa] border-r border-gray-100 min-h-screen flex flex-col">
-      <div className="p-6">
+    <aside className="w-60 bg-white lg:bg-[#fafafa] border-r border-gray-200 lg:border-gray-100 min-h-screen flex flex-col shadow-lg lg:shadow-none">
+      <div className="p-6 hidden lg:block">
         <Link href="/" className="block">
           <span className="text-lg font-semibold tracking-tight">
             fastsubmit<span className="text-indigo-600">.</span>
@@ -32,12 +40,13 @@ export default function Sidebar() {
         </Link>
       </div>
       
-      <nav className="flex-1 px-3">
+      <nav className="flex-1 px-3 pt-6 lg:pt-0">
         <div className="space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              onClick={handleNavClick}
               className={clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors',
                 pathname === item.href 
@@ -54,6 +63,7 @@ export default function Sidebar() {
         <div className="mt-8 pt-8 border-t border-gray-200">
           <Link
             href="/docs"
+            onClick={handleNavClick}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
           >
             <ExternalLink size={18} />

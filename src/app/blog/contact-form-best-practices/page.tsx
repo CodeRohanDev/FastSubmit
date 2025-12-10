@@ -6,16 +6,47 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Contact Form Best Practices: 15 Tips to Increase Conversions | FastSubmit',
-  description: 'Learn the best practices for designing contact forms that convert. Proven tips to increase form submissions and reduce abandonment rates.',
-  keywords: ['contact form', 'form best practices', 'increase conversions', 'form optimization', 'lead generation'],
+  description: 'Learn the best practices for designing contact forms that convert. Proven tips to increase form submissions and reduce abandonment rates. Free form builder guide.',
+  keywords: ['contact form', 'form best practices', 'increase conversions', 'form optimization', 'lead generation', 'form builder', 'free form builder', 'online form builder', 'best form builder', 'form maker', 'google forms', 'google form alternative', 'free online form', 'hostspica forms', 'forms hostspica', 'create free forms', 'easy forms', 'best form website', 'free form website'],
 }
 
 export default function ContactFormBestPracticesPage() {
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar variant="simple" />
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Contact Form Best Practices: 15 Tips to Increase Conversions",
+    "description": "Learn the best practices for designing contact forms that convert. Proven tips to increase form submissions and reduce abandonment rates.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "datePublished": "2024-12-10",
+    "dateModified": "2024-12-10",
+    "url": "https://fastsubmit.hostspica.com/blog/contact-form-best-practices",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fastsubmit.hostspica.com/blog/contact-form-best-practices"
+    }
+  }
 
-      <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar variant="simple" />
+
+        <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
         <div className="mb-8">
           <Link href="/blog" className="text-sm text-indigo-600 hover:text-indigo-700 mb-4 inline-block">
             ← Back to Blog
@@ -534,7 +565,8 @@ export default function ContactFormBestPracticesPage() {
         </div>
       </article>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

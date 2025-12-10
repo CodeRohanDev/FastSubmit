@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seo-audit": "node scripts/seo-audit.js",
+    "seo-audit:production": "node scripts/seo-audit.js https://fastsubmit.hostspica.com",
+    "seo-audit:advanced": "node scripts/seo-audit-advanced.js",
+    "seo-audit:full": "node scripts/seo-audit-advanced.js https://fastsubmit.hostspica.com",
+    "seo-audit:complete": "node scripts/run-seo-audit.js",
+    "seo-audit:complete:prod": "node scripts/run-seo-audit.js https://fastsubmit.hostspica.com"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

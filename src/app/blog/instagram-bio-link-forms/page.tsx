@@ -6,8 +6,8 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'How to Create Forms for Instagram Bio Links | FastSubmit',
-  description: 'Create beautiful, mobile-optimized forms perfect for your Instagram bio link. Capture leads and grow your following with effective forms.',
-  keywords: ['instagram bio link', 'instagram form', 'link in bio', 'instagram lead generation'],
+  description: 'Create beautiful, mobile-optimized forms perfect for your Instagram bio link. Capture leads and grow your following with effective forms. Free form builder for social media.',
+  keywords: ['instagram bio link', 'instagram form', 'link in bio', 'instagram lead generation', 'form builder', 'free form builder', 'online form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'hostspica forms', 'forms hostspica', 'best form website', 'free form website', 'create free forms', 'easy forms'],
 }
 
 export default function InstagramBioLinkFormsPage() {

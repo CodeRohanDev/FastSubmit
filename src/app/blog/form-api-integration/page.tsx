@@ -6,16 +6,43 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Form API Integration: A Developer\'s Guide | FastSubmit',
-  description: 'Learn how to integrate forms into your apps using REST APIs. Webhooks, authentication, and best practices for developers.',
-  keywords: ['form api', 'rest api', 'webhooks', 'api integration', 'developer guide'],
+  description: 'Learn how to integrate forms into your apps using REST APIs. Webhooks, authentication, and best practices for developers. Free form API alternative to Google Forms API.',
+  keywords: ['form api', 'google form api', 'free form api', 'form api free', 'rest api', 'webhooks', 'api integration', 'developer guide', 'form builder', 'free form builder', 'online form builder', 'hostspica forms', 'forms hostspica', 'best form api', 'form builder free'],
 }
 
 export default function FormApiIntegrationPage() {
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar variant="simple" />
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Form API Integration Guide: Connect Forms to Your Apps",
+    "description": "Learn how to integrate forms with your applications using REST API. Complete guide with code examples and best practices.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "datePublished": "2024-12-10",
+    "dateModified": "2024-12-10",
+    "url": "https://fastsubmit.hostspica.com/blog/form-api-integration"
+  }
 
-      <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar variant="simple" />
+
+        <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
         <div className="mb-8">
           <Link href="/blog" className="text-sm text-indigo-600 hover:text-indigo-700 mb-4 inline-block">
             ← Back to Blog
@@ -503,5 +530,6 @@ const submissions = await client.getSubmissions(form.id, {
 
       <Footer />
     </div>
+    </>
   )
 }

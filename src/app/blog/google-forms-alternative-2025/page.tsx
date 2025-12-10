@@ -7,7 +7,23 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'Best Google Forms Alternatives in 2025: Top 10 Options Compared',
   description: 'Looking for a Google Forms alternative? Discover the top 10 form builders that offer better features, design, and pricing. Free and paid options compared.',
-  keywords: ['google forms alternative', 'free google forms alternative', 'better than google forms', 'form builder comparison'],
+  keywords: [
+    'google forms alternative',
+    'google form alternative',
+    'free google forms alternative',
+    'best google form free',
+    'free google form',
+    'better than google forms',
+    'form builder comparison',
+    'free form builder',
+    'best form builder',
+    'zoho forms',
+    'microsoft forms',
+    'free zoho forms',
+    'free microsoft forms',
+    'online form builder',
+    'form maker'
+  ],
 }
 
 export default function BlogPost() {

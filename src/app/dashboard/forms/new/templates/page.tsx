@@ -24,7 +24,7 @@ export default function FormTemplatesPage() {
 
   return (
     <EmailVerificationGate>
-      <div className="max-w-6xl mx-auto">
+      <div>
         <div className="flex items-center gap-4 mb-8">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
             <ArrowLeft size={20} />

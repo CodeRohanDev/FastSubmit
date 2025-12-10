@@ -202,35 +202,35 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Settings</h1>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900">Settings</h1>
         <p className="text-gray-500 text-sm mt-1">Manage your account and domain settings</p>
       </div>
 
       {/* Account Section */}
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
           <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
           Account Information
         </h2>
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <div className="divide-y divide-gray-100">
-            <div className="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 hover:bg-gray-50 transition-colors gap-2 sm:gap-4">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-900">Email Address</p>
                 <p className="text-xs text-gray-500 mt-0.5">Your account email</p>
               </div>
-              <span className="text-sm text-gray-600 font-mono">{user?.email}</span>
+              <span className="text-sm text-gray-600 font-mono break-all">{user?.email}</span>
             </div>
-            <div className="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 hover:bg-gray-50 transition-colors gap-2 sm:gap-4">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-900">Display Name</p>
                 <p className="text-xs text-gray-500 mt-0.5">How others see you</p>
               </div>
               <span className="text-sm text-gray-600">{user?.displayName || 'Not set'}</span>
             </div>
-            <div className="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 hover:bg-gray-50 transition-colors gap-2 sm:gap-4">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-900">Plan</p>
                 <p className="text-xs text-gray-500 mt-0.5">Current subscription</p>
               </div>
@@ -244,8 +244,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Email Notifications Section */}
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
           <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
           Email Notifications
         </h2>
@@ -257,26 +257,26 @@ export default function SettingsPage() {
         ) : (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             {/* Toggle */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100 gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                   notificationSettings.emailNotifications ? 'bg-green-100' : 'bg-gray-100'
                 }`}>
-                  <Bell size={20} className={notificationSettings.emailNotifications ? 'text-green-600' : 'text-gray-400'} />
+                  <Bell size={16} className={`sm:w-5 sm:h-5 ${notificationSettings.emailNotifications ? 'text-green-600' : 'text-gray-400'}`} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900">Submission Notifications</p>
                   <p className="text-xs text-gray-500">Get email digests when you receive new submissions</p>
                 </div>
               </div>
               <button
                 onClick={() => setNotificationSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
+                className={`relative w-10 sm:w-12 h-5 sm:h-6 rounded-full transition-colors flex-shrink-0 ${
                   notificationSettings.emailNotifications ? 'bg-green-500' : 'bg-gray-300'
                 }`}
               >
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                  notificationSettings.emailNotifications ? 'translate-x-7' : 'translate-x-1'
+                <div className={`absolute top-0.5 sm:top-1 w-3 sm:w-4 h-3 sm:h-4 bg-white rounded-full transition-transform ${
+                  notificationSettings.emailNotifications ? 'translate-x-6 sm:translate-x-7' : 'translate-x-1'
                 }`} />
               </button>
             </div>
@@ -285,37 +285,37 @@ export default function SettingsPage() {
             {notificationSettings.emailNotifications && (
               <>
                 {/* Notification Email */}
-                <div className="p-4 border-b border-gray-100">
+                <div className="p-3 sm:p-4 border-b border-gray-100">
                   <label className="block text-sm font-medium text-gray-900 mb-1">Notification Email</label>
                   <p className="text-xs text-gray-500 mb-2">Where to send notification emails</p>
                   <div className="flex items-center gap-2">
-                    <Mail size={16} className="text-gray-400" />
+                    <Mail size={14} className="text-gray-400 flex-shrink-0 sm:w-4 sm:h-4" />
                     <input
                       type="email"
                       value={notificationSettings.notificationEmail || ''}
                       onChange={(e) => setNotificationSettings(prev => ({ ...prev, notificationEmail: e.target.value }))}
                       placeholder={user?.email || 'your@email.com'}
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent min-w-0"
                     />
                   </div>
                 </div>
 
                 {/* Daily Info */}
-                <div className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock size={16} className="text-gray-400" />
-                    <span>You'll receive a daily digest at 12:00 AM IST if there are new submissions.</span>
+                <div className="p-3 sm:p-4">
+                  <div className="flex items-start gap-2 text-sm text-gray-600">
+                    <Clock size={14} className="text-gray-400 flex-shrink-0 mt-0.5 sm:w-4 sm:h-4" />
+                    <span className="text-xs sm:text-sm">You'll receive a daily digest at 12:00 AM IST if there are new submissions.</span>
                   </div>
                 </div>
               </>
             )}
 
             {/* Save Button */}
-            <div className="p-4 bg-gray-50 border-t border-gray-100">
+            <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-100">
               <button
                 onClick={handleSaveNotifications}
                 disabled={savingNotifications}
-                className="w-full bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="w-full bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
               >
                 {savingNotifications ? 'Saving...' : 'Save Notification Settings'}
               </button>
@@ -325,24 +325,26 @@ export default function SettingsPage() {
       </div>
 
       {/* Verified Domains Section */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
             <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
             Verified Domains
           </h2>
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <Shield size={14} />
+            <Shield size={12} className="sm:w-[14px] sm:h-[14px]" />
             <span>{verifiedDomains.filter(d => d.verified).length} verified</span>
           </div>
         </div>
 
         {message.text && (
-          <div className={`px-4 py-3 rounded-lg mb-4 flex items-center justify-between text-sm ${
+          <div className={`px-3 sm:px-4 py-3 rounded-lg mb-3 sm:mb-4 flex items-start justify-between text-sm gap-3 ${
             message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
           }`}>
-            <span>{message.text}</span>
-            <button onClick={() => setMessage({ type: '', text: '' })}><X size={16} /></button>
+            <span className="flex-1 min-w-0">{message.text}</span>
+            <button onClick={() => setMessage({ type: '', text: '' })} className="flex-shrink-0">
+              <X size={14} className="sm:w-4 sm:h-4" />
+            </button>
           </div>
         )}
         
@@ -542,21 +544,21 @@ export default function SettingsPage() {
       </div>
 
       {/* Developer Section */}
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
           <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
           Developer
         </h2>
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <div className="flex-1">
+          <div className="p-3 sm:p-4 border-b border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 mb-1">API Key</p>
                 <p className="text-xs text-gray-500 mb-3">Use this key for all API requests. Keep it secure!</p>
                 {loadingApiKey ? (
                   <div className="h-8 bg-gray-100 rounded animate-pulse"></div>
                 ) : (
-                  <code className="text-xs font-mono text-indigo-700 bg-indigo-50 px-3 py-2 rounded break-all block border border-indigo-200">
+                  <code className="text-xs font-mono text-indigo-700 bg-indigo-50 px-2 sm:px-3 py-2 rounded break-all block border border-indigo-200">
                     {apiKey || 'Loading...'}
                   </code>
                 )}
@@ -570,10 +572,10 @@ export default function SettingsPage() {
                   }
                 }}
                 disabled={!apiKey}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 disabled:opacity-50 self-start"
                 title="Copy API Key"
               >
-                <Copy size={16} className="text-gray-400" />
+                <Copy size={14} className="text-gray-400 sm:w-4 sm:h-4" />
               </button>
             </div>
             <button
@@ -584,11 +586,11 @@ export default function SettingsPage() {
               {regeneratingApiKey ? 'Regenerating...' : 'Regenerate API Key'}
             </button>
           </div>
-          <div className="p-4 bg-gray-50">
+          <div className="p-3 sm:p-4 bg-gray-50">
             <p className="text-xs text-gray-600 mb-2">
               <strong>Usage:</strong> Include this key in the <code className="bg-white px-1 py-0.5 rounded text-[10px]">x-api-key</code> header for all API requests.
             </p>
-            <code className="text-[10px] text-gray-500 block">
+            <code className="text-[10px] text-gray-500 block break-all">
               curl -H "x-api-key: {apiKey || 'YOUR_API_KEY'}" https://yourapp.com/api/v1/forms
             </code>
           </div>
@@ -597,30 +599,30 @@ export default function SettingsPage() {
 
       {/* Resources Section */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <h2 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
           <div className="w-1 h-4 bg-gray-900 rounded-full"></div>
           Resources
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href="/docs"
-            className="group flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
+            className="group flex items-center justify-between p-3 sm:p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-medium text-gray-900 group-hover:text-gray-700">API Documentation</p>
               <p className="text-xs text-gray-500 mt-0.5">Learn how to integrate</p>
             </div>
-            <ExternalLink size={16} className="text-gray-300 group-hover:text-gray-600 transition-colors" />
+            <ExternalLink size={14} className="text-gray-300 group-hover:text-gray-600 transition-colors flex-shrink-0 sm:w-4 sm:h-4" />
           </Link>
           <Link
             href="/docs/domain-verification"
-            className="group flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
+            className="group flex items-center justify-between p-3 sm:p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all"
           >
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-medium text-gray-900 group-hover:text-gray-700">Domain Verification</p>
               <p className="text-xs text-gray-500 mt-0.5">Setup guide</p>
             </div>
-            <ExternalLink size={16} className="text-gray-300 group-hover:text-gray-600 transition-colors" />
+            <ExternalLink size={14} className="text-gray-300 group-hover:text-gray-600 transition-colors flex-shrink-0 sm:w-4 sm:h-4" />
           </Link>
         </div>
       </div>

@@ -1,0 +1,29 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.hostspica.fastsubmit"],
+        "components": [
+          {
+            "/": "/f/*",
+            "comment": "Form sharing links"
+          },
+          {
+            "/": "/templates/*",
+            "comment": "Template pages"
+          },
+          {
+            "/": "/form-builder",
+            "comment": "Form builder page"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAMID.com.hostspica.fastsubmit"]
+  },
+  "appclips": {
+    "apps": ["TEAMID.com.hostspica.fastsubmit.Clip"]
+  }
+}

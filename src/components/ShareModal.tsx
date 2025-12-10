@@ -339,6 +339,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl, formName }: Shar
                     src={qrDataUrl} 
                     alt="QR Code" 
                     className="relative w-56 h-auto rounded-2xl shadow-xl border border-gray-200"
+                    loading="lazy"
                   />
                 </div>
               ) : (

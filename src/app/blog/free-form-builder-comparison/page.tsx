@@ -7,7 +7,21 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'Best Free Form Builders in 2025: Complete Comparison',
   description: 'Compare the best free form builders available in 2025. Find the perfect tool for your needs without spending a dime.',
-  keywords: ["free form builder","best free form builder","free form builder comparison","form builder free"],
+  keywords: [
+    'free form builder',
+    'best free form builder',
+    'free form builder comparison',
+    'form builder free',
+    'best form builder',
+    'cheapest form builder',
+    'affordable forms',
+    'best free affordable forms',
+    'form maker',
+    'online form builder',
+    'create free forms',
+    'easy forms',
+    'google forms alternative'
+  ],
 }
 
 export default function BlogPost() {

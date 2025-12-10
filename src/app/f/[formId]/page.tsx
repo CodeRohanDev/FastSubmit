@@ -248,6 +248,7 @@ export default function PublicFormPage() {
                     src={form.branding.logo} 
                     alt={form.branding.companyName || 'Company logo'} 
                     className="h-12 w-auto object-contain"
+                    loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
                     }}

@@ -5,9 +5,39 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Blog - Form Builder Tips, Tutorials & Guides | FastSubmit',
-  description: 'Learn how to create better forms for websites, social media, and online sharing. Tips, tutorials, and best practices for form builders.',
-  keywords: ['form builder blog', 'website forms', 'social media forms', 'form design', 'online forms tutorial'],
+  title: 'Blog - Free Form Builder Tips, Tutorials & Guides | FastSubmit',
+  description: 'Learn how to create better forms for websites, social media, and online sharing. Tips, tutorials, and best practices. Best free form builder guides. Better than Google Forms, Zoho Forms, Microsoft Forms.',
+  keywords: [
+    'form builder blog',
+    'form builder',
+    'free form builder',
+    'google forms',
+    'forms',
+    'quiz maker',
+    'online form builder',
+    'google form alternative',
+    'free online form',
+    'ai form builder',
+    'form builder free',
+    'form builder online',
+    'free form',
+    'online forms',
+    'free online forms',
+    'form maker',
+    'online form maker',
+    'best form maker',
+    'best form builder',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to pdf',
+    'zoho forms',
+    'microsoft forms',
+    'create free forms',
+    'easy forms',
+    'form api',
+    'free form api'
+  ],
 }
 
 const blogPosts = [
@@ -128,11 +158,36 @@ const tagColors: Record<string, string> = {
 }
 
 export default function BlogPage() {
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar />
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "FastSubmit Blog - Form Builder Tips & Tutorials",
+    "description": "Learn how to create better forms for websites, social media, and online sharing. Tips, tutorials, and best practices for form builders.",
+    "url": "https://fastsubmit.hostspica.com/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fastsubmit.hostspica.com/blog"
+    }
+  }
 
-      {/* Hero */}
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar />
+
+        {/* Hero */}
       <section className="pt-32 pb-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-6">
@@ -141,7 +196,7 @@ export default function BlogPage() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Tips, tutorials, and best practices for creating forms for websites, social media, and online sharing
           </p>
-          
+
           {/* Category filters */}
           <div className="flex flex-wrap justify-center gap-2">
             <button className="px-4 py-2 rounded-full text-sm bg-gray-900 text-white">All Posts</button>
@@ -221,8 +276,8 @@ export default function BlogPage() {
           <p className="text-xl text-gray-300 mb-8">
             Put these tips into practice with FastSubmit
           </p>
-          <Link 
-            href="/signup" 
+          <Link
+            href="/signup"
             className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-medium hover:bg-gray-100 transition-colors"
           >
             Get Started Free <ArrowRight size={20} />
@@ -230,7 +285,8 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <Footer variant="extended" />
-    </div>
+        <Footer variant="extended" />
+      </div>
+    </>
   )
 }

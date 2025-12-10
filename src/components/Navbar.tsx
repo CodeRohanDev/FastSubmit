@@ -21,9 +21,9 @@ export default function Navbar({ variant = 'default' }: NavbarProps) {
   ]
 
   return (
-    <nav className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50 border-b border-gray-100">
+    <nav className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50 border-b border-gray-100" role="navigation" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-        <Link href="/" className="flex flex-col">
+        <Link href="/" className="flex flex-col" aria-label="FastSubmit homepage">
           <span className="text-xl font-semibold tracking-tight leading-none">
             fastsubmit<span className="text-indigo-600">.</span>
           </span>
@@ -40,7 +40,12 @@ export default function Navbar({ variant = 'default' }: NavbarProps) {
                 onMouseEnter={() => setUseCasesOpen(true)}
                 onMouseLeave={() => setUseCasesOpen(false)}
               >
-                <button className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+                <button 
+                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+                  aria-expanded={useCasesOpen}
+                  aria-haspopup="true"
+                  aria-label="Use cases menu"
+                >
                   Use Cases <ChevronDown size={14} className={`transition-transform ${useCasesOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -69,6 +74,9 @@ export default function Navbar({ variant = 'default' }: NavbarProps) {
 
               <Link href="/form-builder" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
                 Form Builder
+              </Link>
+              <Link href="/smart-forms" className="text-sm text-purple-600 hover:text-purple-700 transition-colors font-medium">
+                Smart Forms
               </Link>
               <Link href="/templates" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
                 Templates
@@ -125,6 +133,9 @@ export default function Navbar({ variant = 'default' }: NavbarProps) {
                 </div>
                 <Link href="/form-builder" className="block py-2 text-sm text-gray-600" onClick={() => setMobileMenuOpen(false)}>
                   Form Builder
+                </Link>
+                <Link href="/smart-forms" className="block py-2 text-sm text-purple-600 font-medium" onClick={() => setMobileMenuOpen(false)}>
+                  Smart Forms
                 </Link>
                 <Link href="/templates" className="block py-2 text-sm text-gray-600" onClick={() => setMobileMenuOpen(false)}>
                   Templates

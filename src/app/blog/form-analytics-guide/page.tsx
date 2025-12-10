@@ -5,15 +5,42 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Form Analytics Guide: Track, Measure, and Optimize Your Forms',
-  description: 'Master form analytics to improve conversion rates. Learn what metrics to track and how to optimize based on data.',
-  keywords: ["form analytics","form metrics","form conversion tracking","form optimization"],
+  title: 'Form Analytics Guide: Track, Measure, and Optimize Your Forms | FastSubmit',
+  description: 'Master form analytics to improve conversion rates. Learn what metrics to track and how to optimize based on data. Free form builder with analytics.',
+  keywords: ['form analytics', 'form metrics', 'form conversion tracking', 'form optimization', 'form builder', 'free form builder', 'online form builder', 'best form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'hostspica forms', 'forms hostspica', 'best form website', 'create free forms', 'easy forms'],
 }
 
 export default function BlogPost() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Form Analytics Guide: Track Performance & Optimize Conversions",
+    "description": "Learn how to track form performance, analyze conversion rates, and optimize your forms for better results. Complete analytics guide.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.hostspica.com/logo.png"
+      }
+    },
+    "datePublished": "2024-12-10",
+    "dateModified": "2024-12-10",
+    "url": "https://fastsubmit.hostspica.com/blog/form-analytics-guide"
+  }
+
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar />
       <article className="pt-32 pb-20 px-6">
         <div className="max-w-3xl mx-auto">
           <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-8">
@@ -77,7 +104,8 @@ export default function BlogPost() {
           </div>
         </div>
       </article>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

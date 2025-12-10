@@ -1,0 +1,41 @@
+Contact: mailto:security@hostspica.com
+Contact: https://hostspica.com/security
+Expires: 2025-12-31T23:59:59.000Z
+Encryption: https://hostspica.com/pgp-key.txt
+Acknowledgments: https://hostspica.com/security/hall-of-fame
+Preferred-Languages: en
+Canonical: https://fastsubmit.hostspica.com/.well-known/security.txt
+Policy: https://hostspica.com/security/disclosure-policy
+
+# Security Policy for FastSubmit
+# 
+# We take security seriously. If you discover a security vulnerability,
+# please report it to us responsibly.
+#
+# What we consider in scope:
+# - Authentication bypass
+# - Data exposure vulnerabilities  
+# - Cross-site scripting (XSS)
+# - SQL injection
+# - Server-side request forgery (SSRF)
+# - Remote code execution
+#
+# Out of scope:
+# - Social engineering attacks
+# - Physical attacks
+# - Denial of service attacks
+# - Issues in third-party services
+#
+# Please provide:
+# - Clear description of the vulnerability
+# - Steps to reproduce
+# - Potential impact
+# - Suggested fix (if available)
+#
+# We commit to:
+# - Acknowledge receipt within 48 hours
+# - Provide regular updates on progress
+# - Credit researchers (with permission)
+# - Fix critical issues within 30 days
+#
+# Thank you for helping keep FastSubmit secure!
