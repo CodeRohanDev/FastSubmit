@@ -38,13 +38,14 @@ export interface FormLogic {
 export interface FormField {
   id: string
   label: string
-  type: 'text' | 'email' | 'textarea' | 'number' | 'date' | 'select' | 'checkbox' | 'calculated'
+  type: 'text' | 'email' | 'textarea' | 'number' | 'date' | 'select' | 'checkbox' | 'calculated' | 'display'
   required: boolean
   placeholder?: string
   options?: string[] // for select type
   defaultHidden?: boolean // Whether field is hidden by default
   calculation?: string // Formula for calculated fields (e.g., "field1 + field2")
   validationRules?: ValidationRule[]
+  displayText?: string // For display type fields - text content to show
   // Removed field-level conditional rules - now managed at form level
 }
 

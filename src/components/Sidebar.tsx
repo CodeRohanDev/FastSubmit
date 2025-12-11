@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -19,10 +20,21 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { signOut, user } = useAuth()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const handleSignOut = async () => {
-    await signOut()
-    router.push('/')
+    if (isLoggingOut) return // Prevent multiple clicks
+    
+    setIsLoggingOut(true)
+    try {
+      await signOut()
+      // The signOut function now handles the redirect
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Fallback redirect
+      window.location.href = '/'
+    }
+    // Don't reset isLoggingOut since we're redirecting
   }
 
   const handleNavClick = () => {
@@ -79,10 +91,15 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
         </div>
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors w-full"
+          disabled={isLoggingOut}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LogOut size={18} />
-          Sign out
+          {isLoggingOut ? (
+            <div className="w-[18px] h-[18px] border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          ) : (
+            <LogOut size={18} />
+          )}
+          {isLoggingOut ? 'Signing out...' : 'Sign out'}
         </button>
       </div>
     </aside>

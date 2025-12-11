@@ -12,7 +12,7 @@ import {
   Plus, Trash2, GripVertical, ArrowLeft, Eye, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
   ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink,
-  Calculator, Zap
+  Calculator, Zap, Info, Brain
 } from 'lucide-react'
 import FormLogicBuilder from '@/components/FormLogicBuilder'
 import SmartFormRenderer from '@/components/SmartFormRenderer'
@@ -26,6 +26,7 @@ const fieldTypes = [
   { value: 'select', label: 'Dropdown', icon: List, desc: 'Select options' },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare, desc: 'Yes/No toggle' },
   { value: 'calculated', label: 'Calculated', icon: Calculator, desc: 'Auto-calculated value' },
+  { value: 'display', label: 'Display Text', icon: Info, desc: 'Information text only' },
 ] as const
 
 type FieldType = typeof fieldTypes[number]['value']
@@ -43,8 +44,16 @@ export default function NewFormPage() {
   const [fields, setFields] = useState<FormField[]>(
     template 
       ? template.fields.map((field, index) => ({
-          ...field,
           id: field.name || `field_${index}`,
+          label: field.label || 'Untitled Field',
+          type: field.type || 'text',
+          required: field.required || false,
+          placeholder: field.placeholder || '',
+          options: field.options || undefined,
+          defaultHidden: field.defaultHidden || undefined,
+          calculation: field.calculation || undefined,
+          displayText: field.displayText || undefined,
+          validationRules: field.validationRules || undefined,
         }))
       : [
           { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
@@ -277,22 +286,52 @@ export default function NewFormPage() {
     setSaving(true)
     setError('')
 
+    // Clean fields to remove any undefined values
+    const cleanFields = fields.map(field => {
+      const cleanField: any = {
+        id: field.id,
+        label: field.label,
+        type: field.type,
+        required: field.required,
+      }
+      
+      // Only add optional properties if they have values
+      if (field.placeholder) cleanField.placeholder = field.placeholder
+      if (field.options && field.options.length > 0) cleanField.options = field.options
+      if (field.defaultHidden) cleanField.defaultHidden = field.defaultHidden
+      if (field.calculation) cleanField.calculation = field.calculation
+      if (field.displayText) cleanField.displayText = field.displayText
+      if (field.validationRules && field.validationRules.length > 0) cleanField.validationRules = field.validationRules
+      
+      return cleanField
+    })
+
+    // Prepare form data, excluding undefined values
+    const formData: any = {
+      name: name.trim(),
+      fields: cleanFields,
+      userId: user.uid,
+      apiKey: generateApiKey(),
+      allowedDomains: selectedDomains,
+      requireDomainVerification: requireVerification && selectedDomains.length > 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }
+
+    // Only add logic if there are rules
+    if (formLogic.rules.length > 0) {
+      formData.logic = formLogic
+    }
+
     try {
-      const docRef = await addDoc(collection(db, 'forms'), {
-        name: name.trim(),
-        fields,
-        logic: formLogic.rules.length > 0 ? formLogic : undefined,
-        userId: user.uid,
-        apiKey: generateApiKey(),
-        allowedDomains: selectedDomains,
-        requireDomainVerification: requireVerification && selectedDomains.length > 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      })
+      console.log('Creating form with data:', formData) // Debug log
+      
+      const docRef = await addDoc(collection(db, 'forms'), formData)
       router.push(`/dashboard/forms/${docRef.id}`)
     } catch (err) {
       setError('Failed to create form. Please try again.')
-      console.error(err)
+      console.error('Form creation error:', err)
+      console.error('Form data that failed:', formData) // Debug log
     }
     setSaving(false)
   }
@@ -303,7 +342,7 @@ export default function NewFormPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={showPreview ? "max-w-7xl mx-auto" : "max-w-4xl mx-auto"}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -330,7 +369,7 @@ export default function NewFormPage() {
         </div>
       )}
 
-      <div className={`grid gap-6 sm:gap-8 ${showPreview ? 'lg:grid-cols-2' : ''}`}>
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
         <div className="space-y-4 sm:space-y-6">
           {/* Form Name */}
           <div>
@@ -360,12 +399,6 @@ export default function NewFormPage() {
                 </span>
               )}
             </div>
-            
-            <FormLogicBuilder
-              fields={fields}
-              logic={formLogic}
-              onLogicChange={setFormLogic}
-            />
           </div>
 
           {/* Fields */}
@@ -520,6 +553,22 @@ export default function NewFormPage() {
                             />
                             <p className="text-xs text-gray-400 mt-1">
                               Use field IDs and basic math operators (+, -, *, /, parentheses)
+                            </p>
+                          </div>
+                        )}
+
+                        {field.type === 'display' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Display Text</label>
+                            <textarea
+                              value={field.displayText || ''}
+                              onChange={(e) => updateField(index, { displayText: e.target.value })}
+                              placeholder="Enter the information text to display to users..."
+                              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              rows={3}
+                            />
+                            <p className="text-xs text-gray-400 mt-1">
+                              This text will be displayed in the info card on the right side of the form
                             </p>
                           </div>
                         )}
@@ -746,10 +795,34 @@ export default function NewFormPage() {
           </button>
         </div>
 
-        {showPreview && (
-          <div className="lg:sticky lg:top-8 h-fit">
-            <div className="border border-gray-200 rounded-lg p-4 sm:p-6 bg-white">
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="lg:sticky lg:top-8 h-fit space-y-6">
+          {/* Form Logic Builder */}
+          <div className="border border-gray-200 rounded-lg bg-white">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <span className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                <Brain size={16} className="text-purple-600" />
+                Smart Logic
+              </span>
+              <div className="flex items-center gap-1 text-xs text-purple-600">
+                <Zap size={12} />
+                <span>{formLogic?.rules?.length || 0} rules</span>
+              </div>
+            </div>
+            
+            <div className="p-4">
+              <FormLogicBuilder
+                key={`logic-${fields.length}`}
+                fields={fields}
+                logic={formLogic}
+                onLogicChange={setFormLogic}
+              />
+            </div>
+          </div>
+
+          {/* Form Preview */}
+          {showPreview && (
+            <div className="border border-gray-200 rounded-lg bg-white overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-gray-100">
                 <span className="text-xs text-gray-400">Smart Preview</span>
                 <div className="flex items-center gap-1 text-xs text-purple-600">
                   <Zap size={12} />
@@ -757,18 +830,29 @@ export default function NewFormPage() {
                 </div>
               </div>
               
-              <div className="space-y-3 sm:space-y-4">
-                <h4 className="text-base sm:text-lg font-semibold tracking-tight">{name || 'Untitled Form'}</h4>
+              <div className="p-4">
+                <h4 className="text-base sm:text-lg font-semibold tracking-tight mb-4">{name || 'Untitled Form'}</h4>
                 <SmartFormRenderer
                   fields={fields}
                   logic={formLogic}
                   onSubmit={(data) => console.log('Preview submission:', data)}
                   showLogicIndicators={true}
+                  showInfoCard={true}
+                  infoCardTitle="Form Preview"
+                  infoCardContent={`This is a live preview of your form.
+
+• Form fields appear on the left
+• Information and help text appears here  
+• The card stays visible while scrolling
+• Try adding display fields for user guidance
+
+Fields: ${fields.length}
+Logic Rules: ${formLogic?.rules?.length || 0}`}
                 />
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )

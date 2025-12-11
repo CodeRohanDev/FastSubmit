@@ -1,7 +1,7 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { FormField, FormLogic, FormRule, FormCondition } from '@/types'
-import { Calculator, Eye, EyeOff, Zap } from 'lucide-react'
+import { Calculator, Zap, Info } from 'lucide-react'
 
 interface SmartFormRendererProps {
   fields: FormField[]
@@ -9,6 +9,10 @@ interface SmartFormRendererProps {
   onSubmit: (data: Record<string, any>) => void
   className?: string
   showLogicIndicators?: boolean
+  showInfoCard?: boolean
+  infoCardTitle?: string
+  infoCardContent?: string
+  debugMode?: boolean
 }
 
 interface FieldState {
@@ -24,7 +28,11 @@ export default function SmartFormRenderer({
   logic,
   onSubmit, 
   className = '',
-  showLogicIndicators = false 
+  showLogicIndicators = false,
+  showInfoCard = false,
+  infoCardTitle = "Form Information",
+  infoCardContent = "",
+  debugMode = false
 }: SmartFormRendererProps) {
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [fieldStates, setFieldStates] = useState<Record<string, FieldState>>({})
@@ -45,24 +53,47 @@ export default function SmartFormRenderer({
     })
     
     setFieldStates(initialStates)
-  }, [fields])
+  }, [fields, formData])
 
   // Evaluate form logic rules whenever form data changes
   useEffect(() => {
     if (!logic || logic.rules.length === 0) return
     
-    const newStates = { ...fieldStates }
+    // Start with initial field states (respecting defaultHidden)
+    const newStates: Record<string, FieldState> = {}
+    fields.forEach(field => {
+      newStates[field.id] = {
+        visible: !field.defaultHidden, // Respect initial defaultHidden state
+        required: field.required,
+        value: formData[field.id] || '',
+        options: field.options,
+        disabled: false
+      }
+    })
     
     // Sort rules by priority (lower number = higher priority)
     const sortedRules = [...logic.rules]
       .filter(rule => rule.enabled)
       .sort((a, b) => a.priority - b.priority)
     
+    // Apply rules that have their conditions met
     sortedRules.forEach(rule => {
       const conditionsMet = evaluateRuleConditions(rule, formData)
       
+      if (debugMode) {
+        console.log(`Rule "${rule.name}":`, {
+          conditionsMet,
+          conditions: rule.conditions,
+          formData,
+          actions: rule.actions
+        })
+      }
+      
       if (conditionsMet) {
         rule.actions.forEach(action => {
+          if (debugMode) {
+            console.log(`Applying action:`, action)
+          }
           applyRuleAction(action, newStates, formData)
         })
       }
@@ -94,23 +125,26 @@ export default function SmartFormRenderer({
   const evaluateCondition = (condition: FormCondition, triggerValue: any): boolean => {
     const { operator, value } = condition
     
+    // Handle undefined/null trigger values
+    const normalizedTriggerValue = triggerValue ?? ''
+    
     switch (operator) {
       case 'equals':
-        return triggerValue === value
+        return normalizedTriggerValue === value
       case 'not_equals':
-        return triggerValue !== value
+        return normalizedTriggerValue !== value
       case 'contains':
-        return String(triggerValue || '').toLowerCase().includes(String(value).toLowerCase())
+        return String(normalizedTriggerValue).toLowerCase().includes(String(value).toLowerCase())
       case 'not_contains':
-        return !String(triggerValue || '').toLowerCase().includes(String(value).toLowerCase())
+        return !String(normalizedTriggerValue).toLowerCase().includes(String(value).toLowerCase())
       case 'greater_than':
-        return Number(triggerValue) > Number(value)
+        return Number(normalizedTriggerValue) > Number(value)
       case 'less_than':
-        return Number(triggerValue) < Number(value)
+        return Number(normalizedTriggerValue) < Number(value)
       case 'is_empty':
-        return !triggerValue || triggerValue === ''
+        return !normalizedTriggerValue || normalizedTriggerValue === ''
       case 'is_not_empty':
-        return triggerValue && triggerValue !== ''
+        return normalizedTriggerValue && normalizedTriggerValue !== ''
       default:
         return false
     }
@@ -249,114 +283,171 @@ export default function SmartFormRenderer({
   }
 
   const visibleFields = fields.filter(field => fieldStates[field.id]?.visible !== false)
+  const displayFields = visibleFields.filter(field => field.type === 'display')
+  const inputFields = visibleFields.filter(field => field.type !== 'display')
+
+  const renderField = (field: FormField) => {
+    const state = fieldStates[field.id]
+    const value = formData[field.id] || ''
+    const error = errors[field.id]
+    const hasLogic = logic && logic.rules.some(rule => 
+      rule.conditions.some(c => c.fieldId === field.id) || 
+      rule.actions.some(a => a.targetFieldId === field.id)
+    )
+
+    // Handle display field type
+    if (field.type === 'display') {
+      return (
+        <div key={field.id} className="space-y-2">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Info size={14} className="text-blue-500" />
+            {field.label}
+          </div>
+          <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+            {field.displayText || field.placeholder || 'No content provided'}
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div key={field.id} className="space-y-1">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+          {field.label}
+          {state?.required && <span className="text-red-500">*</span>}
+          {showLogicIndicators && hasLogic && (
+            <div className="flex items-center gap-1">
+              <Zap size={12} className="text-purple-500" />
+              <span className="text-xs text-purple-600">Smart</span>
+            </div>
+          )}
+          {field.type === 'calculated' && (
+            <div className="flex items-center gap-1">
+              <Calculator size={12} className="text-blue-500" />
+              <span className="text-xs text-blue-600">Auto</span>
+            </div>
+          )}
+        </label>
+
+        {field.type === 'textarea' ? (
+          <textarea
+            value={value}
+            onChange={(e) => handleFieldChange(field.id, e.target.value)}
+            placeholder={field.placeholder}
+            disabled={state?.disabled}
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
+              error 
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
+            } bg-white`}
+            rows={3}
+          />
+        ) : field.type === 'select' ? (
+          <select
+            value={value}
+            onChange={(e) => handleFieldChange(field.id, e.target.value)}
+            disabled={state?.disabled}
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
+              error 
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
+            }`}
+          >
+            <option value="">Select...</option>
+            {(state?.options || field.options || []).map((option, i) => (
+              <option key={i} value={option}>{option}</option>
+            ))}
+          </select>
+        ) : field.type === 'checkbox' ? (
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={value === true}
+              onChange={(e) => handleFieldChange(field.id, e.target.checked)}
+              disabled={state?.disabled}
+              className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-500"
+            />
+            <span className="text-sm text-gray-600">{field.placeholder || 'Yes'}</span>
+          </label>
+        ) : (
+          <input
+            type={field.type === 'calculated' ? 'text' : field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : field.type === 'email' ? 'email' : 'text'}
+            value={value}
+            onChange={(e) => handleFieldChange(field.id, e.target.value)}
+            placeholder={field.placeholder}
+            disabled={state?.disabled || field.type === 'calculated'}
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
+              error 
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
+            } ${field.type === 'calculated' ? 'bg-gray-50' : 'bg-white'}`}
+          />
+        )}
+
+        {error && (
+          <p className="text-xs text-red-600 flex items-center gap-1">
+            <span>⚠️</span> {error}
+          </p>
+        )}
+
+        {showLogicIndicators && hasLogic && (
+          <div className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">
+            <Zap size={10} className="inline mr-1" />
+            This field is controlled by smart logic
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
-    <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
-      {visibleFields.map(field => {
-        const state = fieldStates[field.id]
-        const value = formData[field.id] || ''
-        const error = errors[field.id]
-        const hasLogic = logic && logic.rules.some(rule => 
-          rule.conditions.some(c => c.fieldId === field.id) || 
-          rule.actions.some(a => a.targetFieldId === field.id)
-        )
+    <div className={`flex gap-8 ${className}`}>
+      {/* Main Form */}
+      <div className="flex-1 max-w-2xl">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {inputFields.map(renderField)}
 
-        return (
-          <div key={field.id} className="space-y-1">
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-              {field.label}
-              {state?.required && <span className="text-red-500">*</span>}
-              {showLogicIndicators && hasLogic && (
-                <div className="flex items-center gap-1">
-                  <Zap size={12} className="text-purple-500" />
-                  <span className="text-xs text-purple-600">Smart</span>
-                </div>
-              )}
-              {field.type === 'calculated' && (
-                <div className="flex items-center gap-1">
-                  <Calculator size={12} className="text-blue-500" />
-                  <span className="text-xs text-blue-600">Auto</span>
-                </div>
-              )}
-            </label>
+          <button
+            type="submit"
+            className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
 
-            {field.type === 'textarea' ? (
-              <textarea
-                value={value}
-                onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                placeholder={field.placeholder}
-                disabled={state?.disabled}
-                className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
-                  error 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
-                } bg-white`}
-                rows={3}
-              />
-            ) : field.type === 'select' ? (
-              <select
-                value={value}
-                onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                disabled={state?.disabled}
-                className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
-                  error 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
-                }`}
-              >
-                <option value="">Select...</option>
-                {(state?.options || field.options || []).map((option, i) => (
-                  <option key={i} value={option}>{option}</option>
-                ))}
-              </select>
-            ) : field.type === 'checkbox' ? (
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={value === true}
-                  onChange={(e) => handleFieldChange(field.id, e.target.checked)}
-                  disabled={state?.disabled}
-                  className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-500"
-                />
-                <span className="text-sm text-gray-600">{field.placeholder || 'Yes'}</span>
-              </label>
-            ) : (
-              <input
-                type={field.type === 'calculated' ? 'text' : field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : field.type === 'email' ? 'email' : 'text'}
-                value={value}
-                onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                placeholder={field.placeholder}
-                disabled={state?.disabled || field.type === 'calculated'}
-                className={`w-full px-3 py-2 border rounded-lg text-sm transition-colors ${
-                  error 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:border-gray-500 focus:ring-gray-500'
-                } ${field.type === 'calculated' ? 'bg-gray-50' : 'bg-white'}`}
-              />
+      {/* Sticky Info Card */}
+      {(showInfoCard || displayFields.length > 0) && (
+        <div className="w-80 flex-shrink-0">
+          <div className="sticky top-4 space-y-4">
+            {/* Custom Info Card */}
+            {showInfoCard && infoCardContent && (
+              <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                  <Info size={16} className="text-blue-500" />
+                  {infoCardTitle}
+                </h3>
+                <div className="text-sm text-gray-600 whitespace-pre-wrap">
+                  {infoCardContent}
+                </div>
+              </div>
             )}
 
-            {error && (
-              <p className="text-xs text-red-600 flex items-center gap-1">
-                <span>⚠️</span> {error}
-              </p>
-            )}
-
-            {showLogicIndicators && hasLogic && (
-              <div className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">
-                <Zap size={10} className="inline mr-1" />
-                This field is controlled by smart logic
+            {/* Display Fields Card */}
+            {displayFields.length > 0 && (
+              <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                  <Info size={16} className="text-blue-500" />
+                  Information
+                </h3>
+                <div className="space-y-3">
+                  {displayFields.map(renderField)}
+                </div>
               </div>
             )}
           </div>
-        )
-      })}
-
-      <button
-        type="submit"
-        className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-colors"
-      >
-        Submit
-      </button>
-    </form>
+        </div>
+      )}
+    </div>
   )
 }
