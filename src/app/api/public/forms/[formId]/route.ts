@@ -33,6 +33,7 @@ export async function GET(
       id: formDoc.id,
       name: formData?.name || 'Untitled Form',
       fields: formData?.fields || [],
+      logic: formData?.logic || null,
       settings: {
         redirectUrl: formData?.settings?.redirectUrl,
         successMessage: formData?.settings?.successMessage,

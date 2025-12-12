@@ -4,8 +4,7 @@ import { FormField, FormRule, FormCondition, FormAction, FormLogic } from '@/typ
 import { 
   Plus, Trash2, Eye, EyeOff, Zap, Calculator, Settings, 
   ChevronDown, ChevronRight, X, AlertCircle, Copy, 
-  Brain, Target, ArrowRight, ToggleLeft, ToggleRight,
-  Code, MessageSquare, Move, Hash
+  Target, MessageSquare, Move
 } from 'lucide-react'
 
 interface FormLogicBuilderProps {
@@ -199,233 +198,95 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
 
   if (!isExpanded) {
     return (
-      <div className="border-2 border-purple-300 rounded-xl p-6 bg-gradient-to-r from-purple-100 to-blue-100 shadow-lg hover:shadow-xl transition-all">
+      <div className="border border-gray-200 rounded-lg p-4 bg-white hover:border-gray-300 transition-colors">
         <button
           onClick={() => setIsExpanded(true)}
-          className="flex items-center justify-between w-full text-left group"
+          className="flex items-center justify-between w-full text-left"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Brain className="w-6 h-6 text-white" />
-            </div>
+          <div className="flex items-center gap-3">
+            <Zap className="w-4 h-4 text-gray-600" />
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-xl font-bold text-gray-900">Smart Form Logic</h3>
-                <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-medium">
-                  NEW
-                </span>
-              </div>
-              <p className="text-sm text-gray-700 font-medium">
+              <h3 className="text-sm font-medium text-gray-900">Logic Rules</h3>
+              <p className="text-xs text-gray-500">
                 {logic.rules.length === 0 
-                  ? '🚀 Make your form intelligent with conditional logic'
-                  : `✨ ${logic.rules.length} smart rule${logic.rules.length !== 1 ? 's' : ''} active`
+                  ? 'Add conditional logic'
+                  : `${logic.rules.length} rule${logic.rules.length !== 1 ? 's' : ''}`
                 }
               </p>
-              <p className="text-xs text-purple-700 mt-1">
-                Click to add show/hide fields, calculations, and smart behavior
-              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="bg-white/50 rounded-lg px-3 py-2">
-              <span className="text-sm font-medium text-purple-700">Configure</span>
-            </div>
-            <ChevronRight className="w-5 h-5 text-purple-600 group-hover:translate-x-1 transition-transform" />
-          </div>
+          <ChevronRight className="w-4 h-4 text-gray-400" />
         </button>
       </div>
     )
   }
 
   return (
-    <div className="border border-purple-200 rounded-lg bg-white shadow-sm">
+    <div className="border border-gray-200 rounded-lg bg-white">
       {/* Header */}
-      <div className="p-4 border-b border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
-        <button
-          onClick={() => setIsExpanded(false)}
-          className="flex items-center justify-between w-full text-left"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
-              <Brain className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Form Logic</h3>
-              <p className="text-sm text-gray-600">
-                Create intelligent forms that adapt to user responses
-              </p>
-            </div>
+      <div className="p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-gray-600" />
+            <h3 className="text-sm font-medium text-gray-900">Logic Rules</h3>
+            <span className="text-xs text-gray-500">({logic.rules.length})</span>
           </div>
-          <ChevronDown className="w-5 h-5 text-gray-400" />
-        </button>
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      <div className="p-4">
-        {/* Global Settings */}
-        <div className="mb-6 p-3 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Logic Settings</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <button
-                onClick={() => onLogicChange({
-                  ...logic,
-                  globalSettings: {
-                    ...logic.globalSettings,
-                    enableAnimations: !logic.globalSettings.enableAnimations
-                  }
-                })}
-                className="flex-shrink-0"
-              >
-                {logic.globalSettings.enableAnimations ? (
-                  <ToggleRight className="w-5 h-5 text-purple-600" />
-                ) : (
-                  <ToggleLeft className="w-5 h-5 text-gray-400" />
-                )}
-              </button>
-              <span className="text-xs text-gray-600">Animations</span>
-            </label>
-            
-            <label className="flex items-center gap-2 cursor-pointer">
-              <button
-                onClick={() => onLogicChange({
-                  ...logic,
-                  globalSettings: {
-                    ...logic.globalSettings,
-                    showLogicIndicators: !logic.globalSettings.showLogicIndicators
-                  }
-                })}
-                className="flex-shrink-0"
-              >
-                {logic.globalSettings.showLogicIndicators ? (
-                  <ToggleRight className="w-5 h-5 text-purple-600" />
-                ) : (
-                  <ToggleLeft className="w-5 h-5 text-gray-400" />
-                )}
-              </button>
-              <span className="text-xs text-gray-600">Logic Indicators</span>
-            </label>
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <button
-                onClick={() => onLogicChange({
-                  ...logic,
-                  globalSettings: {
-                    ...logic.globalSettings,
-                    debugMode: !logic.globalSettings.debugMode
-                  }
-                })}
-                className="flex-shrink-0"
-              >
-                {logic.globalSettings.debugMode ? (
-                  <ToggleRight className="w-5 h-5 text-purple-600" />
-                ) : (
-                  <ToggleLeft className="w-5 h-5 text-gray-400" />
-                )}
-              </button>
-              <span className="text-xs text-gray-600">Debug Mode</span>
-            </label>
-          </div>
-        </div>
+      <div className="p-4 space-y-4">
 
         {/* Rules List */}
         {logic.rules.length === 0 ? (
-          <div className="text-center py-12">
-            <Brain className="w-16 h-16 text-purple-300 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">Create Smart Forms with Logic</h4>
-            <p className="text-gray-600 mb-4 max-w-md mx-auto">
-              Add conditional logic to make your form intelligent. Show/hide fields, calculate values, 
-              and create personalized experiences based on user responses.
-            </p>
-            
-            {/* Quick Examples */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 max-w-lg mx-auto">
-              <h5 className="text-sm font-medium text-gray-900 mb-3">Popular Logic Examples:</h5>
-              <div className="space-y-2 text-xs text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-3 h-3 text-green-500" />
-                  <span>Show "Company Size" when user selects "Business"</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calculator className="w-3 h-3 text-blue-500" />
-                  <span>Calculate total price based on quantity and type</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Target className="w-3 h-3 text-purple-500" />
-                  <span>Set priority to "High" for urgent requests</span>
-                </div>
-              </div>
-            </div>
-
+          <div className="text-center py-8">
+            <p className="text-sm text-gray-500 mb-4">No logic rules yet</p>
             <button
               onClick={() => setShowAddRule(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 mx-auto"
+              className="text-sm text-gray-700 hover:text-gray-900 flex items-center gap-1 mx-auto"
             >
               <Plus className="w-4 h-4" />
-              Create Your First Rule
+              Add rule
             </button>
-            
-            <p className="text-xs text-gray-500 mt-4">
-              💡 Tip: Add at least 2 fields to your form before creating logic rules
-            </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {logic.rules.map((rule, index) => (
               <div
                 key={rule.id}
-                className={`border rounded-lg transition-all ${
+                className={`border rounded-lg ${
                   selectedRule === rule.id 
-                    ? 'border-purple-300 bg-purple-50' 
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                    ? 'border-gray-300 bg-gray-50' 
+                    : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                {/* Rule Header */}
                 <div
-                  className="p-4 cursor-pointer"
+                  className="p-3 cursor-pointer"
                   onClick={() => setSelectedRule(selectedRule === rule.id ? null : rule.id)}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-mono">
-                          #{index + 1}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            updateRule(rule.id, { enabled: !rule.enabled })
-                          }}
-                          className="flex-shrink-0"
-                        >
-                          {rule.enabled ? (
-                            <ToggleRight className="w-5 h-5 text-green-600" />
-                          ) : (
-                            <ToggleLeft className="w-5 h-5 text-gray-400" />
-                          )}
-                        </button>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-900">{rule.name}</h4>
-                        <p className="text-xs text-gray-500">
-                          {rule.conditions.length} condition{rule.conditions.length !== 1 ? 's' : ''} → {rule.actions.length} action{rule.actions.length !== 1 ? 's' : ''}
-                        </p>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">#{index + 1}</span>
+                      <span className="text-sm text-gray-900">{rule.name}</span>
+                      {!rule.enabled && (
+                        <span className="text-xs text-gray-400">(disabled)</span>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        {rule.actions.map((action) => {
-                          const ActionIcon = getActionIcon(action.type)
-                          const color = getActionColor(action.type)
-                          return (
-                            <div
-                              key={action.id}
-                              className={`w-6 h-6 rounded flex items-center justify-center bg-${color}-100`}
-                            >
-                              <ActionIcon className={`w-3 h-3 text-${color}-600`} />
-                            </div>
-                          )
-                        })}
-                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          updateRule(rule.id, { enabled: !rule.enabled })
+                        }}
+                        className="text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        {rule.enabled ? 'On' : 'Off'}
+                      </button>
                       {selectedRule === rule.id ? (
                         <ChevronDown className="w-4 h-4 text-gray-400" />
                       ) : (
@@ -688,22 +549,20 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
           </div>
         )}
 
-        {/* Add Rule Button */}
         {!showAddRule && logic.rules.length > 0 && (
           <button
             onClick={() => setShowAddRule(true)}
-            className="w-full mt-4 py-3 border border-dashed border-purple-300 rounded-lg text-purple-600 hover:border-purple-400 hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-3 py-2 text-sm text-gray-600 hover:text-gray-900 border border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-1"
           >
             <Plus className="w-4 h-4" />
-            Add Another Rule
+            Add rule
           </button>
         )}
 
-        {/* Add Rule Form */}
         {showAddRule && (
-          <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-gray-900">Create New Rule</h4>
+          <div className="mt-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-900">New Rule</span>
               <button
                 onClick={() => setShowAddRule(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -711,21 +570,16 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Rules allow you to create intelligent forms that respond to user input. 
-              Start with a simple condition and action.
-            </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={addRule}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                className="bg-gray-900 text-white px-3 py-1.5 rounded text-sm"
               >
-                <Zap className="w-4 h-4" />
-                Create Rule
+                Create
               </button>
               <button
                 onClick={() => setShowAddRule(false)}
-                className="border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                className="text-gray-600 hover:text-gray-900 px-3 py-1.5 text-sm"
               >
                 Cancel
               </button>

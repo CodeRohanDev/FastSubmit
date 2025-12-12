@@ -4,15 +4,8 @@ import { useParams, useSearchParams } from 'next/navigation'
 import { Check, Loader2 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-
-interface FormField {
-  id: string
-  label: string
-  type: string
-  required: boolean
-  placeholder?: string
-  options?: string[]
-}
+import SmartFormRenderer from '@/components/SmartFormRenderer'
+import { FormField, FormLogic } from '@/types'
 
 interface FormBranding {
   logo?: string
@@ -24,6 +17,7 @@ interface PublicForm {
   id: string
   name: string
   fields: FormField[]
+  logic?: FormLogic
   settings?: {
     redirectUrl?: string
     successMessage?: string
@@ -39,7 +33,7 @@ export default function PublicFormPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
-  const [formData, setFormData] = useState<Record<string, any>>({})
+
 
   const embedded = searchParams.get('embedded') === 'true'
   const theme = searchParams.get('theme') || 'light'
@@ -90,23 +84,13 @@ export default function PublicFormPage() {
     }
   }, [embedded, loading, submitted])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSmartFormSubmit = async (data: Record<string, any>) => {
     if (!form) return
 
     setSubmitting(true)
     setError('')
 
     try {
-      // Validate required fields
-      for (const field of form.fields) {
-        if (field.required && !formData[field.id]) {
-          setError(`${field.label} is required`)
-          setSubmitting(false)
-          return
-        }
-      }
-
       // Submit via API
       const response = await fetch(`/api/public/forms/${formId}/submit`, {
         method: 'POST',
@@ -114,7 +98,7 @@ export default function PublicFormPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          data: formData,
+          data: data,
           userAgent: navigator.userAgent,
         }),
       })
@@ -144,10 +128,6 @@ export default function PublicFormPage() {
       setError(error.message || 'Failed to submit form. Please try again.')
     }
     setSubmitting(false)
-  }
-
-  const handleChange = (fieldId: string, value: any) => {
-    setFormData(prev => ({ ...prev, [fieldId]: value }))
   }
 
   // Loading state
@@ -284,104 +264,23 @@ export default function PublicFormPage() {
 
           {/* Form Section */}
           <div className="px-6 md:px-10 py-10">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {form.fields.map((field, index) => (
-                <div key={field.id}>
-                  <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                    {field.label}
-                    {field.required && <span className="text-red-500 ml-1">*</span>}
-                  </label>
-
-                  {field.type === 'textarea' ? (
-                    <textarea
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleChange(field.id, e.target.value)}
-                      required={field.required}
-                      placeholder={field.placeholder}
-                      rows={4}
-                      className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ${
-                        theme === 'dark'
-                          ? 'bg-gray-900 border-gray-700 text-white placeholder-gray-500'
-                          : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400'
-                      }`}
-                    />
-                  ) : field.type === 'select' ? (
-                    <select
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleChange(field.id, e.target.value)}
-                      required={field.required}
-                      className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ${
-                        theme === 'dark'
-                          ? 'bg-gray-900 border-gray-700 text-white'
-                          : 'bg-white border-gray-200 text-gray-900'
-                      }`}
-                    >
-                      <option value="">Select an option</option>
-                      {field.options?.map((option, i) => (
-                        <option key={i} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : field.type === 'checkbox' ? (
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        checked={formData[field.id] || false}
-                        onChange={(e) => handleChange(field.id, e.target.checked)}
-                        required={field.required}
-                        className="w-4 h-4 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
-                      />
-                      <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {field.placeholder || 'Check this box'}
-                      </span>
-                    </div>
-                  ) : (
-                    <input
-                      type={field.type}
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleChange(field.id, e.target.value)}
-                      required={field.required}
-                      placeholder={field.placeholder}
-                      className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all ${
-                        theme === 'dark'
-                          ? 'bg-gray-900 border-gray-700 text-white placeholder-gray-500'
-                          : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400'
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start gap-3">
-                  <svg className="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <span>{error}</span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-gray-900 text-white py-3.5 px-6 rounded-full font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all inline-flex items-center justify-center gap-2"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    Submit
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            </form>
+            <SmartFormRenderer
+              fields={form.fields}
+              logic={form.logic}
+              onSubmit={handleSmartFormSubmit}
+              showLogicIndicators={false}
+              showInfoCard={false}
+              className="space-y-6"
+            />
+            
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start gap-3 mt-6">
+                <svg className="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
           </div>
 
           {/* Footer */}

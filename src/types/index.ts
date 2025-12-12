@@ -46,6 +46,7 @@ export interface FormField {
   calculation?: string // Formula for calculated fields (e.g., "field1 + field2")
   validationRules?: ValidationRule[]
   displayText?: string // For display type fields - text content to show
+  _stableKey?: string // Internal stable key for React rendering
   // Removed field-level conditional rules - now managed at form level
 }
 

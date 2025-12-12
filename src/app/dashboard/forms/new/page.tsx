@@ -12,7 +12,7 @@ import {
   Plus, Trash2, GripVertical, ArrowLeft, Eye, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
   ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink,
-  Calculator, Zap, Info, Brain
+  Calculator, Zap, Info, Brain, Image, Building2, MessageSquare
 } from 'lucide-react'
 import FormLogicBuilder from '@/components/FormLogicBuilder'
 import SmartFormRenderer from '@/components/SmartFormRenderer'
@@ -54,11 +54,12 @@ export default function NewFormPage() {
           calculation: field.calculation || undefined,
           displayText: field.displayText || undefined,
           validationRules: field.validationRules || undefined,
+          _stableKey: `template_field_${index}_${Date.now()}`,
         }))
       : [
-          { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-          { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com' },
-          { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...' },
+          { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name', _stableKey: `default_name_${Date.now()}` },
+          { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com', _stableKey: `default_email_${Date.now()}` },
+          { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...', _stableKey: `default_message_${Date.now()}` },
         ]
   )
   const [saving, setSaving] = useState(false)
@@ -88,6 +89,11 @@ export default function NewFormPage() {
       debugMode: false,
     }
   })
+
+  // Branding states
+  const [brandingLogo, setBrandingLogo] = useState('')
+  const [brandingCompanyName, setBrandingCompanyName] = useState('')
+  const [brandingTagline, setBrandingTagline] = useState('')
 
   // Fetch verified domains on mount
   useEffect(() => {
@@ -180,13 +186,16 @@ export default function NewFormPage() {
   }
 
   const addField = (type: FieldType) => {
+    const timestamp = Date.now()
     const newField: FormField = {
-      id: `field_${Date.now()}`,
+      id: `field_${timestamp}`,
       label: fieldTypes.find(f => f.value === type)?.label || 'New Field',
       type,
       required: false,
       placeholder: '',
       options: type === 'select' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
+      // Add a stable key that won't change during editing
+      _stableKey: `field_key_${timestamp}`,
     }
     setFields([...fields, newField])
     setExpandedField(newField.id)
@@ -196,10 +205,15 @@ export default function NewFormPage() {
   const updateField = (index: number, updates: Partial<FormField>) => {
     const updated = [...fields]
     updated[index] = { ...updated[index], ...updates }
-    if (updates.label && !updated[index].id.startsWith('field_')) {
-      updated[index].id = updates.label.toLowerCase().replace(/[^a-z0-9]/g, '_')
-    }
     setFields(updated)
+  }
+
+  const updateFieldId = (index: number, label: string) => {
+    const updated = [...fields]
+    if (!updated[index].id.startsWith('field_')) {
+      updated[index].id = label.toLowerCase().replace(/[^a-z0-9]/g, '_')
+      setFields(updated)
+    }
   }
 
   const removeField = (index: number) => {
@@ -213,10 +227,12 @@ export default function NewFormPage() {
 
   const duplicateField = (index: number) => {
     const field = fields[index]
+    const timestamp = Date.now()
     const newField = {
       ...field,
-      id: `${field.id}_copy_${Date.now()}`,
+      id: `${field.id}_copy_${timestamp}`,
       label: `${field.label} (copy)`,
+      _stableKey: `copy_${timestamp}`,
     }
     const updated = [...fields]
     updated.splice(index + 1, 0, newField)
@@ -314,6 +330,11 @@ export default function NewFormPage() {
       apiKey: generateApiKey(),
       allowedDomains: selectedDomains,
       requireDomainVerification: requireVerification && selectedDomains.length > 0,
+      branding: {
+        logo: brandingLogo.trim(),
+        companyName: brandingCompanyName.trim(),
+        tagline: brandingTagline.trim(),
+      },
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }
@@ -383,6 +404,97 @@ export default function NewFormPage() {
             />
           </div>
 
+          {/* Custom Branding */}
+          <div>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Building2 size={14} className="text-gray-600 sm:w-4 sm:h-4" />
+              <label className="text-sm font-medium text-gray-700">Custom branding</label>
+            </div>
+            
+            <div className="p-3 sm:p-4 bg-purple-50 border border-purple-100 rounded-lg mb-3 sm:mb-4">
+              <p className="text-xs text-purple-900">
+                Add your company logo, name, and tagline to display at the top of your form. This helps build trust and brand recognition.
+              </p>
+            </div>
+
+            <div className="space-y-3 sm:space-y-4 bg-white border border-gray-200 rounded-lg p-3 sm:p-4">
+              {/* Logo URL */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <Image size={14} />
+                  Logo URL
+                </label>
+                <input
+                  type="url"
+                  value={brandingLogo}
+                  onChange={(e) => setBrandingLogo(e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Enter the URL of your logo image (recommended: 200x50px)</p>
+              </div>
+
+              {/* Company/Brand Name */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <Building2 size={14} />
+                  Company/Brand name
+                </label>
+                <input
+                  type="text"
+                  value={brandingCompanyName}
+                  onChange={(e) => setBrandingCompanyName(e.target.value)}
+                  placeholder="Acme Inc."
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+              </div>
+
+              {/* Tagline */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <MessageSquare size={14} />
+                  Tagline
+                </label>
+                <input
+                  type="text"
+                  value={brandingTagline}
+                  onChange={(e) => setBrandingTagline(e.target.value)}
+                  placeholder="Building the future of technology"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+              </div>
+
+              {/* Preview */}
+              {(brandingLogo || brandingCompanyName || brandingTagline) && (
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 mb-3">Preview:</p>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-center gap-3">
+                      {brandingLogo && (
+                        <img 
+                          src={brandingLogo} 
+                          alt="Logo" 
+                          className="h-10 w-auto object-contain"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      )}
+                      <div>
+                        {brandingCompanyName && (
+                          <p className="text-sm font-semibold text-gray-900">{brandingCompanyName}</p>
+                        )}
+                        {brandingTagline && (
+                          <p className="text-xs text-gray-600">{brandingTagline}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Form Logic - Prominent Position */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -415,7 +527,7 @@ export default function NewFormPage() {
 
                 return (
                   <div
-                    key={field.id}
+                    key={field._stableKey || field.id}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={(e) => handleDragOver(e, index)}
@@ -469,6 +581,7 @@ export default function NewFormPage() {
                               type="text"
                               value={field.label}
                               onChange={(e) => updateField(index, { label: e.target.value })}
+                              onBlur={(e) => updateFieldId(index, e.target.value)}
                               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                             />
                           </div>
@@ -800,18 +913,16 @@ export default function NewFormPage() {
           <div className="border border-gray-200 rounded-lg bg-white">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <span className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                <Brain size={16} className="text-purple-600" />
-                Smart Logic
+                <Zap size={14} className="text-gray-600" />
+                Logic Rules
               </span>
-              <div className="flex items-center gap-1 text-xs text-purple-600">
-                <Zap size={12} />
-                <span>{formLogic?.rules?.length || 0} rules</span>
-              </div>
+              <span className="text-xs text-gray-500">
+                {formLogic?.rules?.length || 0} rules
+              </span>
             </div>
             
             <div className="p-4">
               <FormLogicBuilder
-                key={`logic-${fields.length}`}
                 fields={fields}
                 logic={formLogic}
                 onLogicChange={setFormLogic}
