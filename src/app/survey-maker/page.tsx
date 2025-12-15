@@ -57,7 +57,7 @@ export default function SurveyMakerPage() {
     "@type": "WebPage",
     "name": "Free Online Survey Maker - FastSubmit",
     "description": "Create beautiful surveys and feedback forms. Analytics, export to Excel. Free forever.",
-    "url": "https://fastsubmit.hostspica.com/survey-maker",
+    "url": "https://fastsubmit.cloud/survey-maker",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": "FastSubmit Survey Maker",

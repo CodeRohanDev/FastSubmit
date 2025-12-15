@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Check, Smartphone, Link2, QrCode, BarChart3, Mail, Palette } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Free Online Forms - Create & Share Forms Free | Best Form Maker',
@@ -77,6 +78,8 @@ export default function OnlineFormsPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -151,7 +154,7 @@ export default function OnlineFormsPage() {
               </p>
               <ul className="space-y-4">
                 {[
-                  { title: 'Direct Link', desc: 'Short, clean URL like fastsubmit.hostspica.com/f/abc123' },
+                  { title: 'Direct Link', desc: 'Short, clean URL like fastsubmit.cloud/f/abc123' },
                   { title: 'QR Code', desc: 'Auto-generated QR code for print materials' },
                   { title: 'Email', desc: 'Send form link directly to recipients' },
                   { title: 'Social Media', desc: 'Share on any social platform' },
@@ -303,5 +306,6 @@ export default function OnlineFormsPage() {
 
       <Footer variant="extended" />
     </div>
+    </>
   )
 }

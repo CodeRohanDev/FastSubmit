@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formTemplates, templateCategories } from '@/lib/form-templates'
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
 import EmailVerificationGate from '@/components/EmailVerificationGate'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export default function FormTemplatesPage() {
   const router = useRouter()
@@ -23,8 +24,10 @@ export default function FormTemplatesPage() {
   }
 
   return (
-    <EmailVerificationGate>
-      <div>
+    <>
+      <GoogleAnalytics />
+      <EmailVerificationGate>
+        <div>
         <div className="flex items-center gap-4 mb-8">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
             <ArrowLeft size={20} />
@@ -109,5 +112,6 @@ export default function FormTemplatesPage() {
         )}
       </div>
     </EmailVerificationGate>
+    </>
   )
 }

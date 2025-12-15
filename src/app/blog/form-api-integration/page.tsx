@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Code, Database, Webhook, Key } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Form API Integration: A Developer\'s Guide | FastSubmit',
@@ -25,16 +26,17 @@ export default function FormApiIntegrationPage() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-10",
     "dateModified": "2024-12-10",
-    "url": "https://fastsubmit.hostspica.com/blog/form-api-integration"
+    "url": "https://fastsubmit.cloud/blog/form-api-integration"
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -109,7 +111,7 @@ export default function FormApiIntegrationPage() {
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json"`}
               </code>
@@ -124,7 +126,7 @@ export default function FormApiIntegrationPage() {
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/forms',
+  'https://fastsubmit.cloud/api/v1/forms',
   {
     method: 'POST',
     headers: {
@@ -158,7 +160,7 @@ console.log('Form ID:', form.id);`}
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submit',
+  'https://fastsubmit.cloud/api/v1/forms/FORM_ID/submit',
   {
     method: 'POST',
     headers: {
@@ -184,7 +186,7 @@ console.log('Submission ID:', result.submissionId);`}
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions?limit=50',
+  'https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions?limit=50',
   {
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY'
@@ -204,7 +206,7 @@ console.log(\`Found \${total} submissions\`);`}
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID',
+  'https://fastsubmit.cloud/api/v1/forms/FORM_ID',
   {
     method: 'PATCH',
     headers: {
@@ -229,7 +231,7 @@ console.log(\`Found \${total} submissions\`);`}
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID',
+  'https://fastsubmit.cloud/api/v1/forms/FORM_ID',
   {
     method: 'DELETE',
     headers: {
@@ -259,7 +261,7 @@ console.log(\`Found \${total} submissions\`);`}
             <pre className="p-6 text-sm overflow-x-auto">
               <code className="text-white/70 leading-relaxed">
 {`const response = await fetch(
-  'https://fastsubmit.hostspica.com/api/v1/webhooks',
+  'https://fastsubmit.cloud/api/v1/webhooks',
   {
     method: 'POST',
     headers: {
@@ -431,7 +433,7 @@ app.listen(3000);`}
 {`class FastSubmitClient {
   constructor(apiKey) {
     this.apiKey = apiKey;
-    this.baseUrl = 'https://fastsubmit.hostspica.com/api/v1';
+    this.baseUrl = 'https://fastsubmit.cloud/api/v1';
   }
 
   async createForm(formData) {

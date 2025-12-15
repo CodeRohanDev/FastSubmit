@@ -67,7 +67,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": `https://fastsubmit.hostspica.com${item.href}`
+      "item": `https://fastsubmit.cloud${item.href}`
     }))
   }
   

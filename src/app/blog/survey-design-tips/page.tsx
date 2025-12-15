@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, BarChart3, Users, TrendingUp, Check } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: '10 Survey Design Tips for Better Response Rates | FastSubmit',
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default function SurveyDesignTipsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar variant="simple" />
 
@@ -470,5 +473,6 @@ export default function SurveyDesignTipsPage() {
 
       <Footer />
     </div>
+    </>
   )
 }

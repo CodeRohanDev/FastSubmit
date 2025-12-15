@@ -4,6 +4,7 @@ import {
   Zap, Eye, EyeOff, Calculator, ArrowRight, 
   CheckCircle, AlertCircle, Settings, ChevronDown 
 } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Conditional Logic - FastSubmit Documentation',
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 
 export default function ConditionalLogicPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
@@ -308,5 +311,6 @@ export default function ConditionalLogicPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

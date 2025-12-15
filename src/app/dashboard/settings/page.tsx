@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ExternalLink, Shield, CheckCircle, Clock, Plus, Trash2, X, Copy, Check, Globe, AlertCircle, Bell, Mail } from 'lucide-react'
 import { NotificationSettings } from '@/types'
 import { VerifiedDomain } from '@/types'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export default function SettingsPage() {
   const { user } = useAuth()
@@ -200,7 +201,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
+      <GoogleAnalytics />
+      <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900">Settings</h1>
@@ -627,5 +630,6 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

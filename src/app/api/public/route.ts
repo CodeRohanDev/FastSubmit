@@ -7,6 +7,6 @@ export async function GET() {
     endpoints: {
       forms: '/api/public/forms/[formId]'
     },
-    documentation: 'https://fastsubmit.hostspica.com/docs/api'
+    documentation: 'https://fastsubmit.cloud/docs/api'
   })
 }

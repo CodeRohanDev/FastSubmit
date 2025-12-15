@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'How to Create an Online Form in 5 Minutes (No Coding Required)',
@@ -25,6 +26,8 @@ export const metadata: Metadata = {
 
 export default function BlogPost() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -356,5 +359,6 @@ export default function BlogPost() {
 
       <Footer />
     </div>
+    </>
   )
 }

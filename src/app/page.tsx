@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { ArrowRight, Check, ChevronRight, Globe, Share2, Code, Smartphone, BarChart3, Zap, Shield, Palette } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Navbar from '@/components/Navbar'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import AnalyticsWrapper from '@/components/AnalyticsWrapper'
 
 // Dynamically import Footer to improve initial page load
 const Footer = dynamic(() => import('@/components/Footer'), {
@@ -28,7 +30,7 @@ export default function Home() {
         "ratingCount": "1247"
       },
       "description": "Create forms for websites, social media, and online sharing. Embed anywhere, share everywhere. Free forever.",
-      "url": "https://fastsubmit.hostspica.com",
+      "url": "https://fastsubmit.cloud",
       "featureList": [
         "Free form builder",
         "Online form builder",
@@ -50,8 +52,8 @@ export default function Home() {
         "Zoho Forms alternative",
         "Microsoft Forms alternative"
       ],
-      "screenshot": "https://fastsubmit.hostspica.com/api/og/home",
-      "downloadUrl": "https://fastsubmit.hostspica.com/signup",
+      "screenshot": "https://fastsubmit.cloud/api/og/home",
+      "downloadUrl": "https://fastsubmit.cloud/signup",
       "softwareVersion": "2.0",
       "releaseNotes": "Enhanced form builder with custom branding and multi-platform support"
     },
@@ -60,8 +62,8 @@ export default function Home() {
       "@type": "Organization",
       "name": "FastSubmit",
       "alternateName": "FastSubmit by Hostspica",
-      "url": "https://fastsubmit.hostspica.com",
-      "logo": "https://fastsubmit.hostspica.com/logo.png",
+      "url": "https://fastsubmit.cloud",
+      "logo": "https://fastsubmit.cloud/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
@@ -94,12 +96,12 @@ export default function Home() {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "FastSubmit",
-      "url": "https://fastsubmit.hostspica.com",
+      "url": "https://fastsubmit.cloud",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://fastsubmit.hostspica.com/search?q={search_term_string}"
+          "urlTemplate": "https://fastsubmit.cloud/search?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
@@ -148,6 +150,8 @@ export default function Home() {
 
   return (
     <>
+      <GoogleAnalytics />
+      <AnalyticsWrapper />
       {structuredData.map((schema, index) => (
         <script
           key={index}
@@ -275,7 +279,7 @@ export default function Home() {
                   <code className="text-white/70 leading-relaxed">
 {`<!-- Embed your form -->
 <div id="fastsubmit-form"></div>
-<script src="`}<span className="text-indigo-400">https://fastsubmit.hostspica.com/embed.js</span>{`"
+<script src="`}<span className="text-indigo-400">https://fastsubmit.cloud/embed.js</span>{`"
   data-form-id="`}<span className="text-green-400">your-form-id</span>{`">
 </script>`}
                   </code>
@@ -326,7 +330,7 @@ export default function Home() {
                   </div>
                   <p className="text-gray-700 mb-3 sm:mb-4 text-sm sm:text-base">📣 We&apos;re giving away a free consultation! Click the link to enter 👇</p>
                   <div className="bg-gray-50 rounded-xl p-3 sm:p-4 border border-gray-200">
-                    <div className="text-xs text-gray-500 mb-1">fastsubmit.hostspica.com</div>
+                    <div className="text-xs text-gray-500 mb-1">fastsubmit.cloud</div>
                     <div className="font-medium text-gray-900 text-sm sm:text-base">Enter to Win - Free Consultation</div>
                     <div className="text-xs sm:text-sm text-gray-500">Fill out this quick form to enter</div>
                   </div>

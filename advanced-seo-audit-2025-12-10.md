@@ -1,6 +1,6 @@
 # Advanced SEO Audit Report - 2025-12-10
 
-**Website:** https://fastsubmit.hostspica.com
+**Website:** https://fastsubmit.cloud
 **Audit Date:** 10/12/2025, 9:50:39 am
 **Overall SEO Score:** 80/100 ⭐ Very Good
 **Total Points:** 111/138

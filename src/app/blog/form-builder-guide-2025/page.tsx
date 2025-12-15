@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'The Ultimate Guide to Online Form Builders in 2025 | Free Form Builder',
@@ -25,16 +26,17 @@ export default function BlogPost() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-10",
     "dateModified": "2024-12-10",
-    "url": "https://fastsubmit.hostspica.com/blog/form-builder-guide-2025"
+    "url": "https://fastsubmit.cloud/blog/form-builder-guide-2025"
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

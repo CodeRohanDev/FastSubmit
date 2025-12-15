@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Forms vs Surveys: Key Differences and When to Use Each | FastSubmit',
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default function BlogPost() {
   return (
+    <>
+      <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
       <article className="pt-32 pb-20 px-6">
@@ -79,5 +82,6 @@ export default function BlogPost() {
       </article>
       <Footer />
     </div>
+  </>
   )
 }

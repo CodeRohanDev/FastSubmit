@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Check, Code, Globe, Palette, Smartphone, Zap, Shield } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Free Website Embed Forms - Add Forms to Any Website | Best Form Builder',
@@ -48,7 +49,7 @@ export default function WebsiteEmbedPage() {
     "@type": "WebPage",
     "name": "Website Embed Forms - Add Forms to Any Website",
     "description": "Embed beautiful forms on your website with a simple code snippet. Works with HTML, WordPress, Shopify, Webflow, Wix, and any platform.",
-    "url": "https://fastsubmit.hostspica.com/use-cases/website-embed",
+    "url": "https://fastsubmit.cloud/use-cases/website-embed",
     "mainEntity": {
       "@type": "HowTo",
       "name": "How to Embed Forms in Your Website",
@@ -95,6 +96,7 @@ export default function WebsiteEmbedPage() {
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -191,7 +193,7 @@ export default function WebsiteEmbedPage() {
 
 <!-- Add this before </body> -->
 <script 
-  src="`}<span className="text-blue-400">https://fastsubmit.hostspica.com/embed.js</span>{`"
+  src="`}<span className="text-blue-400">https://fastsubmit.cloud/embed.js</span>{`"
   data-form-id="`}<span className="text-green-400">your-form-id</span>{`"
   data-theme="`}<span className="text-purple-400">light</span>{`">
 </script>`}

@@ -10,7 +10,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 class SEOAuditRunner {
-  constructor(baseUrl = 'https://fastsubmit.hostspica.com') {
+  constructor(baseUrl = 'https://fastsubmit.cloud') {
     this.baseUrl = baseUrl;
     this.timestamp = new Date().toISOString().split('T')[0];
   }
@@ -172,7 +172,7 @@ ${advancedReport.split('# Advanced SEO Audit Report')[1] || advancedReport}
 // CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
-  const baseUrl = args[0] || 'https://fastsubmit.hostspica.com';
+  const baseUrl = args[0] || 'https://fastsubmit.cloud';
   
   console.log('🔍 Complete SEO Audit Suite');
   console.log('===========================');

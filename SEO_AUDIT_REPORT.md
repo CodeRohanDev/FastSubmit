@@ -1,7 +1,7 @@
 # FastSubmit SEO Audit Report
 
 **Generated:** December 10, 2024  
-**Website:** https://fastsubmit.hostspica.com  
+**Website:** https://fastsubmit.cloud  
 **Audit Scope:** Technical SEO, On-Page SEO, Content Strategy, Site Structure
 
 ---
@@ -50,7 +50,7 @@ FastSubmit demonstrates strong SEO fundamentals with excellent technical impleme
 <!-- Excellent Social Media Optimization -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
-<meta property="og:url" content="https://fastsubmit.hostspica.com">
+<meta property="og:url" content="https://fastsubmit.cloud">
 <meta property="og:title" content="FastSubmit - Free Form Builder for Websites & Social Media">
 <meta property="og:description" content="Create beautiful forms for websites, social media, and online sharing. Embed anywhere, share everywhere. Free forever.">
 <meta property="og:site_name" content="FastSubmit">
@@ -73,7 +73,7 @@ Disallow: /dashboard/
 Disallow: /_next/
 Disallow: /admin/
 
-Sitemap: https://fastsubmit.hostspica.com/sitemap.xml
+Sitemap: https://fastsubmit.cloud/sitemap.xml
 ```
 
 **Strengths:**
@@ -192,7 +192,7 @@ Sitemap: https://fastsubmit.hostspica.com/sitemap.xml
 
 #### URL Structure
 ```
-https://fastsubmit.hostspica.com/
+https://fastsubmit.cloud/
 ├── /form-builder (Landing page)
 ├── /google-forms-alternative (Comparison)
 ├── /templates (Product feature)
@@ -371,7 +371,7 @@ https://fastsubmit.hostspica.com/
   "headline": "Blog Post Title",
   "author": {"@type": "Organization", "name": "FastSubmit"},
   "datePublished": "2024-12-08",
-  "image": "https://fastsubmit.hostspica.com/blog-image.jpg"
+  "image": "https://fastsubmit.cloud/blog-image.jpg"
 }
 
 // Add FAQ schema to comparison pages
@@ -500,7 +500,7 @@ const articleSchema = {
   "author": {
     "@type": "Organization",
     "name": "FastSubmit",
-    "url": "https://fastsubmit.hostspica.com"
+    "url": "https://fastsubmit.cloud"
   },
   "datePublished": post.date,
   "dateModified": post.updatedDate,
@@ -508,7 +508,7 @@ const articleSchema = {
   "publisher": {
     "@type": "Organization", 
     "name": "FastSubmit",
-    "logo": "https://fastsubmit.hostspica.com/logo.png"
+    "logo": "https://fastsubmit.cloud/logo.png"
   }
 }
 ```

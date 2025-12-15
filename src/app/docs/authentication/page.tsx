@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function AuthenticationPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Authentication</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -43,7 +46,7 @@ export default function AuthenticationPage() {
         <div className="bg-gray-900 rounded-xl overflow-hidden mb-4 sm:mb-6">
           <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
             <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "x-api-key: fs_abc123xyz789..."`}</code>
           </pre>
         </div>
@@ -55,7 +58,7 @@ export default function AuthenticationPage() {
         <div className="bg-gray-900 rounded-xl overflow-hidden mb-3 sm:mb-4">
           <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
             <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  "https://fastsubmit.hostspica.com/api/v1/forms?apiKey=fs_abc123xyz789..."`}</code>
+  "https://fastsubmit.cloud/api/v1/forms?apiKey=fs_abc123xyz789..."`}</code>
           </pre>
         </div>
         <p className="text-xs sm:text-sm text-gray-500">
@@ -144,5 +147,6 @@ export default function AuthenticationPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

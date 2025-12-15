@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Shield, AlertTriangle, Check, X } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Complete Guide to Form Spam Protection in 2025 | FastSubmit',
@@ -25,16 +26,17 @@ export default function FormSpamProtectionPage() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-10",
     "dateModified": "2024-12-10",
-    "url": "https://fastsubmit.hostspica.com/blog/form-spam-protection"
+    "url": "https://fastsubmit.cloud/blog/form-spam-protection"
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

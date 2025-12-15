@@ -58,7 +58,7 @@ export default function ContactFormBuilderPage() {
     "@type": "WebPage",
     "name": "Free Contact Form Builder - FastSubmit",
     "description": "Create beautiful contact forms for your website. Email notifications, spam protection. Free forever.",
-    "url": "https://fastsubmit.hostspica.com/contact-form-builder",
+    "url": "https://fastsubmit.cloud/contact-form-builder",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": "FastSubmit Contact Form Builder",
@@ -195,7 +195,7 @@ export default function ContactFormBuilderPage() {
                   <code className="text-white/70 leading-relaxed">
 {`<!-- Add your contact form -->
 <div id="fastsubmit-form"></div>
-<script src="`}<span className="text-green-400">https://fastsubmit.hostspica.com/embed.js</span>{`"
+<script src="`}<span className="text-green-400">https://fastsubmit.cloud/embed.js</span>{`"
   data-form-id="`}<span className="text-blue-400">your-form-id</span>{`">
 </script>`}
                   </code>

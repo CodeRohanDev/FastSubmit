@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 // Blog post data
 const blogPosts = [
@@ -78,21 +79,21 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     "author": {
       "@type": "Organization",
       "name": post.author,
-      "url": "https://fastsubmit.hostspica.com"
+      "url": "https://fastsubmit.cloud"
     },
     "publisher": {
       "@type": "Organization",
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": post.date,
     "dateModified": post.date,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://fastsubmit.hostspica.com/blog/${post.slug}`
+      "@id": `https://fastsubmit.cloud/blog/${post.slug}`
     },
     "articleSection": post.category,
     "keywords": post.tags.join(", ")
@@ -106,6 +107,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <>
+      <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}

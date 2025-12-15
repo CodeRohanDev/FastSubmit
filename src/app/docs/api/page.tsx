@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function APIDocumentationPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div>
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">API Documentation</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -432,5 +435,6 @@ function ContactForm() {
         </div>
       </section>
     </div>
+    </>
   )
 }

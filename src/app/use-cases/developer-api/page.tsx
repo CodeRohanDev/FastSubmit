@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Check, Code, Database, Webhook, Key, Zap, Shield } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Free Form API - Google Form API Alternative | REST API & Webhooks',
@@ -49,6 +50,8 @@ export default function DeveloperApiPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -110,7 +113,7 @@ export default function DeveloperApiPage() {
                 <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`curl -X POST \\
-  `}<span className="text-purple-400">https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submit</span>{` \\
+  `}<span className="text-purple-400">https://fastsubmit.cloud/api/v1/forms/FORM_ID/submit</span>{` \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "John Doe",
@@ -133,7 +136,7 @@ export default function DeveloperApiPage() {
                 <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`curl -X GET \\
-  `}<span className="text-purple-400">https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions</span>{` \\
+  `}<span className="text-purple-400">https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions</span>{` \\
   -H "Authorization: Bearer `}<span className="text-green-400">YOUR_API_KEY</span>{`"`}
                   </code>
                 </pre>
@@ -151,7 +154,7 @@ export default function DeveloperApiPage() {
                 <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`const response = await fetch(
-  `}<span className="text-purple-400">'https://fastsubmit.hostspica.com/api/v1/forms'</span>{`,
+  `}<span className="text-purple-400">'https://fastsubmit.cloud/api/v1/forms'</span>{`,
   {
     method: 'POST',
     headers: {
@@ -282,5 +285,6 @@ export default function DeveloperApiPage() {
 
       <Footer variant="extended" />
     </div>
+    </>
   )
 }

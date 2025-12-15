@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { Metadata } from 'next'
 
 interface FormData {
@@ -12,7 +13,7 @@ interface FormData {
 async function getFormData(formId: string): Promise<FormData | null> {
   try {
     // Use the public base URL for metadata generation
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
     
     const response = await fetch(`${baseUrl}/api/public/forms/${formId}`, {
       cache: 'no-store',
@@ -50,7 +51,7 @@ export async function generateMetadata({
   const fieldCount = form.fields?.length || 0
   const description = form.settings?.description || `Fill out this form - ${fieldCount} ${fieldCount === 1 ? 'field' : 'fields'} • Quick & easy`
   
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   const formUrl = `${baseUrl}/f/${params.formId}`
   const ogImageUrl = `${baseUrl}/api/og?formName=${encodeURIComponent(formName)}&fieldCount=${fieldCount}&description=${encodeURIComponent(description.slice(0, 100))}`
 
@@ -108,7 +109,7 @@ export default async function FormLayout({
   const formName = form.name || 'Untitled Form'
   const fieldCount = form.fields?.length || 0
   const description = form.settings?.description || `Fill out this form - ${fieldCount} ${fieldCount === 1 ? 'field' : 'fields'} • Quick & easy`
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   const ogImageUrl = `${baseUrl}/api/og?formName=${encodeURIComponent(formName)}&fieldCount=${fieldCount}&description=${encodeURIComponent(description.slice(0, 100))}`
   
   const structuredData = {
@@ -131,6 +132,7 @@ export default async function FormLayout({
 
   return (
     <>
+        <GoogleAnalytics />
       <head>
         <meta property="og:title" content={formName} />
         <meta property="og:description" content={description} />

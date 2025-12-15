@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function FormsApiPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Forms API</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -17,7 +20,7 @@ export default function FormsApiPage() {
       <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 sm:p-4 mb-6 sm:mb-8 overflow-hidden">
         <p className="text-xs sm:text-sm text-indigo-800">
           <strong>Base URL:</strong>{' '}
-          <code className="bg-indigo-100 px-2 py-0.5 rounded text-[10px] sm:text-xs break-all">https://fastsubmit.hostspica.com/api/v1</code>
+          <code className="bg-indigo-100 px-2 py-0.5 rounded text-[10px] sm:text-xs break-all">https://fastsubmit.cloud/api/v1</code>
         </p>
       </div>
 
@@ -36,7 +39,7 @@ export default function FormsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden mb-3 sm:mb-4">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -117,7 +120,7 @@ export default function FormsApiPage() {
         "required": true
       }
     ],
-    "endpoint": "https://fastsubmit.hostspica.com/api/submit/abc123"
+    "endpoint": "https://fastsubmit.cloud/api/submit/abc123"
   }
 }`}</code>
               </pre>
@@ -154,7 +157,7 @@ export default function FormsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X POST \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "x-api-key: YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -185,7 +188,7 @@ export default function FormsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X PUT \\
-  https://fastsubmit.hostspica.com/api/v1/forms/abc123 \\
+  https://fastsubmit.cloud/api/v1/forms/abc123 \\
   -H "x-api-key: YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"name": "Updated Form Name"}'`}</code>
@@ -216,7 +219,7 @@ export default function FormsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X DELETE \\
-  https://fastsubmit.hostspica.com/api/v1/forms/abc123 \\
+  https://fastsubmit.cloud/api/v1/forms/abc123 \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -224,5 +227,6 @@ export default function FormsApiPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

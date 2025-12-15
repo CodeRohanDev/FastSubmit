@@ -1,6 +1,6 @@
 // FastSubmit Configuration
 // This is the production API base URL - always use this for API endpoints
-export const API_BASE_URL = 'https://fastsubmit.hostspica.com'
+export const API_BASE_URL = 'https://fastsubmit.cloud'
 
 // API version
 export const API_VERSION = 'v1'

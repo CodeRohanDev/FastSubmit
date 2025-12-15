@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Mail, TrendingUp, Check, X, Zap } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Contact Form Best Practices: 15 Tips to Increase Conversions | FastSubmit',
@@ -25,20 +26,21 @@ export default function ContactFormBestPracticesPage() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-10",
     "dateModified": "2024-12-10",
-    "url": "https://fastsubmit.hostspica.com/blog/contact-form-best-practices",
+    "url": "https://fastsubmit.cloud/blog/contact-form-best-practices",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://fastsubmit.hostspica.com/blog/contact-form-best-practices"
+      "@id": "https://fastsubmit.cloud/blog/contact-form-best-practices"
     }
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

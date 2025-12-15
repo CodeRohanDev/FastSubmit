@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Zap, Shield, Code, Database, Globe, Layers } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Documentation - Free Form Builder API | FastSubmit',
@@ -40,6 +41,8 @@ export const metadata: Metadata = {
 
 export default function DocsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 mb-3">Documentation</h1>
       <p className="text-gray-500 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -49,7 +52,7 @@ export default function DocsPage() {
       {/* Base URL */}
       <div className="bg-gray-50 rounded-lg p-4 sm:p-5 mb-6 sm:mb-8 overflow-hidden">
         <p className="text-xs text-gray-400 mb-2">API Base URL</p>
-        <code className="text-xs sm:text-sm font-mono text-gray-900 break-all">https://fastsubmit.hostspica.com/api</code>
+        <code className="text-xs sm:text-sm font-mono text-gray-900 break-all">https://fastsubmit.cloud/api</code>
         <p className="text-xs text-gray-500 mt-2">Current version: <code className="bg-gray-200 px-1.5 py-0.5 rounded">v1</code></p>
       </div>
 
@@ -92,7 +95,7 @@ export default function DocsPage() {
         <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Quick Example</h2>
         <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
           <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-xs leading-relaxed">
-            <code className="text-gray-300 whitespace-pre">{`<form action="https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID" method="POST">
+            <code className="text-gray-300 whitespace-pre">{`<form action="https://fastsubmit.cloud/api/submit/YOUR_FORM_ID" method="POST">
   <input type="text" name="name" required />
   <input type="email" name="email" required />
   <textarea name="message"></textarea>
@@ -189,5 +192,6 @@ export default function DocsPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

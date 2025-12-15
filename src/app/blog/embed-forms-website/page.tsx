@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Code, Globe, Zap, Check } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'How to Embed Forms on Your Website: Complete Guide | FastSubmit',
@@ -25,16 +26,17 @@ export default function EmbedFormsWebsitePage() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-10",
     "dateModified": "2024-12-10",
-    "url": "https://fastsubmit.hostspica.com/blog/embed-forms-website"
+    "url": "https://fastsubmit.cloud/blog/embed-forms-website"
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -105,7 +107,7 @@ export default function EmbedFormsWebsitePage() {
 
                 <!-- Add this before closing </body> tag -->
                 <script 
-                  src="https://fastsubmit.hostspica.com/embed.js"
+                  src="https://fastsubmit.cloud/embed.js"
                   data-form-id="your-form-id"
                   data-theme="light">
                 </script>`}

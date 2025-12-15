@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Form Field Types - Free Form Builder | FastSubmit',
@@ -92,6 +93,8 @@ export default function FieldTypesPage() {
   }
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Field Types</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -311,5 +314,6 @@ export default function FieldTypesPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

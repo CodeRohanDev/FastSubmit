@@ -11,6 +11,7 @@ import {
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
   ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare, Zap, Calculator
 } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type },
@@ -275,7 +276,9 @@ export default function FormSettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <>
+      <GoogleAnalytics />
+      <div className="max-w-2xl mx-auto">
       <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Link href={`/dashboard/forms/${formId}`} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
           <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
@@ -691,5 +694,6 @@ export default function FormSettingsPage() {
         </div>
       )}
     </div>
+    </>
   )
 }

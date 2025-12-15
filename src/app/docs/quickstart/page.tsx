@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 
 export default function QuickStartPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Quick Start</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -43,7 +46,7 @@ export default function QuickStartPage() {
         <div className="ml-10 sm:ml-11 bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200 overflow-hidden">
           <p className="text-xs sm:text-sm text-gray-600 mb-2">Your form endpoint will look like:</p>
           <code className="text-xs sm:text-sm font-mono text-indigo-700 break-all">
-            https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID
+            https://fastsubmit.cloud/api/submit/YOUR_FORM_ID
           </code>
         </div>
       </div>
@@ -60,7 +63,7 @@ export default function QuickStartPage() {
         <div className="ml-10 sm:ml-11 bg-gray-900 rounded-xl overflow-hidden">
           <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
             <code className="text-gray-100 whitespace-pre">
-{`<form action="https://fastsubmit.hostspica.com/api/submit/abc123" method="POST">
+{`<form action="https://fastsubmit.cloud/api/submit/abc123" method="POST">
   <label>
     Name
     <input type="text" name="name" required />
@@ -119,5 +122,6 @@ export default function QuickStartPage() {
         </Link>
       </div>
     </div>
+    </>
   )
 }

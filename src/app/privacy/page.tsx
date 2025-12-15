@@ -154,8 +154,8 @@ export default function PrivacyPage() {
             <p>If you have questions about this Privacy Policy, please contact us at:</p>
             <p className="mt-2">
               <strong>Hostspica</strong><br />
-              Email: privacy@hostspica.com<br />
-              Website: <a href="https://hostspica.com" className="text-indigo-600 hover:underline">hostspica.com</a>
+              Email: privacy@fastsubmit.cloud<br />
+              Website: <a href="https://fastsubmit.cloud" className="text-indigo-600 hover:underline">fastsubmit.cloud</a>
             </p>
           </section>
         </div>

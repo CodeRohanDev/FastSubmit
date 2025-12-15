@@ -12,7 +12,7 @@ const http = require('http');
 const { URL } = require('url');
 
 class AdvancedSEOAuditor {
-  constructor(baseUrl = 'https://fastsubmit.hostspica.com') {
+  constructor(baseUrl = 'https://fastsubmit.cloud') {
     this.baseUrl = baseUrl;
     this.results = {
       score: 0,
@@ -812,7 +812,7 @@ class AdvancedSEOAuditor {
 // CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
-  const baseUrl = args[0] || 'https://fastsubmit.hostspica.com';
+  const baseUrl = args[0] || 'https://fastsubmit.cloud';
   
   console.log('🔍 Advanced SEO Audit Script');
   console.log('============================\n');

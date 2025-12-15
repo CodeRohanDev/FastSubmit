@@ -55,7 +55,7 @@ export default function QuizMakerPage() {
     "@type": "WebPage",
     "name": "Free Online Quiz Maker - FastSubmit",
     "description": "Create beautiful quizzes and tests. Multiple choice, scoring, instant results. Free forever.",
-    "url": "https://fastsubmit.hostspica.com/quiz-maker",
+    "url": "https://fastsubmit.cloud/quiz-maker",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": "FastSubmit Quiz Maker",

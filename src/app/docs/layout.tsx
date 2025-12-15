@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Zap, Book, Code, Send, Database, Key, FileText, Layers, AlertCircle, Gauge, Shield, Menu, X, Brain } from 'lucide-react'
 import clsx from 'clsx'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const navSections = [
   {
@@ -41,6 +42,8 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       {/* Header */}
       <header className="fixed top-0 w-full bg-[#fafafa]/80 backdrop-blur-xl z-50 border-b border-gray-100">
@@ -126,5 +129,6 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         </main>
       </div>
     </div>
+    </>
   )
 }

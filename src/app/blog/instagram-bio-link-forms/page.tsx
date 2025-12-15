@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Instagram, Smartphone, TrendingUp } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'How to Create Forms for Instagram Bio Links | FastSubmit',
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default function InstagramBioLinkFormsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar variant="simple" />
 
@@ -263,5 +266,6 @@ export default function InstagramBioLinkFormsPage() {
 
       <Footer />
     </div>
+    </>
   )
 }

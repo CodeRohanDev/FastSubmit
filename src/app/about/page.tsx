@@ -53,19 +53,19 @@ export default function AboutPage() {
     "@type": "AboutPage",
     "name": "About FastSubmit - Forms for Every Platform",
     "description": "Learn about FastSubmit by Hostspica. We make form building simple and accessible for everyone. Create forms for websites, social media, and online sharing.",
-    "url": "https://fastsubmit.hostspica.com/about",
+    "url": "https://fastsubmit.cloud/about",
     "mainEntity": {
       "@type": "Organization",
       "name": "FastSubmit",
       "alternateName": "FastSubmit by Hostspica",
       "description": "FastSubmit provides free form building tools for websites, social media, and online sharing.",
       "foundingDate": "2024",
-      "url": "https://fastsubmit.hostspica.com",
-      "logo": "https://fastsubmit.hostspica.com/logo.png",
+      "url": "https://fastsubmit.cloud",
+      "logo": "https://fastsubmit.cloud/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
-        "email": "hello@hostspica.com",
+        "email": "hello@fastsubmit.cloud",
         "availableLanguage": "English"
       }
     }
@@ -240,9 +240,9 @@ export default function AboutPage() {
               We&apos;d love to hear from you! Whether you have questions, feedback, or just want to say hi:
             </p>
             <div className="bg-gray-50 rounded-lg p-3 sm:p-4 text-xs sm:text-sm">
-              <p><strong className="text-gray-900">Email:</strong> <a href="mailto:hello@hostspica.com" className="text-indigo-600 hover:underline">hello@hostspica.com</a></p>
-              <p className="mt-2"><strong className="text-gray-900">Website:</strong> <a href="https://hostspica.com" className="text-indigo-600 hover:underline">hostspica.com</a></p>
-              <p className="mt-2"><strong className="text-gray-900">Support:</strong> <a href="mailto:support@hostspica.com" className="text-indigo-600 hover:underline">support@hostspica.com</a></p>
+              <p><strong className="text-gray-900">Email:</strong> <a href="mailto:hello@fastsubmit.cloud" className="text-indigo-600 hover:underline">hello@fastsubmit.cloud</a></p>
+              <p className="mt-2"><strong className="text-gray-900">Website:</strong> <a href="https://fastsubmit.cloud" className="text-indigo-600 hover:underline">fastsubmit.cloud</a></p>
+              <p className="mt-2"><strong className="text-gray-900">Support:</strong> <a href="mailto:support@fastsubmit.cloud" className="text-indigo-600 hover:underline">support@fastsubmit.cloud</a></p>
             </div>
           </section>
 

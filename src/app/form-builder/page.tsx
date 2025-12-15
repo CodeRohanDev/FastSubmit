@@ -5,6 +5,7 @@ import { ArrowRight, Check, Zap, Globe, Share2, Code, Smartphone, Palette, BarCh
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Free Form Builder Online - Best Form Maker | Create Forms Free',
@@ -62,7 +63,7 @@ export default function FormBuilderPage() {
     "@type": "WebPage",
     "name": "Free Online Form Builder - FastSubmit",
     "description": "Create beautiful forms for websites, social media, and online sharing. Drag & drop builder, 100+ templates, unlimited forms.",
-    "url": "https://fastsubmit.hostspica.com/form-builder",
+    "url": "https://fastsubmit.cloud/form-builder",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": "FastSubmit Form Builder",
@@ -92,13 +93,13 @@ export default function FormBuilderPage() {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://fastsubmit.hostspica.com"
+          "item": "https://fastsubmit.cloud"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Form Builder",
-          "item": "https://fastsubmit.hostspica.com/form-builder"
+          "item": "https://fastsubmit.cloud/form-builder"
         }
       ]
     }
@@ -132,6 +133,8 @@ export default function FormBuilderPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <React.Fragment>
       <script
         type="application/ld+json"
@@ -378,5 +381,6 @@ export default function FormBuilderPage() {
       <Footer variant="extended" />
     </div>
     </React.Fragment>
+    </>
   )
 }

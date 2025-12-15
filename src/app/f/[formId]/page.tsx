@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import SmartFormRenderer from '@/components/SmartFormRenderer'
 import { FormField, FormLogic } from '@/types'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 interface FormBranding {
   logo?: string
@@ -289,7 +290,7 @@ export default function PublicFormPage() {
               <p className={`text-xs text-center ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
                 Powered by{' '}
                 <a
-                  href="https://fastsubmit.hostspica.com"
+                  href="https://fastsubmit.cloud"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
@@ -333,7 +334,7 @@ export default function PublicFormPage() {
               </div>
 
               <a
-                href="https://fastsubmit.hostspica.com/signup"
+                href="https://fastsubmit.cloud/signup"
                 className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors"
               >
                 Get started free
@@ -373,6 +374,7 @@ export default function PublicFormPage() {
 
   return (
     <>
+    <GoogleAnalytics />
       <Navbar variant="simple" />
       <div className="pt-16">
         {formContent}

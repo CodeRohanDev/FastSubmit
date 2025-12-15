@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Home, Search } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Content No Longer Available | FastSubmit - Free Form Builder',
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
 export default function GonePage() {
   return (
     <>
+    <GoogleAnalytics />
       <div className="min-h-screen bg-[#fafafa]">
         <Navbar variant="simple" />
         

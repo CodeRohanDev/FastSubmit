@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function SubmissionsApiPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Submissions API</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -17,7 +20,7 @@ export default function SubmissionsApiPage() {
       <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 sm:p-4 mb-6 sm:mb-8 overflow-hidden">
         <p className="text-xs sm:text-sm text-indigo-800">
           <strong>Base URL:</strong>{' '}
-          <code className="bg-indigo-100 px-2 py-0.5 rounded text-[10px] sm:text-xs break-all">https://fastsubmit.hostspica.com/api/v1</code>
+          <code className="bg-indigo-100 px-2 py-0.5 rounded text-[10px] sm:text-xs break-all">https://fastsubmit.cloud/api/v1</code>
         </p>
       </div>
 
@@ -78,7 +81,7 @@ export default function SubmissionsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden mb-3 sm:mb-4">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  "https://fastsubmit.hostspica.com/api/v1/forms/abc123/submissions?limit=50" \\
+  "https://fastsubmit.cloud/api/v1/forms/abc123/submissions?limit=50" \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -123,7 +126,7 @@ export default function SubmissionsApiPage() {
             <div className="bg-gray-900 rounded-lg overflow-hidden mb-3 sm:mb-4">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  "https://fastsubmit.hostspica.com/api/v1/forms/abc123/submissions?format=csv" \\
+  "https://fastsubmit.cloud/api/v1/forms/abc123/submissions?format=csv" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -o submissions.csv`}</code>
               </pre>
@@ -155,7 +158,7 @@ John Doe,john@example.com,Hello!,2024-01-15T14:30:00.000Z`}</code>
             <div className="bg-gray-900 rounded-lg overflow-hidden">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms/abc123/submissions/sub_001 \\
+  https://fastsubmit.cloud/api/v1/forms/abc123/submissions/sub_001 \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -178,7 +181,7 @@ John Doe,john@example.com,Hello!,2024-01-15T14:30:00.000Z`}</code>
             <div className="bg-gray-900 rounded-lg overflow-hidden">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X DELETE \\
-  https://fastsubmit.hostspica.com/api/v1/forms/abc123/submissions/sub_001 \\
+  https://fastsubmit.cloud/api/v1/forms/abc123/submissions/sub_001 \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -207,7 +210,7 @@ John Doe,john@example.com,Hello!,2024-01-15T14:30:00.000Z`}</code>
             <div className="bg-gray-900 rounded-lg overflow-hidden mb-3 sm:mb-4">
               <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
                 <code className="text-gray-100 whitespace-pre">{`curl -X DELETE \\
-  https://fastsubmit.hostspica.com/api/v1/forms/abc123/submissions \\
+  https://fastsubmit.cloud/api/v1/forms/abc123/submissions \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
               </pre>
             </div>
@@ -226,5 +229,6 @@ John Doe,john@example.com,Hello!,2024-01-15T14:30:00.000Z`}</code>
         </div>
       </section>
     </div>
+    </>
   )
 }

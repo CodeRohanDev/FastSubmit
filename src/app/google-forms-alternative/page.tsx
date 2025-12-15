@@ -125,14 +125,14 @@ export default function GoogleFormsAlternativePage() {
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "datePublished": "2024-12-08",
     "dateModified": "2024-12-10",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://fastsubmit.hostspica.com/google-forms-alternative"
+      "@id": "https://fastsubmit.cloud/google-forms-alternative"
     }
   }
 

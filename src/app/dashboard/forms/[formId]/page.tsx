@@ -9,6 +9,7 @@ import { Copy, Download, Settings, Eye, Check, ArrowLeft, Code, X, Share2, Exter
 import { getSubmitEndpoint } from '@/lib/config'
 import Papa from 'papaparse'
 import dynamic from 'next/dynamic'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 // Dynamically import ShareModal to improve initial page load
 const ShareModal = dynamic(() => import('@/components/ShareModal'), {
@@ -26,20 +27,20 @@ export default function FormDetailPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
 
   const apiEndpoint = getSubmitEndpoint(formId as string)
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/f/${formId}` : `https://fastsubmit.hostspica.com/f/${formId}`
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/f/${formId}` : `https://fastsubmit.cloud/f/${formId}`
   
   const embedCode = `<!-- Add this where you want the form to appear -->
 <div id="fastsubmit-form"></div>
 
 <!-- Add this before closing </body> tag -->
 <script 
-  src="https://fastsubmit.hostspica.com/embed.js"
+  src="https://fastsubmit.cloud/embed.js"
   data-form-id="${formId}"
   data-theme="light">
 </script>`
 
   const iframeCode = `<iframe 
-  src="https://fastsubmit.hostspica.com/f/${formId}" 
+  src="https://fastsubmit.cloud/f/${formId}" 
   width="100%" 
   height="600" 
   frameborder="0">
@@ -121,7 +122,9 @@ export default function FormDetailPage() {
   }
 
   return (
-    <div>
+    <>
+      <GoogleAnalytics />
+      <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 sm:mb-8">
         <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
@@ -534,5 +537,6 @@ export default function FormDetailPage() {
         </div>
       )}
     </div>
+    </>
   )
 }

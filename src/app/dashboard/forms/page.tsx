@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase'
 import { Form } from '@/types'
 import { Plus, ChevronRight } from 'lucide-react'
 import EmailVerificationGate from '@/components/EmailVerificationGate'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export default function FormsPage() {
   const { user } = useAuth()
@@ -50,8 +51,10 @@ export default function FormsPage() {
   }
 
   return (
-    <EmailVerificationGate>
-    <div>
+    <>
+      <GoogleAnalytics />
+      <EmailVerificationGate>
+      <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6 sm:mb-8">
         <div className="min-w-0 flex-1">
@@ -145,5 +148,6 @@ export default function FormsPage() {
       )}
     </div>
     </EmailVerificationGate>
+    </>
   )
 }

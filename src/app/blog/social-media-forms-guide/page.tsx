@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Share2, Instagram, Facebook, Twitter, Linkedin, TrendingUp, Users } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'How to Use Forms for Social Media Lead Generation | FastSubmit',
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default function SocialMediaFormsGuidePage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar variant="simple" />
 
@@ -308,5 +311,6 @@ export default function SocialMediaFormsGuidePage() {
 
       <Footer />
     </div>
+  </>
   )
 }

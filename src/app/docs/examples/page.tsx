@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function ExamplesPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Code Examples</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -33,7 +36,7 @@ export default function ExamplesPage() {
   </style>
 </head>
 <body>
-  <form action="https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID" method="POST">
+  <form action="https://fastsubmit.cloud/api/submit/YOUR_FORM_ID" method="POST">
     <label>
       Name *
       <input type="text" name="name" required />
@@ -93,7 +96,7 @@ function ContactForm() {
 
     try {
       const response = await fetch(
-        'https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID',
+        'https://fastsubmit.cloud/api/submit/YOUR_FORM_ID',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -187,7 +190,7 @@ async function handleSubmit() {
 
   try {
     const response = await fetch(
-      'https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID',
+      'https://fastsubmit.cloud/api/submit/YOUR_FORM_ID',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -224,7 +227,7 @@ const FORM_ID = 'your_form_id';
 
 async function getSubmissions() {
   const response = await fetch(
-    \`https://fastsubmit.hostspica.com/api/v1/forms/\${FORM_ID}/submissions\`,
+    \`https://fastsubmit.cloud/api/v1/forms/\${FORM_ID}/submissions\`,
     {
       headers: {
         'x-api-key': API_KEY,
@@ -260,7 +263,7 @@ getSubmissions();`}</code>
 
 API_KEY = 'fs_your_api_key'
 FORM_ID = 'your_form_id'
-BASE_URL = 'https://fastsubmit.hostspica.com/api/v1'
+BASE_URL = 'https://fastsubmit.cloud/api/v1'
 
 headers = {
     'x-api-key': API_KEY
@@ -303,33 +306,34 @@ print("Exported to submissions.csv")`}</code>
             <code className="text-gray-100 whitespace-pre">
 {`# Submit a form
 curl -X POST \\
-  https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID \\
+  https://fastsubmit.cloud/api/submit/YOUR_FORM_ID \\
   -H "Content-Type: application/json" \\
   -d '{"name": "John", "email": "john@example.com", "message": "Hello!"}'
 
 # List all forms
 curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "x-api-key: YOUR_API_KEY"
 
 # Get submissions
 curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions \\
+  https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions \\
   -H "x-api-key: YOUR_API_KEY"
 
 # Export as CSV
 curl -X GET \\
-  "https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions?format=csv" \\
+  "https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions?format=csv" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -o submissions.csv
 
 # Delete a submission
 curl -X DELETE \\
-  https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions/SUB_ID \\
+  https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions/SUB_ID \\
   -H "x-api-key: YOUR_API_KEY"`}</code>
           </pre>
         </div>
       </section>
     </div>
+    </>
   )
 }

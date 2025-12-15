@@ -1,11 +1,11 @@
-Contact: mailto:security@hostspica.com
-Contact: https://hostspica.com/security
+Contact: mailto:security@fastsubmit.cloud
+Contact: https://fastsubmit.cloud/security
 Expires: 2025-12-31T23:59:59.000Z
-Encryption: https://hostspica.com/pgp-key.txt
-Acknowledgments: https://hostspica.com/security/hall-of-fame
+Encryption: https://fastsubmit.cloud/pgp-key.txt
+Acknowledgments: https://fastsubmit.cloud/security/hall-of-fame
 Preferred-Languages: en
-Canonical: https://fastsubmit.hostspica.com/.well-known/security.txt
-Policy: https://hostspica.com/security/disclosure-policy
+Canonical: https://fastsubmit.cloud/.well-known/security.txt
+Policy: https://fastsubmit.cloud/security/disclosure-policy
 
 # Security Policy for FastSubmit
 # 

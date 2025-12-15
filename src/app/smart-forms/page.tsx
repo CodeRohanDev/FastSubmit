@@ -5,6 +5,7 @@ import {
   CheckCircle, Sparkles, Target, Users, TrendingUp,
   Play, Code, Settings, ChevronRight
 } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Smart Forms with Conditional Logic - FastSubmit',
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
 
 export default function SmartFormsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       {/* Header */}
       <header className="border-b border-gray-100 bg-white/80 backdrop-blur-xl sticky top-0 z-50">
@@ -428,5 +431,6 @@ export default function SmartFormsPage() {
         </div>
       </footer>
     </div>
+  </>
   )
 }

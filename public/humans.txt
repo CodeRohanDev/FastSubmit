@@ -1,12 +1,12 @@
 # FastSubmit - Free Form Builder
-# https://fastsubmit.hostspica.com
+# https://fastsubmit.cloud
 
 /* TEAM */
 Company: Hostspica Private Limited
 Product: FastSubmit
 Location: India
-Website: https://hostspica.com
-Contact: support@hostspica.com
+Website: https://fastsubmit.cloud
+Contact: support@fastsubmit.cloud
 
 /* SITE */
 Last update: 2024/12/10
@@ -29,6 +29,22 @@ Google Fonts - For typography
 Making form building accessible to everyone.
 Free forever, no hidden costs.
 Beautiful forms for websites, social media, and online sharing.
+Automate form submissions and speed up online applications.
+
+/* KEYWORDS */
+FastSubmit, Fast Submit, Form Builder, Online Forms, 
+Form Submission Automation, Bulk Form Submission,
+Drag Drop Form Builder, No Code Form Builder,
+Google Forms Alternative, Free Form Creator,
+Form Generator, Survey Maker, Quiz Builder,
+Contact Form Builder, Lead Generation Forms,
+Form API, Webhook Integration, Custom Branding,
+Mobile Responsive Forms, Spam Protection,
+Form Analytics, Export to Excel, PDF Forms,
+Social Media Forms, Instagram Forms, Facebook Forms,
+Website Form Embed, WordPress Forms, Shopify Forms,
+Student Submission Tool, Business Form Automation,
+Freelancer Form Tools, Online Form Generator
 
                                _
                               | |
@@ -46,7 +62,7 @@ Beautiful forms for websites, social media, and online sharing.
                                                         || ||      || ||
 
 /* CONTACT */
-Email: support@hostspica.com
+Email: support@fastsubmit.cloud
 Twitter: @fastsubmit
 GitHub: https://github.com/hostspica
 

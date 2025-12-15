@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { AlertTriangle } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Free Unlimited Forms - No Limits | FastSubmit',
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 
 export default function LimitsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Service Features & Fair Use</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -223,5 +226,6 @@ export default function LimitsPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

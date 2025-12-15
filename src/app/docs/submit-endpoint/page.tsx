@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
 
 export default function SubmitEndpointPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Submit Endpoint</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -26,7 +29,7 @@ export default function SubmitEndpointPage() {
         <div className="border border-gray-200 rounded-xl overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 border-b border-gray-200">
             <span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-700 self-start">POST</span>
-            <code className="text-xs sm:text-sm font-mono break-all">https://fastsubmit.hostspica.com/api/submit/:formId</code>
+            <code className="text-xs sm:text-sm font-mono break-all">https://fastsubmit.cloud/api/submit/:formId</code>
           </div>
           <div className="p-3 sm:p-4">
             <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
@@ -53,7 +56,7 @@ export default function SubmitEndpointPage() {
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">HTML Form Example</h2>
         <div className="bg-gray-900 rounded-xl overflow-hidden mb-3 sm:mb-4">
           <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
-            <code className="text-gray-100 whitespace-pre">{`<form action="https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID" method="POST">
+            <code className="text-gray-100 whitespace-pre">{`<form action="https://fastsubmit.cloud/api/submit/YOUR_FORM_ID" method="POST">
   <label>
     Name
     <input type="text" name="name" required />
@@ -90,7 +93,7 @@ const formData = {
   message: "Hello from JavaScript!"
 };
 
-fetch("https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID", {
+fetch("https://fastsubmit.cloud/api/submit/YOUR_FORM_ID", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
@@ -187,5 +190,6 @@ fetch("https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID", {
         </p>
       </section>
     </div>
+    </>
   )
 }

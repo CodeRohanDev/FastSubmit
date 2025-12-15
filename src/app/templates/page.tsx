@@ -53,7 +53,7 @@ export default function TemplatesPage() {
     "@type": "CollectionPage",
     "name": "Free Form Templates - 100+ Ready-to-Use Forms",
     "description": "Browse 100+ free form templates for websites, social media, and online sharing. Contact forms, surveys, registration forms, and more.",
-    "url": "https://fastsubmit.hostspica.com/templates",
+    "url": "https://fastsubmit.cloud/templates",
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": 110,

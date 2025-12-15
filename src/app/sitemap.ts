@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://fastsubmit.hostspica.com'
+  const baseUrl = 'https://fastsubmit.cloud'
   
   // Static pages
   const staticPages = [
@@ -61,6 +61,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/survey-maker',
     '/contact-form-builder',
     '/quiz-maker',
+    '/fast-submit',
+    '/form-submission-automation',
+    '/drag-drop-form-builder',
+    '/bulk-form-submission',
+    '/no-code-form-builder',
+    '/online-form-generator',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

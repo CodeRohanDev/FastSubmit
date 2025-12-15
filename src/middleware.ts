@@ -18,12 +18,34 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Protected admin routes (exclude login page)
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    // Check for admin session cookie
+    const hasAdminSession = request.cookies.has('__admin_session')
+    
+    if (!hasAdminSession) {
+      // Redirect to admin login
+      const loginUrl = new URL('/admin/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
   // Redirect authenticated users away from auth pages
   if (pathname === '/login' || pathname === '/signup') {
     const hasSession = request.cookies.has('__session')
     
     if (hasSession) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+  }
+
+  // Redirect authenticated admin users away from admin login
+  if (pathname === '/admin/login') {
+    const hasAdminSession = request.cookies.has('__admin_session')
+    
+    if (hasAdminSession) {
+      return NextResponse.redirect(new URL('/admin', request.url))
     }
   }
 

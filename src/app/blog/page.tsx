@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, Globe, Share2, Code } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Blog - Free Form Builder Tips, Tutorials & Guides | FastSubmit',
@@ -163,23 +164,24 @@ export default function BlogPage() {
     "@type": "Blog",
     "name": "FastSubmit Blog - Form Builder Tips & Tutorials",
     "description": "Learn how to create better forms for websites, social media, and online sharing. Tips, tutorials, and best practices for form builders.",
-    "url": "https://fastsubmit.hostspica.com/blog",
+    "url": "https://fastsubmit.cloud/blog",
     "publisher": {
       "@type": "Organization",
       "name": "FastSubmit",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://fastsubmit.hostspica.com/logo.png"
+        "url": "https://fastsubmit.cloud/logo.png"
       }
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://fastsubmit.hostspica.com/blog"
+      "@id": "https://fastsubmit.cloud/blog"
     }
   }
 
   return (
     <>
+    <GoogleAnalytics />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

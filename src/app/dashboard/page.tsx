@@ -6,6 +6,7 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Plus, ArrowRight } from 'lucide-react'
 import EmailVerificationGate from '@/components/EmailVerificationGate'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -41,8 +42,10 @@ export default function DashboardPage() {
   }, [user])
 
   return (
-    <EmailVerificationGate>
-    <div>
+    <>
+      <GoogleAnalytics />
+      <EmailVerificationGate>
+      <div>
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900">
@@ -241,5 +244,6 @@ export default function DashboardPage() {
       </div>
     </div>
     </EmailVerificationGate>
+    </>
   )
 }

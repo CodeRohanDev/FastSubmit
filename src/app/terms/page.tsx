@@ -213,8 +213,8 @@ export default function TermsPage() {
             <p>For questions about these Terms, please contact us at:</p>
             <p className="mt-2">
               <strong>Hostspica</strong><br />
-              Email: legal@hostspica.com<br />
-              Website: <a href="https://hostspica.com" className="text-indigo-600 hover:underline">hostspica.com</a>
+              Email: legal@fastsubmit.cloud<br />
+              Website: <a href="https://fastsubmit.cloud" className="text-indigo-600 hover:underline">fastsubmit.cloud</a>
             </p>
           </section>
 

@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -24,6 +25,8 @@ export default function ErrorsPage() {
   }
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-w-0">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Error Handling</h1>
       <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
@@ -214,7 +217,7 @@ export default function ErrorsPage() {
             <code className="text-gray-100 whitespace-pre">{`async function submitForm(data) {
   try {
     const response = await fetch(
-      'https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID',
+      'https://fastsubmit.cloud/api/submit/YOUR_FORM_ID',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -245,5 +248,6 @@ export default function ErrorsPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }
