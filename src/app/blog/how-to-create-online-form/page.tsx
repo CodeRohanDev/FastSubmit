@@ -3,15 +3,31 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'How to Create an Online Form in 5 Minutes (No Coding Required)',
   description: 'Learn how to create professional online forms in just 5 minutes without coding. Step-by-step guide with tips for better forms and higher conversions.',
-  keywords: ['how to create online form', 'create form online', 'online form maker', 'make online form'],
+  keywords: [
+    'how to create online form',
+    'create form online',
+    'online form maker',
+    'make online form',
+    'create free forms',
+    'easy forms',
+    'free online form',
+    'online forms',
+    'free online forms',
+    'form builder',
+    'free form builder',
+    'online form builder'
+  ],
 }
 
 export default function BlogPost() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -343,5 +359,6 @@ export default function BlogPost() {
 
       <Footer />
     </div>
+    </>
   )
 }

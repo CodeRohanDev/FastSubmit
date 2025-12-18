@@ -26,7 +26,7 @@ export async function sendVerificationEmail({ to, code, userName }: SendVerifica
   
   try {
     const { data, error } = await resendClient.emails.send({
-      from: 'FastSubmit <noreply@fastsubmit.hostspica.com>',
+      from: 'FastSubmit <noreply@fastsubmit.cloud>',
       to: [to],
       subject: 'Verify your FastSubmit account',
       html: `
@@ -199,11 +199,11 @@ interface SendNotificationDigestParams {
 export async function sendNotificationDigest({ to, userName, submissions }: SendNotificationDigestParams) {
   const resendClient = getResendClient()
   const totalSubmissions = submissions.reduce((acc, s) => acc + s.submissionCount, 0)
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   
   try {
     const { data, error } = await resendClient.emails.send({
-      from: 'FastSubmit <notifications@fastsubmit.hostspica.com>',
+      from: 'FastSubmit <notifications@fastsubmit.cloud>',
       to: [to],
       subject: `📬 ${totalSubmissions} new submission${totalSubmissions > 1 ? 's' : ''} on FastSubmit`,
       html: `
@@ -401,11 +401,11 @@ interface SendNotificationOptInParams {
 
 export async function sendNotificationOptInEmail({ to, userName }: SendNotificationOptInParams) {
   const resendClient = getResendClient()
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   
   try {
     const { data, error } = await resendClient.emails.send({
-      from: 'FastSubmit <notifications@fastsubmit.hostspica.com>',
+      from: 'FastSubmit <notifications@fastsubmit.cloud>',
       to: [to],
       subject: '✅ Email notifications enabled',
       html: `
@@ -472,11 +472,11 @@ interface SendNotificationOptOutParams {
 
 export async function sendNotificationOptOutEmail({ to, userName }: SendNotificationOptOutParams) {
   const resendClient = getResendClient()
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   
   try {
     const { data, error } = await resendClient.emails.send({
-      from: 'FastSubmit <notifications@fastsubmit.hostspica.com>',
+      from: 'FastSubmit <notifications@fastsubmit.cloud>',
       to: [to],
       subject: '🔕 Email notifications disabled',
       html: `

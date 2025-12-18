@@ -3,11 +3,40 @@ import Link from 'next/link'
 import { ArrowRight, Check, Code, Database, Webhook, Key, Zap, Shield } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'Form API for Developers - REST API & Webhooks | FastSubmit',
-  description: 'Integrate forms into your apps with our REST API. Create forms, fetch submissions, set up webhooks, and build custom integrations. Free API access.',
-  keywords: ['form api', 'form backend api', 'rest api forms', 'form webhooks', 'developer form api'],
+  title: 'Free Form API - Google Form API Alternative | REST API & Webhooks',
+  description: 'Free form API for developers. Better than Google Form API. REST API, webhooks, unlimited submissions. Create forms programmatically, fetch data, integrate anywhere. Export to Excel, Word, PDF. Free API access forever.',
+  keywords: [
+    'form api',
+    'google form api',
+    'free form api',
+    'form api free',
+    'form backend api',
+    'rest api forms',
+    'form webhooks',
+    'developer form api',
+    'best form api',
+    'cheapest form api',
+    'form builder api',
+    'forms api',
+    'form builder',
+    'free form builder',
+    'online form builder',
+    'google forms',
+    'google form alternative',
+    'ai form builder',
+    'form maker',
+    'best form builder',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to word',
+    'form to pdf',
+    'best google form free',
+    'free google form'
+  ],
 }
 
 export default function DeveloperApiPage() {
@@ -21,38 +50,40 @@ export default function DeveloperApiPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-purple-600 mb-6 bg-purple-50 px-4 py-2 rounded-full">
-            <Code size={16} />
+          <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-purple-600 mb-4 sm:mb-6 bg-purple-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+            <Code size={14} className="sm:w-4 sm:h-4" />
             Developer API
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4 sm:mb-6">
             Form backend API
             <br />
             <span className="text-gray-400">for developers</span>
           </h1>
           
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto">
             Build custom form integrations with our REST API. Create forms, fetch submissions, 
             set up webhooks, and integrate with your existing tools. Free API access included.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link 
               href="/signup" 
-              className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-all"
+              className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-gray-800 transition-all text-sm sm:text-base"
             >
               Get API key <ArrowRight size={18} />
             </Link>
             <Link 
               href="/docs" 
-              className="inline-flex items-center justify-center gap-2 text-gray-600 px-8 py-4 rounded-full font-medium hover:text-gray-900 transition-colors border border-gray-200 bg-white"
+              className="inline-flex items-center justify-center gap-2 text-gray-600 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:text-gray-900 transition-colors border border-gray-200 bg-white text-sm sm:text-base"
             >
               API documentation
             </Link>
@@ -61,28 +92,28 @@ export default function DeveloperApiPage() {
       </section>
 
       {/* Code Examples */}
-      <section className="py-20 px-6 bg-white border-t border-gray-100">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 mb-3 sm:mb-4">
               Simple, powerful API
             </h2>
-            <p className="text-gray-500">Get started in minutes with our intuitive REST API</p>
+            <p className="text-gray-500 text-sm sm:text-base">Get started in minutes with our intuitive REST API</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Submit Form */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-100 text-green-600 text-xs flex items-center justify-center font-mono">POST</span>
+              <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                <span className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-green-100 text-green-600 text-[10px] sm:text-xs flex items-center justify-center font-mono shrink-0">POST</span>
                 Submit a form
               </h3>
               <div className="bg-[#1a1a1a] rounded-xl overflow-hidden">
-                <div className="px-4 py-2 border-b border-white/5 text-xs text-white/30">cURL</div>
-                <pre className="p-4 text-sm overflow-x-auto">
+                <div className="px-3 sm:px-4 py-2 border-b border-white/5 text-[10px] sm:text-xs text-white/30">cURL</div>
+                <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`curl -X POST \\
-  `}<span className="text-purple-400">https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submit</span>{` \\
+  `}<span className="text-purple-400">https://fastsubmit.cloud/api/v1/forms/FORM_ID/submit</span>{` \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "John Doe",
@@ -96,16 +127,16 @@ export default function DeveloperApiPage() {
 
             {/* Get Submissions */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-blue-100 text-blue-600 text-xs flex items-center justify-center font-mono">GET</span>
+              <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                <span className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-blue-100 text-blue-600 text-[10px] sm:text-xs flex items-center justify-center font-mono shrink-0">GET</span>
                 Fetch submissions
               </h3>
               <div className="bg-[#1a1a1a] rounded-xl overflow-hidden">
-                <div className="px-4 py-2 border-b border-white/5 text-xs text-white/30">cURL</div>
-                <pre className="p-4 text-sm overflow-x-auto">
+                <div className="px-3 sm:px-4 py-2 border-b border-white/5 text-[10px] sm:text-xs text-white/30">cURL</div>
+                <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`curl -X GET \\
-  `}<span className="text-purple-400">https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions</span>{` \\
+  `}<span className="text-purple-400">https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions</span>{` \\
   -H "Authorization: Bearer `}<span className="text-green-400">YOUR_API_KEY</span>{`"`}
                   </code>
                 </pre>
@@ -114,16 +145,16 @@ export default function DeveloperApiPage() {
 
             {/* Create Form */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-100 text-green-600 text-xs flex items-center justify-center font-mono">POST</span>
+              <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                <span className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-green-100 text-green-600 text-[10px] sm:text-xs flex items-center justify-center font-mono shrink-0">POST</span>
                 Create a form
               </h3>
               <div className="bg-[#1a1a1a] rounded-xl overflow-hidden">
-                <div className="px-4 py-2 border-b border-white/5 text-xs text-white/30">JavaScript</div>
-                <pre className="p-4 text-sm overflow-x-auto">
+                <div className="px-3 sm:px-4 py-2 border-b border-white/5 text-[10px] sm:text-xs text-white/30">JavaScript</div>
+                <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`const response = await fetch(
-  `}<span className="text-purple-400">'https://fastsubmit.hostspica.com/api/v1/forms'</span>{`,
+  `}<span className="text-purple-400">'https://fastsubmit.cloud/api/v1/forms'</span>{`,
   {
     method: 'POST',
     headers: {
@@ -143,13 +174,13 @@ export default function DeveloperApiPage() {
 
             {/* Webhook */}
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Webhook size={16} className="text-orange-500" />
+              <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                <Webhook size={14} className="text-orange-500 sm:w-4 sm:h-4 shrink-0" />
                 Webhook payload
               </h3>
               <div className="bg-[#1a1a1a] rounded-xl overflow-hidden">
-                <div className="px-4 py-2 border-b border-white/5 text-xs text-white/30">JSON</div>
-                <pre className="p-4 text-sm overflow-x-auto">
+                <div className="px-3 sm:px-4 py-2 border-b border-white/5 text-[10px] sm:text-xs text-white/30">JSON</div>
+                <pre className="p-3 sm:p-4 text-[11px] sm:text-sm overflow-x-auto">
                   <code className="text-white/70">
 {`{
   "event": `}<span className="text-green-400">"submission.created"</span>{`,
@@ -172,23 +203,23 @@ export default function DeveloperApiPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-6 border-t border-gray-100">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 border-t border-gray-100">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 mb-3 sm:mb-4">
               Built for developers
             </h2>
-            <p className="text-gray-500">Everything you need to integrate forms into your apps</p>
+            <p className="text-gray-500 text-sm sm:text-base">Everything you need to integrate forms into your apps</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-white border border-gray-100">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-4 text-purple-600">
+              <div key={i} className="p-4 sm:p-6 rounded-2xl bg-white border border-gray-100">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-3 sm:mb-4 text-purple-600">
                   {feature.icon}
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
+                <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">{feature.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -196,16 +227,16 @@ export default function DeveloperApiPage() {
       </section>
 
       {/* Integration Examples */}
-      <section className="py-20 px-6 bg-white border-t border-gray-100">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900 mb-3 sm:mb-4">
               Integrate with anything
             </h2>
-            <p className="text-gray-500">Connect FastSubmit to your favorite tools</p>
+            <p className="text-gray-500 text-sm sm:text-base">Connect FastSubmit to your favorite tools</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
             {[
               { name: 'Zapier', desc: 'Connect to 5000+ apps', icon: '⚡' },
               { name: 'Slack', desc: 'Get notifications in Slack', icon: '💬' },
@@ -214,11 +245,11 @@ export default function DeveloperApiPage() {
               { name: 'Airtable', desc: 'Sync with Airtable bases', icon: '📋' },
               { name: 'Custom Webhooks', desc: 'Send data anywhere', icon: '🔗' },
             ].map((integration, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
-                <span className="text-3xl">{integration.icon}</span>
-                <div>
-                  <div className="font-medium text-gray-900">{integration.name}</div>
-                  <div className="text-sm text-gray-500">{integration.desc}</div>
+              <div key={i} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-gray-50">
+                <span className="text-2xl sm:text-3xl">{integration.icon}</span>
+                <div className="min-w-0">
+                  <div className="font-medium text-gray-900 text-sm sm:text-base">{integration.name}</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{integration.desc}</div>
                 </div>
               </div>
             ))}
@@ -227,24 +258,24 @@ export default function DeveloperApiPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 bg-gray-900">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-900">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3 sm:mb-4">
             Ready to build?
           </h2>
-          <p className="text-xl text-gray-300 mb-8">
+          <p className="text-base sm:text-xl text-gray-300 mb-6 sm:mb-8">
             Get your free API key and start integrating
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link 
               href="/signup" 
-              className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-medium hover:bg-gray-100 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base"
             >
-              Get API Key <ArrowRight size={20} />
+              Get API Key <ArrowRight size={18} />
             </Link>
             <Link 
               href="/docs" 
-              className="inline-flex items-center gap-2 text-white border border-white/20 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center gap-2 text-white border border-white/20 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-white/10 transition-colors text-sm sm:text-base"
             >
               Read the docs
             </Link>
@@ -254,5 +285,6 @@ export default function DeveloperApiPage() {
 
       <Footer variant="extended" />
     </div>
+    </>
   )
 }

@@ -43,8 +43,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = async () => {
-    await firebaseSignOut(auth)
-    document.cookie = '__session=; path=/; max-age=0'
+    try {
+      // Clear session cookie first
+      document.cookie = '__session=; path=/; max-age=0'
+      
+      // Sign out from Firebase
+      await firebaseSignOut(auth)
+      
+      // Force redirect to home page
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Force redirect even if there's an error
+      window.location.href = '/'
+    }
   }
 
   return (

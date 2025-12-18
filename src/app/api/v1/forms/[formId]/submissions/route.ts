@@ -23,9 +23,10 @@ async function verifyFormOwnership(formId: string, userId: string): Promise<{ er
 // GET /api/v1/forms/:formId/submissions - Get all submissions
 export async function GET(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
@@ -45,14 +46,14 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
 
     const subsSnapshot = await adminDb
       .collection('forms')
-      .doc(params.formId)
+      .doc(formId)
       .collection('submissions')
       .orderBy('submittedAt', 'desc')
       .limit(Math.min(limitParam, 1000))
@@ -107,7 +108,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      formId: params.formId,
+      formId: formId,
       formName: result.form!.name,
       count: submissions.length,
       submissions,
@@ -121,9 +122,10 @@ export async function GET(
 // DELETE /api/v1/forms/:formId/submissions - Delete all submissions
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
@@ -141,7 +143,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -149,7 +151,7 @@ export async function DELETE(
     // Get all non-deleted submissions
     const subsSnapshot = await adminDb
       .collection('forms')
-      .doc(params.formId)
+      .doc(formId)
       .collection('submissions')
       .get()
     

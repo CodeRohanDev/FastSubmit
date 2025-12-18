@@ -3,14 +3,77 @@ import Link from 'next/link'
 import { ArrowRight, Check, Code, Globe, Palette, Smartphone, Zap, Shield } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'Website Embed Forms - Add Forms to Any Website | FastSubmit',
-  description: 'Embed beautiful forms on your website with a simple code snippet. Works with HTML, WordPress, Shopify, Webflow, Wix, and any platform.',
-  keywords: ['embed form', 'website form', 'html form', 'wordpress form', 'shopify form', 'webflow form'],
+  title: 'Free Website Embed Forms - Add Forms to Any Website | Best Form Builder',
+  description: 'Embed beautiful free forms on your website. Best form builder for HTML, WordPress, Shopify, Webflow, Wix. Better than Google Forms, Zoho Forms, Microsoft Forms. Export to Excel, Word, PDF. Free forever.',
+  keywords: [
+    'embed form',
+    'website form',
+    'html form',
+    'wordpress form',
+    'shopify form',
+    'webflow form',
+    'form builder',
+    'free form builder',
+    'form builder free',
+    'form builder online',
+    'best form builder',
+    'best form maker',
+    'online form builder',
+    'google forms',
+    'google form alternative',
+    'free online form',
+    'ai form builder',
+    'form maker',
+    'online form maker',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to word',
+    'form to pdf',
+    'best form website',
+    'free form website',
+    'affordable forms',
+    'zoho forms',
+    'microsoft forms',
+    'create free forms',
+    'easy forms'
+  ],
 }
 
 export default function WebsiteEmbedPage() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Website Embed Forms - Add Forms to Any Website",
+    "description": "Embed beautiful forms on your website with a simple code snippet. Works with HTML, WordPress, Shopify, Webflow, Wix, and any platform.",
+    "url": "https://fastsubmit.cloud/use-cases/website-embed",
+    "mainEntity": {
+      "@type": "HowTo",
+      "name": "How to Embed Forms in Your Website",
+      "description": "Step-by-step guide to embedding forms in any website platform",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Create Your Form",
+          "text": "Build your form using FastSubmit's drag & drop builder"
+        },
+        {
+          "@type": "HowToStep", 
+          "name": "Get Embed Code",
+          "text": "Copy the simple embed code from your form dashboard"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Add to Website",
+          "text": "Paste the code into your website HTML where you want the form to appear"
+        }
+      ]
+    }
+  }
+
   const platforms = [
     { name: 'HTML/CSS', icon: '🌐' },
     { name: 'WordPress', icon: '📝' },
@@ -32,8 +95,14 @@ export default function WebsiteEmbedPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar />
+    <>
+    <GoogleAnalytics />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar />
 
       {/* Hero */}
       <section className="pt-32 pb-20 px-6">
@@ -124,7 +193,7 @@ export default function WebsiteEmbedPage() {
 
 <!-- Add this before </body> -->
 <script 
-  src="`}<span className="text-blue-400">https://fastsubmit.hostspica.com/embed.js</span>{`"
+  src="`}<span className="text-blue-400">https://fastsubmit.cloud/embed.js</span>{`"
   data-form-id="`}<span className="text-green-400">your-form-id</span>{`"
   data-theme="`}<span className="text-purple-400">light</span>{`">
 </script>`}
@@ -178,6 +247,7 @@ export default function WebsiteEmbedPage() {
       </section>
 
       <Footer variant="extended" />
-    </div>
+      </div>
+    </>
   )
 }

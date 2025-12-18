@@ -3,15 +3,18 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'Forms vs Surveys: Key Differences and When to Use Each',
-  description: 'Understand the key differences between forms and surveys, and learn when to use each type for maximum effectiveness.',
-  keywords: ["form vs survey","difference between form and survey","when to use forms","when to use surveys"],
+  title: 'Forms vs Surveys: Key Differences and When to Use Each | FastSubmit',
+  description: 'Understand the key differences between forms and surveys, and learn when to use each type for maximum effectiveness. Free form builder and survey maker.',
+  keywords: ['form vs survey', 'difference between form and survey', 'when to use forms', 'when to use surveys', 'form builder', 'free form builder', 'quiz maker', 'online form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'online form maker', 'hostspica forms', 'forms hostspica', 'zoho forms', 'microsoft forms', 'create free forms', 'easy forms'],
 }
 
 export default function BlogPost() {
   return (
+    <>
+      <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
       <article className="pt-32 pb-20 px-6">
@@ -79,5 +82,6 @@ export default function BlogPost() {
       </article>
       <Footer />
     </div>
+  </>
   )
 }

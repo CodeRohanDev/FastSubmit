@@ -3,15 +3,18 @@ import Link from 'next/link'
 import { ArrowRight, BarChart3, Users, TrendingUp, Check } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: '10 Survey Design Tips for Better Response Rates | FastSubmit',
-  description: 'Create surveys that people actually want to complete. Expert tips for designing engaging surveys with higher response rates and better data quality.',
-  keywords: ['survey design', 'survey tips', 'response rate', 'survey best practices', 'questionnaire design'],
+  description: 'Create surveys that people actually want to complete. Expert tips for designing engaging surveys with higher response rates and better data quality. Free survey maker alternative to Google Forms.',
+  keywords: ['survey design', 'survey tips', 'response rate', 'survey best practices', 'questionnaire design', 'quiz maker', 'form builder', 'free form builder', 'online form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'online form maker', 'hostspica forms', 'forms hostspica', 'zoho forms', 'microsoft forms', 'create free forms', 'easy forms'],
 }
 
 export default function SurveyDesignTipsPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar variant="simple" />
 
@@ -470,5 +473,6 @@ export default function SurveyDesignTipsPage() {
 
       <Footer />
     </div>
+    </>
   )
 }

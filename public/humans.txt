@@ -1,0 +1,69 @@
+# FastSubmit - Free Form Builder
+# https://fastsubmit.cloud
+
+/* TEAM */
+Company: Hostspica Private Limited
+Product: FastSubmit
+Location: India
+Website: https://fastsubmit.cloud
+Contact: support@fastsubmit.cloud
+
+/* SITE */
+Last update: 2024/12/10
+Language: English (India)
+Doctype: HTML5
+IDE: Visual Studio Code
+Technologies: Next.js, TypeScript, Tailwind CSS, Firebase
+Hosting: Vercel
+Standards: HTML5, CSS3, JavaScript ES6+
+
+/* THANKS */
+Next.js Team - For the amazing React framework
+Vercel - For excellent hosting and deployment
+Tailwind CSS - For beautiful utility-first CSS
+Firebase - For authentication and database
+Lucide - For beautiful icons
+Google Fonts - For typography
+
+/* MISSION */
+Making form building accessible to everyone.
+Free forever, no hidden costs.
+Beautiful forms for websites, social media, and online sharing.
+Automate form submissions and speed up online applications.
+
+/* KEYWORDS */
+FastSubmit, Fast Submit, Form Builder, Online Forms, 
+Form Submission Automation, Bulk Form Submission,
+Drag Drop Form Builder, No Code Form Builder,
+Google Forms Alternative, Free Form Creator,
+Form Generator, Survey Maker, Quiz Builder,
+Contact Form Builder, Lead Generation Forms,
+Form API, Webhook Integration, Custom Branding,
+Mobile Responsive Forms, Spam Protection,
+Form Analytics, Export to Excel, PDF Forms,
+Social Media Forms, Instagram Forms, Facebook Forms,
+Website Form Embed, WordPress Forms, Shopify Forms,
+Student Submission Tool, Business Form Automation,
+Freelancer Form Tools, Online Form Generator
+
+                               _
+                              | |
+                              | |===( )   //////
+                              |_|   |||  | o o|
+                                     ||| ( c  )                  ____
+                                      ||| \= /                  ||   \_
+                                       ||||||                   ||     |
+                                       ||||||                ...||__/|-"
+                                       ||||||             __|________|__
+                                         |||             |______________|
+                                         |||             || ||      || ||
+                                         |||             || ||      || ||
+                                ---------------------------||-||------||-||-------
+                                                        || ||      || ||
+
+/* CONTACT */
+Email: support@fastsubmit.cloud
+Twitter: @fastsubmit
+GitHub: https://github.com/hostspica
+
+Built with ❤️ in India

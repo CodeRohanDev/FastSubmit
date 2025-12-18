@@ -3,15 +3,34 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Best Google Forms Alternatives in 2025: Top 10 Options Compared',
   description: 'Looking for a Google Forms alternative? Discover the top 10 form builders that offer better features, design, and pricing. Free and paid options compared.',
-  keywords: ['google forms alternative', 'free google forms alternative', 'better than google forms', 'form builder comparison'],
+  keywords: [
+    'google forms alternative',
+    'google form alternative',
+    'free google forms alternative',
+    'best google form free',
+    'free google form',
+    'better than google forms',
+    'form builder comparison',
+    'free form builder',
+    'best form builder',
+    'zoho forms',
+    'microsoft forms',
+    'free zoho forms',
+    'free microsoft forms',
+    'online form builder',
+    'form maker'
+  ],
 }
 
 export default function BlogPost() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -326,5 +345,6 @@ export default function BlogPost() {
 
       <Footer />
     </div>
+    </>
   )
 }

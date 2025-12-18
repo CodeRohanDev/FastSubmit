@@ -1,18 +1,29 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'API Documentation - Free Form API | FastSubmit',
+  description: 'Complete API documentation for FastSubmit free form builder. REST API, code examples, integration guides. Best free form API alternative to Google Forms.',
+  keywords: ['form api', 'free form api', 'form api free', 'google form api', 'rest api forms', 'form builder api', 'form api documentation', 'free form builder', 'online form builder'],
+}
+
 export default function APIDocumentationPage() {
   return (
+    <>
+    <GoogleAnalytics />
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">API Documentation</h1>
-      <p className="text-gray-600 mb-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">API Documentation</h1>
+      <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
         Complete guide to integrating FastSubmit with your website or application.
       </p>
 
       {/* Overview */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Overview</h2>
-        <p className="text-gray-600 mb-4">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Overview</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
           FastSubmit provides a simple REST API for collecting form submissions. No backend code required!
         </p>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
           <p className="text-sm text-blue-800">
             <strong>Public Endpoint:</strong> The form submission endpoint is public and doesn&apos;t require authentication. 
             Perfect for static websites, landing pages, and client-side applications.
@@ -21,38 +32,39 @@ export default function APIDocumentationPage() {
       </section>
 
       {/* Submit Form Data */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Submit Form Data</h2>
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Submit Form Data</h2>
         
-        <div className="border border-gray-200 rounded-xl overflow-hidden mb-6">
-          <div className="flex items-center gap-3 p-4 bg-gray-50 border-b border-gray-200">
-            <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-700">POST</span>
-            <code className="text-sm font-mono">/api/submit/:formId</code>
+        <div className="border border-gray-200 rounded-xl overflow-hidden mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-gray-50 border-b border-gray-200">
+            <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-700 self-start">POST</span>
+            <code className="text-sm font-mono break-all sm:break-normal">/api/submit/:formId</code>
           </div>
-          <div className="p-4">
-            <p className="text-gray-600 mb-4">
+          <div className="p-3 sm:p-4">
+            <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
               Submit form data to your FastSubmit form. Accepts both JSON and form-encoded data.
             </p>
             
-            <h4 className="font-medium text-gray-900 mb-2">Parameters</h4>
-            <div className="mb-4">
-              <div className="flex items-start gap-3 mb-2">
-                <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">formId</code>
-                <span className="text-xs bg-gray-200 px-2 py-1 rounded">required</span>
+            <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Parameters</h4>
+            <div className="mb-3 sm:mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 mb-2">
+                <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono self-start">formId</code>
+                <span className="text-xs bg-gray-200 px-2 py-1 rounded self-start">required</span>
               </div>
-              <p className="text-sm text-gray-600 ml-20">Your unique form ID from the dashboard</p>
+              <p className="text-sm text-gray-600 sm:ml-20">Your unique form ID from the dashboard</p>
             </div>
 
-            <h4 className="font-medium text-gray-900 mb-2">Request Body</h4>
-            <p className="text-gray-600 mb-2">
+            <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Request Body</h4>
+            <p className="text-gray-600 mb-2 text-sm sm:text-base">
               Send your form fields as key-value pairs. Field names must match your form configuration.
             </p>
           </div>
         </div>
 
         {/* HTML Example */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">HTML Form</h3>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">HTML Form</h3>
+        <div className="bg-gray-900 rounded-xl overflow-hidden mb-4 sm:mb-6">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`<form action="https://yourapp.com/api/submit/YOUR_FORM_ID" method="POST">
   <input type="text" name="name" placeholder="Your name" required />
   <input type="email" name="email" placeholder="your@email.com" required />
@@ -63,11 +75,13 @@ export default function APIDocumentationPage() {
   
   <button type="submit">Submit</button>
 </form>`}
-        </pre>
+          </pre>
+        </div>
 
         {/* JavaScript Example */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">JavaScript (Fetch API)</h3>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">JavaScript (Fetch API)</h3>
+        <div className="bg-gray-900 rounded-xl overflow-hidden mb-4 sm:mb-6">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`const formData = {
   name: "John Doe",
   email: "john@example.com",
@@ -88,11 +102,13 @@ fetch("https://yourapp.com/api/submit/YOUR_FORM_ID", {
   }
 })
 .catch(error => console.error("Error:", error));`}
-        </pre>
+          </pre>
+        </div>
 
         {/* React Example */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">React Example</h3>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">React Example</h3>
+        <div className="bg-gray-900 rounded-xl overflow-hidden mb-4 sm:mb-6">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`import { useState } from 'react';
 
 function ContactForm() {
@@ -159,11 +175,13 @@ function ContactForm() {
     </form>
   );
 }`}
-        </pre>
+          </pre>
+        </div>
 
         {/* cURL Example */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">cURL</h3>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">cURL</h3>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`curl -X POST https://yourapp.com/api/submit/YOUR_FORM_ID \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -171,35 +189,39 @@ function ContactForm() {
     "email": "john@example.com",
     "message": "Hello from cURL!"
   }'`}
-        </pre>
+          </pre>
+        </div>
       </section>
 
       {/* Responses */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Responses</h2>
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Responses</h2>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Success */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-700">200 OK</span>
-              <h4 className="font-medium text-gray-900">Success</h4>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 sm:mb-3">
+              <span className="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-700 self-start">200 OK</span>
+              <h4 className="font-medium text-gray-900 text-sm sm:text-base">Success</h4>
             </div>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`{
   "success": true,
   "message": "Submission received"
 }`}
-            </pre>
+              </pre>
+            </div>
           </div>
 
           {/* Validation Error */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700">400 Bad Request</span>
-              <h4 className="font-medium text-gray-900">Validation Error</h4>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 sm:mb-3">
+              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700 self-start">400 Bad Request</span>
+              <h4 className="font-medium text-gray-900 text-sm sm:text-base">Validation Error</h4>
             </div>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`{
   "error": "Validation failed",
   "errors": [
@@ -207,20 +229,23 @@ function ContactForm() {
     "Email is required"
   ]
 }`}
-            </pre>
+              </pre>
+            </div>
           </div>
 
           {/* Unauthorized Domain */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700">403 Forbidden</span>
-              <h4 className="font-medium text-gray-900">Unauthorized Domain</h4>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 sm:mb-3">
+              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700 self-start">403 Forbidden</span>
+              <h4 className="font-medium text-gray-900 text-sm sm:text-base">Unauthorized Domain</h4>
             </div>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`{
   "error": "Domain not authorized. Please verify your domain in form settings."
 }`}
-            </pre>
+              </pre>
+            </div>
             <p className="text-sm text-gray-600 mt-2">
               This error occurs when domain verification is enabled and the request comes from an unauthorized domain.
             </p>
@@ -228,28 +253,32 @@ function ContactForm() {
 
           {/* Form Not Found */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700">404 Not Found</span>
-              <h4 className="font-medium text-gray-900">Form Not Found</h4>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 sm:mb-3">
+              <span className="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-700 self-start">404 Not Found</span>
+              <h4 className="font-medium text-gray-900 text-sm sm:text-base">Form Not Found</h4>
             </div>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`{
   "error": "Form not found"
 }`}
-            </pre>
+              </pre>
+            </div>
           </div>
 
           {/* Rate Limit */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-1 rounded text-xs font-bold bg-orange-100 text-orange-700">429 Too Many Requests</span>
-              <h4 className="font-medium text-gray-900">Rate Limit Exceeded</h4>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 sm:mb-3">
+              <span className="px-2 py-1 rounded text-xs font-bold bg-orange-100 text-orange-700 self-start">429 Too Many Requests</span>
+              <h4 className="font-medium text-gray-900 text-sm sm:text-base">Rate Limit Exceeded</h4>
             </div>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`{
   "error": "Too many submissions. Please try again later."
 }`}
-            </pre>
+              </pre>
+            </div>
             <p className="text-sm text-gray-600 mt-2">
               Rate limit: 10 submissions per minute per IP address.
             </p>
@@ -258,17 +287,18 @@ function ContactForm() {
       </section>
 
       {/* Features */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Features</h2>
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Features</h2>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Spam Protection */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">🛡️ Spam Protection</h3>
-            <p className="text-gray-600 mb-3">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">🛡️ Spam Protection</h3>
+            <p className="text-gray-600 mb-2 sm:mb-3 text-sm sm:text-base">
               Add a hidden honeypot field to catch spam bots:
             </p>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+            <div className="bg-gray-900 rounded-xl overflow-hidden">
+              <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm leading-relaxed text-gray-100">
 {`<input 
   type="text" 
   name="_honeypot" 
@@ -276,7 +306,8 @@ function ContactForm() {
   tabindex="-1" 
   autocomplete="off" 
 />`}
-            </pre>
+              </pre>
+            </div>
             <p className="text-sm text-gray-600 mt-2">
               If this field is filled, the submission is silently rejected (returns success but doesn&apos;t save).
             </p>
@@ -284,11 +315,11 @@ function ContactForm() {
 
           {/* Domain Verification */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">🔒 Domain Verification</h3>
-            <p className="text-gray-600 mb-3">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">🔒 Domain Verification</h3>
+            <p className="text-gray-600 mb-2 sm:mb-3 text-sm sm:text-base">
               Restrict form submissions to verified domains only. Enable in your form settings and add DNS TXT records to verify domain ownership.
             </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
               <p className="text-sm text-amber-800">
                 <strong>Note:</strong> Localhost and development domains (127.0.0.1, 192.168.x.x) bypass domain verification for testing.
               </p>
@@ -297,19 +328,19 @@ function ContactForm() {
 
           {/* CORS */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">🌐 CORS Enabled</h3>
-            <p className="text-gray-600">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">🌐 CORS Enabled</h3>
+            <p className="text-gray-600 text-sm sm:text-base">
               The submit endpoint has CORS enabled, allowing submissions from any origin. Perfect for static sites, SPAs, and cross-origin requests.
             </p>
           </div>
 
           {/* Rate Limiting */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">⏱️ Rate Limiting</h3>
-            <p className="text-gray-600 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">⏱️ Rate Limiting</h3>
+            <p className="text-gray-600 mb-2 text-sm sm:text-base">
               To prevent abuse, submissions are rate limited:
             </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
+            <ul className="list-disc list-inside text-gray-600 space-y-1 text-sm sm:text-base ml-4 sm:ml-0">
               <li>10 submissions per minute per IP address</li>
               <li>Rate limit headers included in response</li>
               <li>Automatic reset after time window</li>
@@ -318,11 +349,11 @@ function ContactForm() {
 
           {/* Field Validation */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">✅ Field Validation</h3>
-            <p className="text-gray-600 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">✅ Field Validation</h3>
+            <p className="text-gray-600 mb-2 text-sm sm:text-base">
               FastSubmit validates submissions based on your form configuration:
             </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
+            <ul className="list-disc list-inside text-gray-600 space-y-1 text-sm sm:text-base ml-4 sm:ml-0">
               <li>Required fields must be present</li>
               <li>Email fields are validated for proper format</li>
               <li>Returns detailed error messages for failed validations</li>
@@ -332,46 +363,46 @@ function ContactForm() {
       </section>
 
       {/* Best Practices */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Best Practices</h2>
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Best Practices</h2>
         
-        <div className="space-y-4">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">✓</span>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-1">Always include honeypot field</h4>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl flex-shrink-0">✓</span>
+            <div className="min-w-0">
+              <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Always include honeypot field</h4>
               <p className="text-sm text-gray-600">Protects against spam bots without requiring CAPTCHA</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">✓</span>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-1">Match field names exactly</h4>
+          <div className="flex items-start gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl flex-shrink-0">✓</span>
+            <div className="min-w-0">
+              <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Match field names exactly</h4>
               <p className="text-sm text-gray-600">Field names in your HTML must match the field IDs in your form configuration</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">✓</span>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-1">Handle errors gracefully</h4>
+          <div className="flex items-start gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl flex-shrink-0">✓</span>
+            <div className="min-w-0">
+              <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Handle errors gracefully</h4>
               <p className="text-sm text-gray-600">Show user-friendly error messages when validation fails</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">✓</span>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-1">Use domain verification for production</h4>
+          <div className="flex items-start gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl flex-shrink-0">✓</span>
+            <div className="min-w-0">
+              <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Use domain verification for production</h4>
               <p className="text-sm text-gray-600">Prevent unauthorized usage by restricting to your verified domains</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">✓</span>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-1">Test with different content types</h4>
+          <div className="flex items-start gap-2 sm:gap-3">
+            <span className="text-lg sm:text-2xl flex-shrink-0">✓</span>
+            <div className="min-w-0">
+              <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Test with different content types</h4>
               <p className="text-sm text-gray-600">Ensure your form works with both JSON and form-encoded submissions</p>
             </div>
           </div>
@@ -380,29 +411,30 @@ function ContactForm() {
 
       {/* Support */}
       <section>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Need Help?</h2>
-        <p className="text-gray-600 mb-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Need Help?</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
           Check out our other documentation pages for more detailed information:
         </p>
-        <div className="grid md:grid-cols-2 gap-4">
-          <a href="/docs/quickstart" className="block p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
-            <h3 className="font-medium text-gray-900 mb-1">Quick Start Guide</h3>
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+          <a href="/docs/quickstart" className="block p-3 sm:p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
+            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Quick Start Guide</h3>
             <p className="text-sm text-gray-600">Get started in 5 minutes</p>
           </a>
-          <a href="/docs/examples" className="block p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
-            <h3 className="font-medium text-gray-900 mb-1">Code Examples</h3>
+          <a href="/docs/examples" className="block p-3 sm:p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
+            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Code Examples</h3>
             <p className="text-sm text-gray-600">More integration examples</p>
           </a>
-          <a href="/docs/field-types" className="block p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
-            <h3 className="font-medium text-gray-900 mb-1">Field Types</h3>
+          <a href="/docs/field-types" className="block p-3 sm:p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
+            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Field Types</h3>
             <p className="text-sm text-gray-600">Available form field types</p>
           </a>
-          <a href="/docs/domain-verification" className="block p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
-            <h3 className="font-medium text-gray-900 mb-1">Domain Verification</h3>
+          <a href="/docs/domain-verification" className="block p-3 sm:p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors">
+            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Domain Verification</h3>
             <p className="text-sm text-gray-600">Secure your forms</p>
           </a>
         </div>
       </section>
     </div>
+    </>
   )
 }

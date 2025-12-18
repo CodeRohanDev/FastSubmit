@@ -9,7 +9,7 @@ export default function Footer({ variant = 'simple' }: FooterProps) {
     return (
       <footer className="py-16 px-6 border-t border-gray-200 bg-[#fafafa]">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-8 mb-12">
+          <div className="grid md:grid-cols-6 gap-8 mb-12">
             <div className="md:col-span-2">
               <div className="text-xl font-semibold mb-4">
                 fastsubmit<span className="text-indigo-600">.</span>
@@ -35,12 +35,23 @@ export default function Footer({ variant = 'simple' }: FooterProps) {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-sm">Product</h4>
+              <h4 className="font-semibold mb-4 text-sm">Tools</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li><Link href="/form-builder" className="hover:text-gray-900">Form Builder</Link></li>
-                <li><Link href="/templates" className="hover:text-gray-900">Templates</Link></li>
-                <li><Link href="/blog" className="hover:text-gray-900">Blog</Link></li>
+                <li><Link href="/fast-submit" className="hover:text-gray-900">Fast Submit</Link></li>
+                <li><Link href="/bulk-form-submission" className="hover:text-gray-900">Bulk Submission</Link></li>
+                <li><Link href="/no-code-form-builder" className="hover:text-gray-900">No Code Builder</Link></li>
+                <li><Link href="/online-form-generator" className="hover:text-gray-900">Form Generator</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4 text-sm">Alternatives</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li><Link href="/google-forms-alternative" className="hover:text-gray-900">vs Google Forms</Link></li>
+                <li><Link href="/contact-form-builder" className="hover:text-gray-900">Contact Forms</Link></li>
+                <li><Link href="/survey-maker" className="hover:text-gray-900">Survey Maker</Link></li>
+                <li><Link href="/quiz-maker" className="hover:text-gray-900">Quiz Maker</Link></li>
+                <li><Link href="/templates" className="hover:text-gray-900">Templates</Link></li>
               </ul>
             </div>
             <div>

@@ -1,19 +1,47 @@
 # FastSubmit - Robots.txt
-# https://fastsubmit.hostspica.com
+# https://fastsubmit.cloud
 
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /dashboard/
-Disallow: /_next/
 Disallow: /admin/
+Disallow: /verify-email
+Disallow: /_next/
 
-# Sitemaps
-Sitemap: https://fastsubmit.hostspica.com/sitemap.xml
+# Allow important SEO pages
+Allow: /form-builder
+Allow: /google-forms-alternative
+Allow: /fast-submit
+Allow: /form-submission-automation
+Allow: /drag-drop-form-builder
+Allow: /bulk-form-submission
+Allow: /no-code-form-builder
+Allow: /online-form-generator
+Allow: /contact-form-builder
+Allow: /survey-maker
+Allow: /quiz-maker
+Allow: /templates
+Allow: /docs/
+Allow: /use-cases/
+Allow: /blog/
 
-# Crawl-delay for specific bots (optional)
-User-agent: Googlebot
-Crawl-delay: 0
+# Sitemap
+Sitemap: https://fastsubmit.cloud/sitemap.xml
 
+# Crawl-delay (only bots that respect it)
 User-agent: Bingbot
 Crawl-delay: 0
+
+User-agent: Slurp
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

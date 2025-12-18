@@ -4,12 +4,14 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { Form, FormField, VerifiedDomain } from '@/types'
+import { Form, FormField, VerifiedDomain, FormLogic } from '@/types'
+import FormLogicBuilder from '@/components/FormLogicBuilder'
 import { 
   ArrowLeft, Trash2, Plus, GripVertical, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare
+  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare, Zap, Calculator
 } from 'lucide-react'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type },
@@ -19,6 +21,8 @@ const fieldTypes = [
   { value: 'date', label: 'Date', icon: Calendar },
   { value: 'select', label: 'Dropdown', icon: List },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare },
+  { value: 'calculated', label: 'Calculated', icon: Calculator },
+  { value: 'display', label: 'Display Text', icon: MessageSquare },
 ] as const
 
 type FieldType = typeof fieldTypes[number]['value']
@@ -29,6 +33,14 @@ export default function FormSettingsPage() {
   const [form, setForm] = useState<Form | null>(null)
   const [name, setName] = useState('')
   const [fields, setFields] = useState<FormField[]>([])
+  const [formLogic, setFormLogic] = useState<FormLogic>({
+    rules: [],
+    globalSettings: {
+      enableAnimations: true,
+      showLogicIndicators: true,
+      debugMode: false
+    }
+  })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
@@ -56,7 +68,20 @@ export default function FormSettingsPage() {
           const data = { id: formDoc.id, ...formDoc.data() } as Form
           setForm(data)
           setName(data.name)
-          setFields(data.fields || [])
+          // Add stable keys to existing fields that don't have them
+          const fieldsWithStableKeys = (data.fields || []).map((field: FormField, index: number) => ({
+            ...field,
+            _stableKey: field._stableKey || `existing_field_${index}_${Date.now()}`
+          }))
+          setFields(fieldsWithStableKeys)
+          setFormLogic(data.logic || {
+            rules: [],
+            globalSettings: {
+              enableAnimations: true,
+              showLogicIndicators: true,
+              debugMode: false
+            }
+          })
           setSelectedDomains(data.allowedDomains || [])
           setRequireVerification(data.requireDomainVerification || false)
           setBrandingLogo(data.branding?.logo || '')
@@ -95,13 +120,17 @@ export default function FormSettingsPage() {
   }
 
   const addField = (type: FieldType) => {
+    const timestamp = Date.now()
     const newField: FormField = {
-      id: `field_${Date.now()}`,
+      id: `field_${timestamp}`,
       label: fieldTypes.find(f => f.value === type)?.label || 'New Field',
       type,
       required: false,
       placeholder: '',
       options: type === 'select' ? ['Option 1', 'Option 2'] : undefined,
+      displayText: type === 'display' ? 'Enter your information text here...' : undefined,
+      calculation: type === 'calculated' ? 'field1 + field2' : undefined,
+      _stableKey: `field_key_${timestamp}`,
     }
     setFields([...fields, newField])
     setExpandedField(newField.id)
@@ -125,7 +154,13 @@ export default function FormSettingsPage() {
 
   const duplicateField = (index: number) => {
     const field = fields[index]
-    const newField = { ...field, id: `${field.id}_copy_${Date.now()}`, label: `${field.label} (copy)` }
+    const timestamp = Date.now()
+    const newField = { 
+      ...field, 
+      id: `${field.id}_copy_${timestamp}`, 
+      label: `${field.label} (copy)`,
+      _stableKey: `copy_${timestamp}`,
+    }
     const updated = [...fields]
     updated.splice(index + 1, 0, newField)
     setFields(updated)
@@ -176,9 +211,16 @@ export default function FormSettingsPage() {
     }
     setSaving(true)
     try {
+      // Clean fields to remove stable keys before saving
+      const cleanFields = fields.map(field => {
+        const { _stableKey, ...cleanField } = field
+        return cleanField
+      })
+
       await updateDoc(doc(db, 'forms', formId as string), {
         name: name.trim(),
-        fields,
+        fields: cleanFields,
+        logic: formLogic,
         allowedDomains: selectedDomains,
         requireDomainVerification: requireVerification,
         branding: {
@@ -234,48 +276,52 @@ export default function FormSettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
-        <Link href={`/dashboard/forms/${formId}`} className="text-gray-400 hover:text-gray-600 transition-colors">
-          <ArrowLeft size={20} />
+    <>
+      <GoogleAnalytics />
+      <div className="max-w-2xl mx-auto">
+      <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <Link href={`/dashboard/forms/${formId}`} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+          <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
         </Link>
-        <h1 className="text-xl font-semibold tracking-tight">Form settings</h1>
+        <h1 className="text-lg sm:text-xl font-semibold tracking-tight">Form settings</h1>
       </div>
 
       {message.text && (
-        <div className={`px-4 py-3 rounded-lg mb-6 flex items-center justify-between text-sm ${
+        <div className={`px-3 sm:px-4 py-3 rounded-lg mb-4 sm:mb-6 flex items-center justify-between text-sm gap-3 ${
           message.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
         }`}>
-          <span>{message.text}</span>
-          <button onClick={() => setMessage({ type: '', text: '' })}><X size={16} /></button>
+          <span className="flex-1 min-w-0">{message.text}</span>
+          <button onClick={() => setMessage({ type: '', text: '' })} className="flex-shrink-0">
+            <X size={14} className="sm:w-4 sm:h-4" />
+          </button>
         </div>
       )}
 
       {/* Form Name */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">Form name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
         />
       </div>
 
       {/* Custom Branding */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Building2 size={16} className="text-gray-600" />
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <Building2 size={14} className="text-gray-600 sm:w-4 sm:h-4" />
           <label className="text-sm font-medium text-gray-700">Custom branding</label>
         </div>
         
-        <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg mb-4">
+        <div className="p-3 sm:p-4 bg-purple-50 border border-purple-100 rounded-lg mb-3 sm:mb-4">
           <p className="text-xs text-purple-900">
             Add your company logo, name, and tagline to display at the top of your form. This helps build trust and brand recognition.
           </p>
         </div>
 
-        <div className="space-y-4 bg-white border border-gray-200 rounded-lg p-4">
+        <div className="space-y-3 sm:space-y-4 bg-white border border-gray-200 rounded-lg p-3 sm:p-4">
           {/* Logo URL */}
           <div>
             <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
@@ -354,8 +400,8 @@ export default function FormSettingsPage() {
       </div>
 
       {/* Fields */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
+      <div className="mb-4 sm:mb-6">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
           <label className="text-sm font-medium text-gray-700">Fields</label>
           <span className="text-xs text-gray-400">{fields.length} field{fields.length !== 1 ? 's' : ''}</span>
         </div>
@@ -367,7 +413,7 @@ export default function FormSettingsPage() {
 
             return (
               <div
-                key={field.id}
+                key={field._stableKey || field.id}
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
@@ -377,26 +423,26 @@ export default function FormSettingsPage() {
                 } ${isExpanded ? 'bg-gray-50' : 'bg-white hover:border-gray-300'}`}
               >
                 <div
-                  className="flex items-center gap-3 p-3 cursor-pointer"
+                  className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 cursor-pointer"
                   onClick={() => setExpandedField(isExpanded ? null : field.id)}
                 >
-                  <GripVertical className="text-gray-300 cursor-grab" size={16} />
-                  <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center">
-                    <FieldIcon className="w-3.5 h-3.5 text-gray-600" />
+                  <GripVertical className="text-gray-300 cursor-grab flex-shrink-0" size={14} />
+                  <div className="w-6 sm:w-7 h-6 sm:h-7 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <FieldIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-600" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-900 truncate">{field.label}</span>
                       {field.required && (
-                        <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded">Required</span>
+                        <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded flex-shrink-0">Required</span>
                       )}
                     </div>
-                    <span className="text-xs text-gray-400">{field.type} • {field.id}</span>
+                    <span className="text-xs text-gray-400 truncate">{field.type} • {field.id}</span>
                   </div>
-                  <div className="flex items-center gap-0.5">
-                    <button onClick={(e) => { e.stopPropagation(); moveField(index, index - 1) }} disabled={index === 0} className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"><ChevronUp size={14} /></button>
-                    <button onClick={(e) => { e.stopPropagation(); moveField(index, index + 1) }} disabled={index === fields.length - 1} className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"><ChevronDown size={14} /></button>
-                    {isExpanded ? <ChevronUp size={16} className="text-gray-400 ml-1" /> : <ChevronDown size={16} className="text-gray-400 ml-1" />}
+                  <div className="flex items-center gap-0.5 flex-shrink-0">
+                    <button onClick={(e) => { e.stopPropagation(); moveField(index, index - 1) }} disabled={index === 0} className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"><ChevronUp size={12} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); moveField(index, index + 1) }} disabled={index === fields.length - 1} className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"><ChevronDown size={12} /></button>
+                    {isExpanded ? <ChevronUp size={14} className="text-gray-400 ml-1 sm:w-4 sm:h-4" /> : <ChevronDown size={14} className="text-gray-400 ml-1 sm:w-4 sm:h-4" />}
                   </div>
                 </div>
 
@@ -438,11 +484,47 @@ export default function FormSettingsPage() {
                         </div>
                       </div>
                     )}
+                    {field.type === 'display' && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-2">Display Text</label>
+                        <textarea
+                          value={field.displayText || ''}
+                          onChange={(e) => updateField(index, { displayText: e.target.value })}
+                          placeholder="Enter the information text to display to users..."
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          rows={3}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          This text will be displayed as information in the form
+                        </p>
+                      </div>
+                    )}
+                    {field.type === 'calculated' && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-2">Calculation Formula</label>
+                        <input
+                          type="text"
+                          value={field.calculation || ''}
+                          onChange={(e) => updateField(index, { calculation: e.target.value })}
+                          placeholder="e.g., field1 + field2 * 0.1"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Use field IDs and basic math operators (+, -, *, /, parentheses)
+                        </p>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between pt-2">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" checked={field.required} onChange={(e) => updateField(index, { required: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-gray-900" />
-                        <span className="text-xs text-gray-600">Required</span>
-                      </label>
+                      <div className="flex items-center gap-4">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={field.required} onChange={(e) => updateField(index, { required: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-gray-900" />
+                          <span className="text-xs text-gray-600">Required</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={field.defaultHidden || false} onChange={(e) => updateField(index, { defaultHidden: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-gray-900" />
+                          <span className="text-xs text-gray-600">Hidden by default</span>
+                        </label>
+                      </div>
                       <div className="flex gap-1">
                         <button onClick={() => duplicateField(index)} className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"><Copy size={14} /></button>
                         <button onClick={() => removeField(index)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
@@ -471,6 +553,31 @@ export default function FormSettingsPage() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Form Logic */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Zap size={16} className="text-gray-600" />
+          <label className="text-sm font-medium text-gray-700">Smart Logic</label>
+        </div>
+        
+        <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg mb-4">
+          <p className="text-xs text-purple-900 mb-2">
+            Add conditional logic to make your form intelligent. Show/hide fields, calculate values, and create personalized experiences based on user responses.
+          </p>
+          <p className="text-xs text-purple-700">
+            💡 Tip: Add at least 2 fields before creating logic rules for the best experience.
+          </p>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg">
+          <FormLogicBuilder
+            fields={fields}
+            logic={formLogic}
+            onLogicChange={setFormLogic}
+          />
         </div>
       </div>
 
@@ -562,12 +669,12 @@ export default function FormSettingsPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-        <button onClick={handleSave} disabled={saving} className="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-2">
-          {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <><Save size={16} /> Save changes</>}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-4 border-t border-gray-100">
+        <button onClick={handleSave} disabled={saving} className="bg-gray-900 text-white px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 order-2 sm:order-1">
+          {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <><Save size={14} className="sm:w-4 sm:h-4" /> Save changes</>}
         </button>
-        <button onClick={() => setShowDeleteConfirm(true)} className="text-sm text-red-600 hover:text-red-700 flex items-center gap-1.5">
-          <Trash2 size={16} /> Delete
+        <button onClick={() => setShowDeleteConfirm(true)} className="text-sm text-red-600 hover:text-red-700 flex items-center justify-center gap-1.5 order-1 sm:order-2">
+          <Trash2 size={14} className="sm:w-4 sm:h-4" /> Delete
         </button>
       </div>
 
@@ -587,5 +694,6 @@ export default function FormSettingsPage() {
         </div>
       )}
     </div>
+    </>
   )
 }

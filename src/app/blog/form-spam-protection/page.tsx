@@ -3,19 +3,48 @@ import Link from 'next/link'
 import { ArrowRight, Shield, AlertTriangle, Check, X } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Complete Guide to Form Spam Protection in 2025 | FastSubmit',
-  description: 'Protect your forms from spam and bots with these 7 proven techniques. Learn about honeypots, reCAPTCHA, rate limiting, and more.',
-  keywords: ['form spam protection', 'prevent form spam', 'stop form bots', 'form security', 'honeypot', 'recaptcha'],
+  description: 'Protect your forms from spam and bots with these 7 proven techniques. Learn about honeypots, reCAPTCHA, rate limiting, and more. Free secure form builder.',
+  keywords: ['form spam protection', 'prevent form spam', 'stop form bots', 'form security', 'honeypot', 'recaptcha', 'form builder', 'free form builder', 'online form builder', 'google forms', 'google form alternative', 'free online form', 'form maker', 'hostspica forms', 'forms hostspica', 'best form builder', 'create free forms', 'easy forms'],
 }
 
 export default function FormSpamProtectionPage() {
-  return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navbar variant="simple" />
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Form Spam Protection: Complete Guide to Stop Spam Submissions",
+    "description": "Learn how to protect your forms from spam with honeypot fields, reCAPTCHA, and other proven techniques. Complete spam protection guide.",
+    "author": {
+      "@type": "Organization",
+      "name": "FastSubmit"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "FastSubmit",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fastsubmit.cloud/logo.png"
+      }
+    },
+    "datePublished": "2024-12-10",
+    "dateModified": "2024-12-10",
+    "url": "https://fastsubmit.cloud/blog/form-spam-protection"
+  }
 
-      <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
+  return (
+    <>
+    <GoogleAnalytics />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navbar variant="simple" />
+
+        <article className="max-w-3xl mx-auto px-6 pt-24 pb-16">
         <div className="mb-8">
           <Link href="/blog" className="text-sm text-indigo-600 hover:text-indigo-700 mb-4 inline-block">
             ← Back to Blog
@@ -405,5 +434,6 @@ export default function FormSpamProtectionPage() {
 
       <Footer />
     </div>
+    </>
   )
 }

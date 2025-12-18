@@ -3,15 +3,18 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'How to Create Mobile-Friendly Forms: Complete Guide',
-  description: 'Learn how to create forms that work perfectly on mobile devices. Boost mobile conversions with better UX and design.',
-  keywords: ["mobile friendly forms","mobile form design","responsive forms","mobile form optimization"],
+  title: 'How to Create Mobile-Friendly Forms: Complete Guide | FastSubmit',
+  description: 'Learn how to create forms that work perfectly on mobile devices. Boost mobile conversions with better UX and design. Free responsive form builder.',
+  keywords: ['mobile friendly forms', 'mobile form design', 'responsive forms', 'mobile form optimization', 'form builder', 'free form builder', 'online form builder', 'form builder free', 'google forms', 'google form alternative', 'free online form', 'form maker', 'hostspica forms', 'forms hostspica', 'best form builder', 'create free forms', 'easy forms'],
 }
 
 export default function BlogPost() {
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
       <article className="pt-32 pb-20 px-6">
@@ -79,5 +82,6 @@ export default function BlogPost() {
       </article>
       <Footer />
     </div>
+    </>
   )
 }

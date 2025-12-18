@@ -1,16 +1,29 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Code Examples - Free Form Builder API | FastSubmit',
+  description: 'Ready-to-use code examples for FastSubmit free form builder. HTML, React, Vue, Node.js, Python examples. Best free form API.',
+  keywords: ['form api examples', 'free form api', 'form builder code', 'html form example', 'react form', 'form api free', 'easy forms'],
+}
+
 export default function ExamplesPage() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">Code Examples</h1>
-      <p className="text-gray-600 mb-8">
+    <>
+    <GoogleAnalytics />
+    <div className="min-w-0">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Code Examples</h1>
+      <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
         Ready-to-use code examples for integrating FastSubmit into your projects.
       </p>
 
       {/* HTML */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">HTML Form</h2>
-        <p className="text-gray-600 mb-4">Basic HTML form with all field types:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">HTML Form</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Basic HTML form with all field types:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +36,7 @@ export default function ExamplesPage() {
   </style>
 </head>
 <body>
-  <form action="https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID" method="POST">
+  <form action="https://fastsubmit.cloud/api/submit/YOUR_FORM_ID" method="POST">
     <label>
       Name *
       <input type="text" name="name" required />
@@ -59,15 +72,18 @@ export default function ExamplesPage() {
     <button type="submit">Send Message</button>
   </form>
 </body>
-</html>`}
-        </pre>
+</html>`}</code>
+          </pre>
+        </div>
       </section>
 
       {/* React */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">React</h2>
-        <p className="text-gray-600 mb-4">React component with form handling:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">React</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">React component with form handling:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`import { useState } from 'react';
 
 function ContactForm() {
@@ -80,7 +96,7 @@ function ContactForm() {
 
     try {
       const response = await fetch(
-        'https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID',
+        'https://fastsubmit.cloud/api/submit/YOUR_FORM_ID',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -133,15 +149,18 @@ function ContactForm() {
   );
 }
 
-export default ContactForm;`}
-        </pre>
+export default ContactForm;`}</code>
+          </pre>
+        </div>
       </section>
 
       {/* Vue */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Vue.js</h2>
-        <p className="text-gray-600 mb-4">Vue 3 component with Composition API:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Vue.js</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Vue 3 component with Composition API:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`<template>
   <div v-if="submitted">
     <p>Thank you! Your message has been sent.</p>
@@ -171,7 +190,7 @@ async function handleSubmit() {
 
   try {
     const response = await fetch(
-      'https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID',
+      'https://fastsubmit.cloud/api/submit/YOUR_FORM_ID',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -190,22 +209,25 @@ async function handleSubmit() {
     loading.value = false;
   }
 }
-</script>`}
-        </pre>
+</script>`}</code>
+          </pre>
+        </div>
       </section>
 
       {/* Node.js */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Node.js</h2>
-        <p className="text-gray-600 mb-4">Fetch submissions from your server:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Node.js</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Fetch submissions from your server:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`// Using fetch (Node.js 18+)
 const API_KEY = 'fs_your_api_key';
 const FORM_ID = 'your_form_id';
 
 async function getSubmissions() {
   const response = await fetch(
-    \`https://fastsubmit.hostspica.com/api/v1/forms/\${FORM_ID}/submissions\`,
+    \`https://fastsubmit.cloud/api/v1/forms/\${FORM_ID}/submissions\`,
     {
       headers: {
         'x-api-key': API_KEY,
@@ -225,20 +247,23 @@ async function getSubmissions() {
   }
 }
 
-getSubmissions();`}
-        </pre>
+getSubmissions();`}</code>
+          </pre>
+        </div>
       </section>
 
       {/* Python */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Python</h2>
-        <p className="text-gray-600 mb-4">Using the requests library:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Python</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Using the requests library:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`import requests
 
 API_KEY = 'fs_your_api_key'
 FORM_ID = 'your_form_id'
-BASE_URL = 'https://fastsubmit.hostspica.com/api/v1'
+BASE_URL = 'https://fastsubmit.cloud/api/v1'
 
 headers = {
     'x-api-key': API_KEY
@@ -267,43 +292,48 @@ csv_response = requests.get(
 
 with open('submissions.csv', 'w') as f:
     f.write(csv_response.text)
-print("Exported to submissions.csv")`}
-        </pre>
+print("Exported to submissions.csv")`}</code>
+          </pre>
+        </div>
       </section>
 
       {/* cURL */}
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">cURL</h2>
-        <p className="text-gray-600 mb-4">Command line examples:</p>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm">
+      <section className="mb-8 sm:mb-10">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">cURL</h2>
+        <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Command line examples:</p>
+        <div className="bg-gray-900 rounded-xl overflow-hidden">
+          <pre className="p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm leading-relaxed">
+            <code className="text-gray-100 whitespace-pre">
 {`# Submit a form
 curl -X POST \\
-  https://fastsubmit.hostspica.com/api/submit/YOUR_FORM_ID \\
+  https://fastsubmit.cloud/api/submit/YOUR_FORM_ID \\
   -H "Content-Type: application/json" \\
   -d '{"name": "John", "email": "john@example.com", "message": "Hello!"}'
 
 # List all forms
 curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms \\
+  https://fastsubmit.cloud/api/v1/forms \\
   -H "x-api-key: YOUR_API_KEY"
 
 # Get submissions
 curl -X GET \\
-  https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions \\
+  https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions \\
   -H "x-api-key: YOUR_API_KEY"
 
 # Export as CSV
 curl -X GET \\
-  "https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions?format=csv" \\
+  "https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions?format=csv" \\
   -H "x-api-key: YOUR_API_KEY" \\
   -o submissions.csv
 
 # Delete a submission
 curl -X DELETE \\
-  https://fastsubmit.hostspica.com/api/v1/forms/FORM_ID/submissions/SUB_ID \\
-  -H "x-api-key: YOUR_API_KEY"`}
-        </pre>
+  https://fastsubmit.cloud/api/v1/forms/FORM_ID/submissions/SUB_ID \\
+  -H "x-api-key: YOUR_API_KEY"`}</code>
+          </pre>
+        </div>
       </section>
     </div>
+    </>
   )
 }

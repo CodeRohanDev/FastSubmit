@@ -115,30 +115,31 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
 })`
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Link href={`/dashboard/forms/${formId}`} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowLeft size={20} />
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+          <Link href={`/dashboard/forms/${formId}`} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+            <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
           </Link>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">{form.name}</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg sm:text-xl font-semibold tracking-tight truncate">{form.name}</h1>
             <p className="text-sm text-gray-400">Preview & test</p>
           </div>
         </div>
         <button
           onClick={() => setShowCode(!showCode)}
-          className={`flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-colors ${showCode ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+          className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-sm rounded-lg transition-colors ${showCode ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900 border border-gray-200'}`}
         >
-          <Code size={16} />
-          {showCode ? 'Hide code' : 'Show code'}
+          <Code size={14} className="sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">{showCode ? 'Hide code' : 'Show code'}</span>
+          <span className="sm:hidden">{showCode ? 'Hide' : 'Code'}</span>
         </button>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className={`grid gap-6 lg:gap-8 ${showCode ? 'lg:grid-cols-2' : ''}`}>
         {/* Form Preview */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
+        <div className={showCode ? 'order-2 lg:order-1' : ''}>
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <span className="text-xs text-gray-400">Live preview</span>
             {submitted && (
               <button onClick={resetForm} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1">
@@ -176,18 +177,18 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
               </div>
             )}
 
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {submitted ? (
-                <div className="text-center py-8">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Check className="w-6 h-6 text-green-600" />
+                <div className="text-center py-6 sm:py-8">
+                  <div className="w-10 sm:w-12 h-10 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Check className="w-5 sm:w-6 h-5 sm:h-6 text-green-600" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">Submitted!</h3>
                   <p className="text-sm text-gray-500 mb-4">Your form was submitted successfully.</p>
                   <button onClick={resetForm} className="text-sm text-gray-900 hover:underline">Submit another</button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                 {error && <div className="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm">{error}</div>}
                 {form.fields.map((field) => (
                   <div key={field.id}>
@@ -246,49 +247,61 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
         </div>
 
         {/* Code / Info Panel */}
-        <div className="space-y-6">
+        <div className={`space-y-4 sm:space-y-6 ${showCode ? 'order-1 lg:order-2' : ''}`}>
           {showCode ? (
             <>
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
                   <span className="text-xs text-gray-400">Endpoint</span>
-                  <button onClick={() => copyCode(apiEndpoint)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1">
+                  <button onClick={() => copyCode(apiEndpoint)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1 self-start sm:self-auto">
                     {copied ? <Check size={12} /> : <Copy size={12} />} {copied ? 'Copied' : 'Copy'}
                   </button>
                 </div>
-                <code className="block bg-gray-100 px-3 py-2 rounded-lg text-xs font-mono overflow-x-auto">POST {apiEndpoint}</code>
+                <code className="block bg-gray-100 px-3 py-2 rounded-lg text-xs font-mono overflow-x-auto break-all sm:break-normal">POST {apiEndpoint}</code>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
                   <span className="text-xs text-gray-400">HTML</span>
-                  <button onClick={() => copyCode(htmlCode)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1"><Copy size={12} /> Copy</button>
+                  <button onClick={() => copyCode(htmlCode)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1 self-start sm:self-auto">
+                    <Copy size={12} /> Copy
+                  </button>
                 </div>
-                <pre className="bg-[#1a1a1a] text-gray-300 p-4 rounded-lg overflow-x-auto text-xs"><code>{htmlCode}</code></pre>
+                <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
+                  <pre className="p-3 sm:p-4 overflow-x-auto text-xs leading-relaxed">
+                    <code className="text-gray-300 whitespace-pre">{htmlCode}</code>
+                  </pre>
+                </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
                   <span className="text-xs text-gray-400">JavaScript</span>
-                  <button onClick={() => copyCode(jsCode)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1"><Copy size={12} /> Copy</button>
+                  <button onClick={() => copyCode(jsCode)} className="text-xs text-gray-500 hover:text-gray-900 flex items-center gap-1 self-start sm:self-auto">
+                    <Copy size={12} /> Copy
+                  </button>
                 </div>
-                <pre className="bg-[#1a1a1a] text-gray-300 p-4 rounded-lg overflow-x-auto text-xs"><code>{jsCode}</code></pre>
+                <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
+                  <pre className="p-3 sm:p-4 overflow-x-auto text-xs leading-relaxed">
+                    <code className="text-gray-300 whitespace-pre">{jsCode}</code>
+                  </pre>
+                </div>
               </div>
             </>
           ) : (
             <>
-              <div className="bg-gray-50 rounded-lg p-5">
-                <h3 className="text-sm font-medium text-gray-900 mb-4">Quick integration</h3>
-                <ol className="space-y-3 text-sm text-gray-600">
-                  <li className="flex gap-3">
+              <div className="bg-gray-50 rounded-lg p-4 sm:p-5">
+                <h3 className="text-sm font-medium text-gray-900 mb-3 sm:mb-4">Quick integration</h3>
+                <ol className="space-y-2 sm:space-y-3 text-sm text-gray-600">
+                  <li className="flex gap-2 sm:gap-3">
                     <span className="w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs shrink-0">1</span>
                     <span>Copy the API endpoint</span>
                   </li>
-                  <li className="flex gap-3">
+                  <li className="flex gap-2 sm:gap-3">
                     <span className="w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs shrink-0">2</span>
                     <span>Add to your form&apos;s action attribute</span>
                   </li>
-                  <li className="flex gap-3">
+                  <li className="flex gap-2 sm:gap-3">
                     <span className="w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs shrink-0">3</span>
                     <span>Match field names to IDs below</span>
                   </li>
@@ -299,16 +312,16 @@ ${form.fields.map(f => `    ${f.id}: "value"`).join(',\n')}
                 <span className="text-xs text-gray-400 block mb-3">Field IDs</span>
                 <div className="space-y-2">
                   {form.fields.map((field) => (
-                    <div key={field.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                      <span className="text-sm text-gray-700">{field.label}</span>
-                      <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">{field.id}</code>
+                    <div key={field.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0 gap-3">
+                      <span className="text-sm text-gray-700 truncate flex-1">{field.label}</span>
+                      <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono flex-shrink-0">{field.id}</code>
                     </div>
                   ))}
                 </div>
               </div>
 
               <Link href={`/dashboard/forms/${formId}`} className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <ExternalLink size={16} /> View submissions
+                <ExternalLink size={14} className="sm:w-4 sm:h-4" /> View submissions
               </Link>
             </>
           )}

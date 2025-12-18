@@ -8,9 +8,10 @@ import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 // POST /api/v1/domains/:domainId/verify - Verify domain via DNS
 export async function POST(
   request: NextRequest,
-  { params }: { params: { domainId: string } }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
+    const { domainId } = await params
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -27,7 +28,7 @@ export async function POST(
     }
 
     // Get domain record
-    const domainDoc = await adminDb.collection('verifiedDomains').doc(params.domainId).get()
+    const domainDoc = await adminDb.collection('verifiedDomains').doc(domainId).get()
     if (!domainDoc.exists) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 })
     }
@@ -55,7 +56,7 @@ export async function POST(
 
     if (verificationResult.verified) {
       // Update domain as verified
-      await adminDb.collection('verifiedDomains').doc(params.domainId).update({
+      await adminDb.collection('verifiedDomains').doc(domainId).update({
         verified: true,
         verifiedAt: new Date(),
         updatedAt: new Date(),

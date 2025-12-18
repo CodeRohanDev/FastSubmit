@@ -3,11 +3,37 @@ import Link from 'next/link'
 import { ArrowRight, Check, Share2, Link2, QrCode, Bell, BarChart3, Smartphone } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'Social Media Forms - Instagram, Facebook, Twitter & More | FastSubmit',
-  description: 'Create shareable forms for social media. Perfect for Instagram bio links, Facebook posts, Twitter, LinkedIn, and TikTok. Generate leads and grow your audience.',
-  keywords: ['social media form', 'instagram form', 'facebook form', 'twitter form', 'linkedin form', 'lead generation'],
+  title: 'Free Social Media Forms - Instagram, Facebook, Twitter Forms | FastSubmit',
+  description: 'Create free shareable forms for social media. Perfect for Instagram bio links, Facebook posts, Twitter, LinkedIn. Best free form builder for lead generation. Better than Google Forms. Free forever.',
+  keywords: [
+    'social media form',
+    'instagram form',
+    'facebook form',
+    'twitter form',
+    'linkedin form',
+    'lead generation',
+    'form builder',
+    'free form builder',
+    'online form builder',
+    'form builder free',
+    'free online form',
+    'google forms',
+    'google form alternative',
+    'shareable forms',
+    'form maker',
+    'online form maker',
+    'best form maker',
+    'best form builder',
+    'hostspica forms',
+    'forms hostspica',
+    'best form website',
+    'free form website',
+    'create free forms',
+    'easy forms'
+  ],
 }
 
 export default function SocialMediaPage() {
@@ -39,6 +65,8 @@ export default function SocialMediaPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -133,7 +161,7 @@ export default function SocialMediaPage() {
                   <span className="text-4xl">📝</span>
                 </div>
                 <div className="p-4">
-                  <div className="text-xs text-gray-500 mb-1">fastsubmit.hostspica.com</div>
+                  <div className="text-xs text-gray-500 mb-1">fastsubmit.cloud</div>
                   <div className="font-semibold text-gray-900">Enter to Win - Free Consultation</div>
                   <div className="text-sm text-gray-500">Fill out this quick form to enter our giveaway</div>
                 </div>
@@ -214,5 +242,6 @@ export default function SocialMediaPage() {
 
       <Footer variant="extended" />
     </div>
+    </>
   )
 }

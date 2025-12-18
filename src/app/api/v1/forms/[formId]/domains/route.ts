@@ -18,9 +18,10 @@ async function verifyFormOwnership(formId: string, userId: string) {
 // PUT /api/v1/forms/:formId/domains - Update form's allowed domains
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -36,7 +37,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -67,7 +68,7 @@ export async function PUT(
     }
 
     // Update form
-    await adminDb.collection('forms').doc(params.formId).update({
+    await adminDb.collection('forms').doc(formId).update({
       allowedDomains,
       requireDomainVerification: requireDomainVerification !== false, // Default to true
       updatedAt: new Date(),

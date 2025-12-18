@@ -6,13 +6,16 @@ import { useAuth } from '@/context/AuthContext'
 import { getTemplateById } from '@/lib/form-templates'
 import { collection, addDoc, serverTimestamp, query, where, limit, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import { FormField, VerifiedDomain } from '@/types'
+import { FormField, VerifiedDomain, FormLogic } from '@/types'
 import { generateApiKey } from '@/lib/utils'
 import { 
   Plus, Trash2, GripVertical, ArrowLeft, Eye, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink
+  ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink,
+  Calculator, Zap, Info, Brain, Image, Building2, MessageSquare
 } from 'lucide-react'
+import FormLogicBuilder from '@/components/FormLogicBuilder'
+import SmartFormRenderer from '@/components/SmartFormRenderer'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type, desc: 'Single line text' },
@@ -22,6 +25,8 @@ const fieldTypes = [
   { value: 'date', label: 'Date', icon: Calendar, desc: 'Date picker' },
   { value: 'select', label: 'Dropdown', icon: List, desc: 'Select options' },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare, desc: 'Yes/No toggle' },
+  { value: 'calculated', label: 'Calculated', icon: Calculator, desc: 'Auto-calculated value' },
+  { value: 'display', label: 'Display Text', icon: Info, desc: 'Information text only' },
 ] as const
 
 type FieldType = typeof fieldTypes[number]['value']
@@ -39,13 +44,22 @@ export default function NewFormPage() {
   const [fields, setFields] = useState<FormField[]>(
     template 
       ? template.fields.map((field, index) => ({
-          ...field,
           id: field.name || `field_${index}`,
+          label: field.label || 'Untitled Field',
+          type: field.type || 'text',
+          required: field.required || false,
+          placeholder: field.placeholder || '',
+          options: field.options || undefined,
+          defaultHidden: field.defaultHidden || undefined,
+          calculation: field.calculation || undefined,
+          displayText: field.displayText || undefined,
+          validationRules: field.validationRules || undefined,
+          _stableKey: `template_field_${index}_${Date.now()}`,
         }))
       : [
-          { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-          { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com' },
-          { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...' },
+          { id: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name', _stableKey: `default_name_${Date.now()}` },
+          { id: 'email', label: 'Email', type: 'email', required: true, placeholder: 'your@email.com', _stableKey: `default_email_${Date.now()}` },
+          { id: 'message', label: 'Message', type: 'textarea', required: false, placeholder: 'Your message...', _stableKey: `default_message_${Date.now()}` },
         ]
   )
   const [saving, setSaving] = useState(false)
@@ -65,6 +79,21 @@ export default function NewFormPage() {
   const [addingDomain, setAddingDomain] = useState(false)
   const [verifyingDomain, setVerifyingDomain] = useState<string | null>(null)
   const [existingApiKey, setExistingApiKey] = useState<string | null>(null)
+  
+  // Form Logic state
+  const [formLogic, setFormLogic] = useState<FormLogic>({
+    rules: [],
+    globalSettings: {
+      enableAnimations: true,
+      showLogicIndicators: true,
+      debugMode: false,
+    }
+  })
+
+  // Branding states
+  const [brandingLogo, setBrandingLogo] = useState('')
+  const [brandingCompanyName, setBrandingCompanyName] = useState('')
+  const [brandingTagline, setBrandingTagline] = useState('')
 
   // Fetch verified domains on mount
   useEffect(() => {
@@ -157,13 +186,16 @@ export default function NewFormPage() {
   }
 
   const addField = (type: FieldType) => {
+    const timestamp = Date.now()
     const newField: FormField = {
-      id: `field_${Date.now()}`,
+      id: `field_${timestamp}`,
       label: fieldTypes.find(f => f.value === type)?.label || 'New Field',
       type,
       required: false,
       placeholder: '',
       options: type === 'select' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
+      // Add a stable key that won't change during editing
+      _stableKey: `field_key_${timestamp}`,
     }
     setFields([...fields, newField])
     setExpandedField(newField.id)
@@ -173,10 +205,15 @@ export default function NewFormPage() {
   const updateField = (index: number, updates: Partial<FormField>) => {
     const updated = [...fields]
     updated[index] = { ...updated[index], ...updates }
-    if (updates.label && !updated[index].id.startsWith('field_')) {
-      updated[index].id = updates.label.toLowerCase().replace(/[^a-z0-9]/g, '_')
-    }
     setFields(updated)
+  }
+
+  const updateFieldId = (index: number, label: string) => {
+    const updated = [...fields]
+    if (!updated[index].id.startsWith('field_')) {
+      updated[index].id = label.toLowerCase().replace(/[^a-z0-9]/g, '_')
+      setFields(updated)
+    }
   }
 
   const removeField = (index: number) => {
@@ -190,10 +227,12 @@ export default function NewFormPage() {
 
   const duplicateField = (index: number) => {
     const field = fields[index]
+    const timestamp = Date.now()
     const newField = {
       ...field,
-      id: `${field.id}_copy_${Date.now()}`,
+      id: `${field.id}_copy_${timestamp}`,
       label: `${field.label} (copy)`,
+      _stableKey: `copy_${timestamp}`,
     }
     const updated = [...fields]
     updated.splice(index + 1, 0, newField)
@@ -263,21 +302,57 @@ export default function NewFormPage() {
     setSaving(true)
     setError('')
 
+    // Clean fields to remove any undefined values
+    const cleanFields = fields.map(field => {
+      const cleanField: any = {
+        id: field.id,
+        label: field.label,
+        type: field.type,
+        required: field.required,
+      }
+      
+      // Only add optional properties if they have values
+      if (field.placeholder) cleanField.placeholder = field.placeholder
+      if (field.options && field.options.length > 0) cleanField.options = field.options
+      if (field.defaultHidden) cleanField.defaultHidden = field.defaultHidden
+      if (field.calculation) cleanField.calculation = field.calculation
+      if (field.displayText) cleanField.displayText = field.displayText
+      if (field.validationRules && field.validationRules.length > 0) cleanField.validationRules = field.validationRules
+      
+      return cleanField
+    })
+
+    // Prepare form data, excluding undefined values
+    const formData: any = {
+      name: name.trim(),
+      fields: cleanFields,
+      userId: user.uid,
+      apiKey: generateApiKey(),
+      allowedDomains: selectedDomains,
+      requireDomainVerification: requireVerification && selectedDomains.length > 0,
+      branding: {
+        logo: brandingLogo.trim(),
+        companyName: brandingCompanyName.trim(),
+        tagline: brandingTagline.trim(),
+      },
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }
+
+    // Only add logic if there are rules
+    if (formLogic.rules.length > 0) {
+      formData.logic = formLogic
+    }
+
     try {
-      const docRef = await addDoc(collection(db, 'forms'), {
-        name: name.trim(),
-        fields,
-        userId: user.uid,
-        apiKey: generateApiKey(),
-        allowedDomains: selectedDomains,
-        requireDomainVerification: requireVerification && selectedDomains.length > 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      })
+      console.log('Creating form with data:', formData) // Debug log
+      
+      const docRef = await addDoc(collection(db, 'forms'), formData)
       router.push(`/dashboard/forms/${docRef.id}`)
     } catch (err) {
       setError('Failed to create form. Please try again.')
-      console.error(err)
+      console.error('Form creation error:', err)
+      console.error('Form data that failed:', formData) // Debug log
     }
     setSaving(false)
   }
@@ -288,33 +363,35 @@ export default function NewFormPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+    <div className={showPreview ? "max-w-7xl mx-auto" : "max-w-4xl mx-auto"}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
           </Link>
-          <h1 className="text-xl font-semibold tracking-tight">Create form</h1>
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight">Create form</h1>
         </div>
         <button
           type="button"
           onClick={() => setShowPreview(!showPreview)}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50 w-full sm:w-auto"
         >
-          <Eye size={16} />
+          <Eye size={14} className="sm:w-4 sm:h-4" />
           {showPreview ? 'Hide preview' : 'Preview'}
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-center justify-between text-sm">
-          <span>{error}</span>
-          <button onClick={() => setError('')} className="hover:text-red-800"><X size={16} /></button>
+        <div className="bg-red-50 text-red-600 px-3 sm:px-4 py-3 rounded-lg mb-4 sm:mb-6 flex items-start justify-between text-sm gap-3">
+          <span className="flex-1 min-w-0">{error}</span>
+          <button onClick={() => setError('')} className="hover:text-red-800 flex-shrink-0">
+            <X size={14} className="sm:w-4 sm:h-4" />
+          </button>
         </div>
       )}
 
-      <div className={`grid gap-8 ${showPreview ? 'lg:grid-cols-2' : ''}`}>
-        <div className="space-y-6">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
+        <div className="space-y-4 sm:space-y-6">
           {/* Form Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Form name</label>
@@ -322,14 +399,123 @@ export default function NewFormPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-sm"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-sm"
               placeholder="e.g., Contact Form"
             />
           </div>
 
+          {/* Custom Branding */}
+          <div>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Building2 size={14} className="text-gray-600 sm:w-4 sm:h-4" />
+              <label className="text-sm font-medium text-gray-700">Custom branding</label>
+            </div>
+            
+            <div className="p-3 sm:p-4 bg-purple-50 border border-purple-100 rounded-lg mb-3 sm:mb-4">
+              <p className="text-xs text-purple-900">
+                Add your company logo, name, and tagline to display at the top of your form. This helps build trust and brand recognition.
+              </p>
+            </div>
+
+            <div className="space-y-3 sm:space-y-4 bg-white border border-gray-200 rounded-lg p-3 sm:p-4">
+              {/* Logo URL */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <Image size={14} />
+                  Logo URL
+                </label>
+                <input
+                  type="url"
+                  value={brandingLogo}
+                  onChange={(e) => setBrandingLogo(e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Enter the URL of your logo image (recommended: 200x50px)</p>
+              </div>
+
+              {/* Company/Brand Name */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <Building2 size={14} />
+                  Company/Brand name
+                </label>
+                <input
+                  type="text"
+                  value={brandingCompanyName}
+                  onChange={(e) => setBrandingCompanyName(e.target.value)}
+                  placeholder="Acme Inc."
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+              </div>
+
+              {/* Tagline */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                  <MessageSquare size={14} />
+                  Tagline
+                </label>
+                <input
+                  type="text"
+                  value={brandingTagline}
+                  onChange={(e) => setBrandingTagline(e.target.value)}
+                  placeholder="Building the future of technology"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+              </div>
+
+              {/* Preview */}
+              {(brandingLogo || brandingCompanyName || brandingTagline) && (
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 mb-3">Preview:</p>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-center gap-3">
+                      {brandingLogo && (
+                        <img 
+                          src={brandingLogo} 
+                          alt="Logo" 
+                          className="h-10 w-auto object-contain"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      )}
+                      <div>
+                        {brandingCompanyName && (
+                          <p className="text-sm font-semibold text-gray-900">{brandingCompanyName}</p>
+                        )}
+                        {brandingTagline && (
+                          <p className="text-xs text-gray-600">{brandingTagline}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Form Logic - Prominent Position */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-purple-600" />
+                <label className="text-sm font-medium text-gray-700">Smart Form Logic</label>
+                <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                  Premium Feature
+                </span>
+              </div>
+              {formLogic.rules.length > 0 && (
+                <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                  {formLogic.rules.length} rule{formLogic.rules.length !== 1 ? 's' : ''} active
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Fields */}
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
               <label className="text-sm font-medium text-gray-700">Fields</label>
               <span className="text-xs text-gray-400">{fields.length} field{fields.length !== 1 ? 's' : ''}</span>
             </div>
@@ -341,7 +527,7 @@ export default function NewFormPage() {
 
                 return (
                   <div
-                    key={field.id}
+                    key={field._stableKey || field.id}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={(e) => handleDragOver(e, index)}
@@ -351,50 +537,51 @@ export default function NewFormPage() {
                     } ${isExpanded ? 'bg-gray-50' : 'bg-white hover:border-gray-300'}`}
                   >
                     <div
-                      className="flex items-center gap-3 p-3 cursor-pointer"
+                      className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 cursor-pointer"
                       onClick={() => setExpandedField(isExpanded ? null : field.id)}
                     >
-                      <GripVertical className="text-gray-300 cursor-grab" size={16} />
-                      <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center">
-                        <FieldIcon className="w-3.5 h-3.5 text-gray-600" />
+                      <GripVertical className="text-gray-300 cursor-grab flex-shrink-0" size={14} />
+                      <div className="w-6 sm:w-7 h-6 sm:h-7 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <FieldIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-600" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-gray-900 truncate">{field.label}</span>
                           {field.required && (
-                            <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded">Required</span>
+                            <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 rounded flex-shrink-0">Required</span>
                           )}
                         </div>
                         <span className="text-xs text-gray-400">{field.type}</span>
                       </div>
-                      <div className="flex items-center gap-0.5">
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
                         <button
                           onClick={(e) => { e.stopPropagation(); moveField(index, index - 1) }}
                           disabled={index === 0}
-                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"
+                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"
                         >
-                          <ChevronUp size={14} />
+                          <ChevronUp size={12} />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); moveField(index, index + 1) }}
                           disabled={index === fields.length - 1}
-                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30"
+                          className="p-1 text-gray-300 hover:text-gray-500 disabled:opacity-30 hidden sm:block"
                         >
-                          <ChevronDown size={14} />
+                          <ChevronDown size={12} />
                         </button>
-                        {isExpanded ? <ChevronUp size={16} className="text-gray-400 ml-1" /> : <ChevronDown size={16} className="text-gray-400 ml-1" />}
+                        {isExpanded ? <ChevronUp size={14} className="text-gray-400 ml-1" /> : <ChevronDown size={14} className="text-gray-400 ml-1" />}
                       </div>
                     </div>
 
                     {isExpanded && (
-                      <div className="px-3 pb-3 pt-2 border-t border-gray-100 space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
+                      <div className="px-2.5 sm:px-3 pb-2.5 sm:pb-3 pt-2 border-t border-gray-100 space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs text-gray-500 mb-1">Label</label>
                             <input
                               type="text"
                               value={field.label}
                               onChange={(e) => updateField(index, { label: e.target.value })}
+                              onBlur={(e) => updateFieldId(index, e.target.value)}
                               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                             />
                           </div>
@@ -409,7 +596,7 @@ export default function NewFormPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs text-gray-500 mb-1">Type</label>
                             <select
@@ -467,16 +654,60 @@ export default function NewFormPage() {
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between pt-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
+                        {field.type === 'calculated' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Calculation Formula</label>
                             <input
-                              type="checkbox"
-                              checked={field.required}
-                              onChange={(e) => updateField(index, { required: e.target.checked })}
-                              className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                              type="text"
+                              value={field.calculation || ''}
+                              onChange={(e) => updateField(index, { calculation: e.target.value })}
+                              placeholder="e.g., field1 + field2 * 0.1"
+                              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                             />
-                            <span className="text-xs text-gray-600">Required</span>
-                          </label>
+                            <p className="text-xs text-gray-400 mt-1">
+                              Use field IDs and basic math operators (+, -, *, /, parentheses)
+                            </p>
+                          </div>
+                        )}
+
+                        {field.type === 'display' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Display Text</label>
+                            <textarea
+                              value={field.displayText || ''}
+                              onChange={(e) => updateField(index, { displayText: e.target.value })}
+                              placeholder="Enter the information text to display to users..."
+                              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              rows={3}
+                            />
+                            <p className="text-xs text-gray-400 mt-1">
+                              This text will be displayed in the info card on the right side of the form
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center gap-3">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={field.required}
+                                onChange={(e) => updateField(index, { required: e.target.checked })}
+                                className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                                disabled={field.type === 'calculated'}
+                              />
+                              <span className="text-xs text-gray-600">Required</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={field.defaultHidden || false}
+                                onChange={(e) => updateField(index, { defaultHidden: e.target.checked })}
+                                className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                              />
+                              <span className="text-xs text-gray-600">Hidden by default</span>
+                            </label>
+                          </div>
                           <div className="flex gap-1">
                             <button
                               onClick={() => duplicateField(index)}
@@ -494,6 +725,8 @@ export default function NewFormPage() {
                             </button>
                           </div>
                         </div>
+
+
                       </div>
                     )}
                   </div>
@@ -663,73 +896,74 @@ export default function NewFormPage() {
           <button
             onClick={handleSubmit}
             disabled={saving || !name.trim() || fields.length === 0}
-            className="w-full bg-gray-900 text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-gray-900 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
             ) : (
               <>
-                <Save size={16} /> Create form
+                <Save size={14} className="sm:w-4 sm:h-4" /> Create form
               </>
             )}
           </button>
         </div>
 
-        {showPreview && (
-          <div className="lg:sticky lg:top-8 h-fit">
-            <div className="border border-gray-200 rounded-lg p-6 bg-white">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-gray-400">Preview</span>
-              </div>
-              
-              <div className="space-y-4">
-                <h4 className="text-lg font-semibold tracking-tight">{name || 'Untitled Form'}</h4>
-                {fields.map((field) => (
-                  <div key={field.id}>
-                    <label className="block text-sm text-gray-700 mb-1.5">
-                      {field.label}
-                      {field.required && <span className="text-red-500 ml-0.5">*</span>}
-                    </label>
-                    {field.type === 'textarea' ? (
-                      <textarea
-                        placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50"
-                        rows={3}
-                        disabled
-                      />
-                    ) : field.type === 'select' ? (
-                      <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50" disabled>
-                        <option value="">Select...</option>
-                        {field.options?.map((opt, i) => (
-                          <option key={i} value={opt}>{opt}</option>
-                        ))}
-                      </select>
-                    ) : field.type === 'checkbox' ? (
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" disabled />
-                        <span className="text-sm text-gray-600">{field.placeholder || 'Yes'}</span>
-                      </label>
-                    ) : (
-                      <input
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50"
-                        disabled
-                      />
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium opacity-50"
-                  disabled
-                >
-                  Submit
-                </button>
-              </div>
+        <div className="lg:sticky lg:top-8 h-fit space-y-6">
+          {/* Form Logic Builder */}
+          <div className="border border-gray-200 rounded-lg bg-white">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <span className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                <Zap size={14} className="text-gray-600" />
+                Logic Rules
+              </span>
+              <span className="text-xs text-gray-500">
+                {formLogic?.rules?.length || 0} rules
+              </span>
+            </div>
+            
+            <div className="p-4">
+              <FormLogicBuilder
+                fields={fields}
+                logic={formLogic}
+                onLogicChange={setFormLogic}
+              />
             </div>
           </div>
-        )}
+
+          {/* Form Preview */}
+          {showPreview && (
+            <div className="border border-gray-200 rounded-lg bg-white overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                <span className="text-xs text-gray-400">Smart Preview</span>
+                <div className="flex items-center gap-1 text-xs text-purple-600">
+                  <Zap size={12} />
+                  <span>Live Logic</span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <h4 className="text-base sm:text-lg font-semibold tracking-tight mb-4">{name || 'Untitled Form'}</h4>
+                <SmartFormRenderer
+                  fields={fields}
+                  logic={formLogic}
+                  onSubmit={(data) => console.log('Preview submission:', data)}
+                  showLogicIndicators={true}
+                  showInfoCard={true}
+                  infoCardTitle="Form Preview"
+                  infoCardContent={`This is a live preview of your form.
+
+• Form fields appear on the left
+• Information and help text appears here  
+• The card stays visible while scrolling
+• Try adding display fields for user guidance
+
+Fields: ${fields.length}
+Logic Rules: ${formLogic?.rules?.length || 0}`}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

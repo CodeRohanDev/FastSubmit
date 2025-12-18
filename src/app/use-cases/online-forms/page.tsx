@@ -3,11 +3,48 @@ import Link from 'next/link'
 import { ArrowRight, Check, Smartphone, Link2, QrCode, BarChart3, Mail, Palette } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  title: 'Online Forms - Create Shareable Forms Like Google Forms | FastSubmit',
-  description: 'Create beautiful online forms and share via link, QR code, or email. Better than Google Forms with unlimited submissions, custom branding, and analytics.',
-  keywords: ['online form', 'shareable form', 'google forms alternative', 'survey form', 'questionnaire'],
+  title: 'Free Online Forms - Create & Share Forms Free | Best Form Maker',
+  description: 'Create free online forms and share via link, QR code, or email. Best free form maker alternative to Google Forms, Zoho Forms, Microsoft Forms. Unlimited submissions, export to Excel, Word, PDF. Free forever.',
+  keywords: [
+    'online forms',
+    'free online forms',
+    'free online form',
+    'online form builder',
+    'online form maker',
+    'forms',
+    'free form',
+    'form builder',
+    'free form builder',
+    'form builder free',
+    'form builder online',
+    'form maker',
+    'best form maker',
+    'best form builder',
+    'google forms',
+    'google form alternative',
+    'ai form builder',
+    'cheapest form',
+    'cheapest form builder',
+    'best forms',
+    'hostspica forms',
+    'forms hostspica',
+    'form to excel',
+    'form to word',
+    'form to pdf',
+    'best form website',
+    'free form website',
+    'affordable forms',
+    'zoho forms',
+    'microsoft forms',
+    'free zoho forms',
+    'free microsoft forms',
+    'create free forms',
+    'easy forms',
+    'quiz maker'
+  ],
 }
 
 export default function OnlineFormsPage() {
@@ -41,6 +78,8 @@ export default function OnlineFormsPage() {
   ]
 
   return (
+    <>
+    <GoogleAnalytics />
     <div className="min-h-screen bg-[#fafafa]">
       <Navbar />
 
@@ -115,7 +154,7 @@ export default function OnlineFormsPage() {
               </p>
               <ul className="space-y-4">
                 {[
-                  { title: 'Direct Link', desc: 'Short, clean URL like fastsubmit.hostspica.com/f/abc123' },
+                  { title: 'Direct Link', desc: 'Short, clean URL like fastsubmit.cloud/f/abc123' },
                   { title: 'QR Code', desc: 'Auto-generated QR code for print materials' },
                   { title: 'Email', desc: 'Send form link directly to recipients' },
                   { title: 'Social Media', desc: 'Share on any social platform' },
@@ -267,5 +306,6 @@ export default function OnlineFormsPage() {
 
       <Footer variant="extended" />
     </div>
+    </>
   )
 }

@@ -1,6 +1,12 @@
-import Link from 'next/link'
+import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - FastSubmit Free Form Builder',
+  description: 'FastSubmit privacy policy. Learn how we protect your data. Free form builder with secure data handling. Your privacy matters.',
+  keywords: ['privacy policy', 'fastsubmit privacy', 'form builder privacy', 'data protection', 'secure forms'],
+}
 
 export default function PrivacyPage() {
   return (
@@ -148,8 +154,8 @@ export default function PrivacyPage() {
             <p>If you have questions about this Privacy Policy, please contact us at:</p>
             <p className="mt-2">
               <strong>Hostspica</strong><br />
-              Email: privacy@hostspica.com<br />
-              Website: <a href="https://hostspica.com" className="text-indigo-600 hover:underline">hostspica.com</a>
+              Email: privacy@fastsubmit.cloud<br />
+              Website: <a href="https://fastsubmit.cloud" className="text-indigo-600 hover:underline">fastsubmit.cloud</a>
             </p>
           </section>
         </div>

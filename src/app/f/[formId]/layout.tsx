@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { Metadata } from 'next'
 
 interface FormData {
@@ -12,7 +13,7 @@ interface FormData {
 async function getFormData(formId: string): Promise<FormData | null> {
   try {
     // Use the public base URL for metadata generation
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
     
     const response = await fetch(`${baseUrl}/api/public/forms/${formId}`, {
       cache: 'no-store',
@@ -35,9 +36,10 @@ async function getFormData(formId: string): Promise<FormData | null> {
 export async function generateMetadata({
   params,
 }: {
-  params: { formId: string }
+  params: Promise<{ formId: string }>
 }): Promise<Metadata> {
-  const form = await getFormData(params.formId)
+  const { formId } = await params
+  const form = await getFormData(formId)
   
   if (!form) {
     return {
@@ -50,8 +52,8 @@ export async function generateMetadata({
   const fieldCount = form.fields?.length || 0
   const description = form.settings?.description || `Fill out this form - ${fieldCount} ${fieldCount === 1 ? 'field' : 'fields'} • Quick & easy`
   
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
-  const formUrl = `${baseUrl}/f/${params.formId}`
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
+  const formUrl = `${baseUrl}/f/${formId}`
   const ogImageUrl = `${baseUrl}/api/og?formName=${encodeURIComponent(formName)}&fieldCount=${fieldCount}&description=${encodeURIComponent(description.slice(0, 100))}`
 
   return {
@@ -97,9 +99,10 @@ export default async function FormLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { formId: string }
+  params: Promise<{ formId: string }>
 }) {
-  const form = await getFormData(params.formId)
+  const { formId } = await params
+  const form = await getFormData(formId)
   
   if (!form) {
     return <>{children}</>
@@ -108,7 +111,7 @@ export default async function FormLayout({
   const formName = form.name || 'Untitled Form'
   const fieldCount = form.fields?.length || 0
   const description = form.settings?.description || `Fill out this form - ${fieldCount} ${fieldCount === 1 ? 'field' : 'fields'} • Quick & easy`
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.hostspica.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
   const ogImageUrl = `${baseUrl}/api/og?formName=${encodeURIComponent(formName)}&fieldCount=${fieldCount}&description=${encodeURIComponent(description.slice(0, 100))}`
   
   const structuredData = {
@@ -116,7 +119,7 @@ export default async function FormLayout({
     '@type': 'WebPage',
     name: formName,
     description: description,
-    url: `${baseUrl}/f/${params.formId}`,
+    url: `${baseUrl}/f/${formId}`,
     isPartOf: {
       '@type': 'WebSite',
       name: 'FastSubmit',
@@ -124,13 +127,14 @@ export default async function FormLayout({
     },
     potentialAction: {
       '@type': 'InteractAction',
-      target: `${baseUrl}/f/${params.formId}`,
+      target: `${baseUrl}/f/${formId}`,
       name: 'Fill out form',
     },
   }
 
   return (
     <>
+        <GoogleAnalytics />
       <head>
         <meta property="og:title" content={formName} />
         <meta property="og:description" content={description} />
@@ -138,7 +142,7 @@ export default async function FormLayout({
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`${baseUrl}/f/${params.formId}`} />
+        <meta property="og:url" content={`${baseUrl}/f/${formId}`} />
         <meta property="og:site_name" content="FastSubmit" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={formName} />
