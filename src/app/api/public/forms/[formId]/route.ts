@@ -3,10 +3,10 @@ import { adminDb } from '@/lib/firebase-admin'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
-    const { formId } = params
+    const { formId } = await params
 
     // Get form from Firestore
     const formDoc = await adminDb.collection('forms').doc(formId).get()

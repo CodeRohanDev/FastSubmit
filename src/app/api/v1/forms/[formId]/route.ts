@@ -24,9 +24,10 @@ async function verifyFormOwnership(formId: string, userId: string): Promise<{ er
 // GET /api/v1/forms/:formId - Get form details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
@@ -44,7 +45,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -74,9 +75,10 @@ export async function GET(
 // PUT /api/v1/forms/:formId - Update form
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
@@ -94,7 +96,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -117,7 +119,7 @@ export async function PUT(
       updates.fields = body.fields
     }
 
-    await adminDb.collection('forms').doc(params.formId).update(updates)
+    await adminDb.collection('forms').doc(formId).update(updates)
 
     return NextResponse.json({
       success: true,
@@ -132,9 +134,10 @@ export async function PUT(
 // DELETE /api/v1/forms/:formId - Delete form
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
@@ -152,13 +155,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const result = await verifyFormOwnership(params.formId, userId)
+    const result = await verifyFormOwnership(formId, userId)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
 
     // Soft delete the form
-    await adminDb.collection('forms').doc(params.formId).update({
+    await adminDb.collection('forms').doc(formId).update({
       deleted: true,
       deletedAt: new Date(),
     })

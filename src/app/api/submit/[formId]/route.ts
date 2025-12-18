@@ -7,9 +7,10 @@ import { isOriginAllowed } from '@/lib/dns-verification'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { formId: string } }
+  { params }: { params: Promise<{ formId: string }> }
 ) {
   try {
+    const { formId } = await params
     // Rate limiting - 10 submissions per minute per IP
     const rateLimitResult = rateLimit(request, RATE_LIMITS.SUBMIT)
     if (!rateLimitResult.allowed) {
@@ -25,7 +26,7 @@ export async function POST(
       )
     }
 
-    const formId = params.formId
+
     
     // Get form config using Admin SDK
     const formDoc = await adminDb.collection('forms').doc(formId).get()

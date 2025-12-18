@@ -7,9 +7,10 @@ import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 // DELETE /api/v1/domains/[domainId] - Delete a domain
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { domainId: string } }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
+    const { domainId } = await params
     const rateLimitResult = rateLimit(request, RATE_LIMITS.API)
     if (!rateLimitResult.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -25,7 +26,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid API key' }, { status: 403 })
     }
 
-    const domainId = params.domainId
+
 
     // Get the domain and verify ownership
     const domainDoc = await adminDb.collection('verifiedDomains').doc(domainId).get()

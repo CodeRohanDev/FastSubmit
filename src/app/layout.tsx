@@ -205,7 +205,33 @@ export const metadata: Metadata = {
     'form builder free',
     'form builder online',
     'free form',
-    'online form builder'
+    'online form builder',
+    
+    // High-impact long-tail keywords 2025
+    'free form builder no signup',
+    'form builder with email notifications',
+    'html form without backend',
+    'form builder for small business free',
+    'embed contact form without coding',
+    'form submission api free tier',
+    'google forms alternative with custom branding',
+    'form builder with webhook integration',
+    'free survey tool unlimited responses',
+    'form builder export to excel free',
+    
+    // India-focused keywords
+    'best form builder india',
+    'free online form maker india',
+    'form builder for indian businesses',
+    'gst invoice form builder',
+    
+    // AI and trending 2025 keywords
+    'ai powered form builder',
+    'form builder with chatgpt',
+    'smart form automation 2025',
+    'no code form api',
+    'serverless form builder',
+    'jamstack form builder'
   ],
   authors: [{ name: 'Hostspica', url: 'https://fastsubmit.cloud' }],
   creator: 'Hostspica',
@@ -266,18 +292,20 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
+    shortcut: '/favicon.ico',
   },
   manifest: '/manifest.json',
   alternates: {
@@ -365,11 +393,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://fastsubmit.cloud" />
         
         {/* Favicon - Multiple formats for better compatibility */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4f46e5" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="msapplication-TileColor" content="#4f46e5" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="theme-color" content="#4f46e5" />

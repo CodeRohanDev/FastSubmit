@@ -14,7 +14,8 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export interface AdminUser {
-  uid: string;
+  uid?: string; // Firebase Auth UID (optional for simple admins)
+  id?: string;  // Simple admin ID
   email: string;
   displayName: string;
   role: string;
@@ -138,8 +139,13 @@ export async function loginAdmin(email: string, password: string, ipAddress: str
       }
     }
 
-    // Create Firebase custom token
-    const customToken = await admin.auth().createCustomToken(adminData.uid, {
+    // Create Firebase custom token (use uid if available, otherwise use id)
+    const adminIdentifier = adminData.uid || adminData.id;
+    if (!adminIdentifier) {
+      return { success: false, error: 'Admin identifier not found' };
+    }
+    
+    const customToken = await admin.auth().createCustomToken(adminIdentifier, {
       admin: true,
       role: adminData.role,
       permissions: adminData.permissions
@@ -154,7 +160,7 @@ export async function loginAdmin(email: string, password: string, ipAddress: str
 
     // Log admin activity
     await db.collection('admin_logs').add({
-      adminId: adminData.uid,
+      adminId: adminData.uid || adminData.id,
       action: 'login',
       details: {
         email: adminData.email,

@@ -18,15 +18,16 @@ async function verifySession(request: NextRequest): Promise<string | null> {
 // POST /api/dashboard/domains/[domainId]/verify - Verify domain via DNS
 export async function POST(
   request: NextRequest,
-  { params }: { params: { domainId: string } }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
+    const { domainId } = await params
     const userId = await verifySession(request)
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const domainId = params.domainId
+
 
     // Get the domain and verify ownership
     const domainDoc = await adminDb.collection('verifiedDomains').doc(domainId).get()

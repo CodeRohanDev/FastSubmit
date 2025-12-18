@@ -20,21 +20,22 @@ async function verifyFormOwnership(formId: string, apiKey: string) {
 // GET /api/v1/forms/:formId/submissions/:submissionId - Get single submission
 export async function GET(
   request: NextRequest,
-  { params }: { params: { formId: string; submissionId: string } }
+  { params }: { params: Promise<{ formId: string; submissionId: string }> }
 ) {
   try {
+    const { formId, submissionId } = await params
     const apiKey = request.headers.get('x-api-key') || request.nextUrl.searchParams.get('apiKey')
     
     if (!apiKey) {
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const result = await verifyFormOwnership(params.formId, apiKey)
+    const result = await verifyFormOwnership(formId, apiKey)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
 
-    const subDoc = await getDoc(doc(db, 'forms', params.formId, 'submissions', params.submissionId))
+    const subDoc = await getDoc(doc(db, 'forms', formId, 'submissions', submissionId))
     
     if (!subDoc.exists()) {
       return NextResponse.json({ error: 'Submission not found' }, { status: 404 })
@@ -68,21 +69,22 @@ export async function GET(
 // DELETE /api/v1/forms/:formId/submissions/:submissionId - Delete single submission
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { formId: string; submissionId: string } }
+  { params }: { params: Promise<{ formId: string; submissionId: string }> }
 ) {
   try {
+    const { formId, submissionId } = await params
     const apiKey = request.headers.get('x-api-key')
     
     if (!apiKey) {
       return NextResponse.json({ error: 'API key required' }, { status: 401 })
     }
 
-    const result = await verifyFormOwnership(params.formId, apiKey)
+    const result = await verifyFormOwnership(formId, apiKey)
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
 
-    const subRef = doc(db, 'forms', params.formId, 'submissions', params.submissionId)
+    const subRef = doc(db, 'forms', formId, 'submissions', submissionId)
     const subDoc = await getDoc(subRef)
     
     if (!subDoc.exists()) {

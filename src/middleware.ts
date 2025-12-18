@@ -18,16 +18,14 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Protected admin routes (exclude login page)
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    // Check for admin session cookie
+  // Protected admin routes - allow /admin page to handle its own authentication
+  if (pathname.startsWith('/admin') && pathname !== '/admin') {
+    // Check for admin session cookie for sub-routes only
     const hasAdminSession = request.cookies.has('__admin_session')
     
     if (!hasAdminSession) {
-      // Redirect to admin login
-      const loginUrl = new URL('/admin/login', request.url)
-      loginUrl.searchParams.set('redirect', pathname)
-      return NextResponse.redirect(loginUrl)
+      // Redirect to main admin page which handles login
+      return NextResponse.redirect(new URL('/admin', request.url))
     }
   }
 
@@ -40,14 +38,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect authenticated admin users away from admin login
-  if (pathname === '/admin/login') {
-    const hasAdminSession = request.cookies.has('__admin_session')
-    
-    if (hasAdminSession) {
-      return NextResponse.redirect(new URL('/admin', request.url))
-    }
-  }
+  // No need to redirect from /admin/login since we don't have that route
 
   // Add SEO headers for public pages
   if (!pathname.startsWith('/dashboard') && !pathname.startsWith('/api')) {

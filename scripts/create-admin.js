@@ -3,8 +3,39 @@
 const admin = require('firebase-admin');
 const bcrypt = require('bcryptjs');
 const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
+
+// Load environment variables from .env.local
+function loadEnvFile() {
+  const envPath = path.join(__dirname, '..', '.env.local');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    const lines = envContent.split('\n');
+    
+    lines.forEach(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine && !trimmedLine.startsWith('#')) {
+        const [key, ...valueParts] = trimmedLine.split('=');
+        if (key && valueParts.length > 0) {
+          const value = valueParts.join('=');
+          process.env[key] = value;
+        }
+      }
+    });
+  }
+}
+
+// Load environment variables
+loadEnvFile();
 
 // Initialize Firebase Admin SDK
+if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+  console.error('❌ FIREBASE_SERVICE_ACCOUNT_KEY environment variable is not set');
+  console.error('Please make sure your .env.local file contains the Firebase service account key');
+  process.exit(1);
+}
+
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 if (!admin.apps.length) {

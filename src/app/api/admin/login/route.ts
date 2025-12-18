@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       admin: {
-        uid: result.admin?.uid,
+        uid: result.admin?.uid || result.admin?.id,
+        id: result.admin?.id,
         email: result.admin?.email,
         displayName: result.admin?.displayName,
         role: result.admin?.role,
