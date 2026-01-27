@@ -23,10 +23,10 @@ interface SendVerificationEmailParams {
 export async function sendVerificationEmail({ to, code, userName }: SendVerificationEmailParams) {
   const resendClient = getResendClient()
   const formattedCode = code.slice(0, 3) + ' ' + code.slice(3)
-  
+
   try {
     const { data, error } = await resendClient.emails.send({
-      from: 'FastSubmit <noreply@fastsubmit.cloud>',
+      from: 'FastSubmit <hello@fastsubmit.cloud>',
       to: [to],
       subject: 'Verify your FastSubmit account',
       html: `
@@ -55,6 +55,11 @@ export async function sendVerificationEmail({ to, code, userName }: SendVerifica
       padding: 32px 40px 24px;
       text-align: center;
       border-bottom: 1px solid #e5e7eb;
+    }
+    .logo-image {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
     }
     .logo {
       font-size: 24px;
@@ -133,6 +138,7 @@ export async function sendVerificationEmail({ to, code, userName }: SendVerifica
 <body>
   <div class="container">
     <div class="header">
+      <img src="https://fastsubmit.cloud/logo.png" alt="FastSubmit Logo" class="logo-image" />
       <div class="logo">fastsubmit<span class="logo-dot">.</span></div>
     </div>
     
@@ -200,7 +206,7 @@ export async function sendNotificationDigest({ to, userName, submissions }: Send
   const resendClient = getResendClient()
   const totalSubmissions = submissions.reduce((acc, s) => acc + s.submissionCount, 0)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
-  
+
   try {
     const { data, error } = await resendClient.emails.send({
       from: 'FastSubmit <notifications@fastsubmit.cloud>',
@@ -402,7 +408,7 @@ interface SendNotificationOptInParams {
 export async function sendNotificationOptInEmail({ to, userName }: SendNotificationOptInParams) {
   const resendClient = getResendClient()
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
-  
+
   try {
     const { data, error } = await resendClient.emails.send({
       from: 'FastSubmit <notifications@fastsubmit.cloud>',
@@ -473,7 +479,7 @@ interface SendNotificationOptOutParams {
 export async function sendNotificationOptOutEmail({ to, userName }: SendNotificationOptOutParams) {
   const resendClient = getResendClient()
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fastsubmit.cloud'
-  
+
   try {
     const { data, error } = await resendClient.emails.send({
       from: 'FastSubmit <notifications@fastsubmit.cloud>',

@@ -13,22 +13,36 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
-  signOut: async () => {},
+  signOut: async () => { },
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<(User & { emailVerified: boolean}) | null>(null)
+  const [user, setUser] = useState<(User & { emailVerified: boolean }) | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        // Check if user signed in with Google provider
+        const isGoogleUser = firebaseUser.providerData.some(
+          provider => provider.providerId === 'google.com'
+        )
+
         // Check email verification status in Firestore
         const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
-        const emailVerified = userDoc.exists() ? (userDoc.data()?.emailVerified || false) : false
-        
+
+        // Determine email verification status:
+        // 1. If Google user, always consider verified
+        // 2. Otherwise, check Firestore document
+        let emailVerified = false
+        if (isGoogleUser) {
+          emailVerified = true
+        } else if (userDoc.exists()) {
+          emailVerified = userDoc.data()?.emailVerified || false
+        }
+
         setUser({ ...firebaseUser, emailVerified } as User & { emailVerified: boolean })
-        
+
         // Set session cookie for server-side auth
         const token = await firebaseUser.getIdToken()
         document.cookie = `__session=${token}; path=/; max-age=3600; samesite=strict`
@@ -36,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null)
         document.cookie = '__session=; path=/; max-age=0'
       }
-      
+
       setLoading(false)
     })
     return unsubscribe
@@ -46,10 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Clear session cookie first
       document.cookie = '__session=; path=/; max-age=0'
-      
+
       // Sign out from Firebase
       await firebaseSignOut(auth)
-      
+
       // Force redirect to home page
       window.location.href = '/'
     } catch (error) {
