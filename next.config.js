@@ -80,15 +80,6 @@ const nextConfig = {
         ],
       },
       {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
         source: '/(.*)\\.(js|css|woff|woff2|ttf|eot)',
         headers: [
           {
