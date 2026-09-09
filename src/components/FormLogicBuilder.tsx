@@ -36,6 +36,22 @@ const actionTypes = [
   { value: 'show_message', label: 'Show message', desc: 'Display custom message', icon: MessageSquare, color: 'pink' },
 ] as const
 
+// Tailwind's JIT compiler can't see class names built with string interpolation
+// (e.g. `bg-${color}-50`), so it purges them from the production build and the
+// action rows below render with no color at all. Spelling every class out here
+// keeps them in the generated CSS.
+const ACTION_COLOR_CLASSES: Record<string, { bg: string; iconBg: string; icon: string }> = {
+  green: { bg: 'bg-green-50', iconBg: 'bg-green-100', icon: 'text-green-600' },
+  red: { bg: 'bg-red-50', iconBg: 'bg-red-100', icon: 'text-red-600' },
+  orange: { bg: 'bg-orange-50', iconBg: 'bg-orange-100', icon: 'text-orange-600' },
+  gray: { bg: 'bg-gray-50', iconBg: 'bg-gray-100', icon: 'text-gray-600' },
+  blue: { bg: 'bg-blue-50', iconBg: 'bg-blue-100', icon: 'text-blue-600' },
+  purple: { bg: 'bg-purple-50', iconBg: 'bg-purple-100', icon: 'text-purple-600' },
+  indigo: { bg: 'bg-indigo-50', iconBg: 'bg-indigo-100', icon: 'text-indigo-600' },
+  teal: { bg: 'bg-teal-50', iconBg: 'bg-teal-100', icon: 'text-teal-600' },
+  pink: { bg: 'bg-pink-50', iconBg: 'bg-pink-100', icon: 'text-pink-600' },
+}
+
 export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormLogicBuilderProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedRule, setSelectedRule] = useState<string | null>(null)
@@ -357,7 +373,7 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
 
                       <div className="space-y-2">
                         {rule.conditions.map((condition, condIndex) => (
-                          <div key={condition.id} className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                          <div key={condition.id} className="flex flex-wrap items-center gap-2 p-3 bg-blue-50 rounded-lg">
                             {condIndex > 0 && (
                               <span className="text-xs font-medium text-blue-700 px-2 py-1 bg-blue-100 rounded">
                                 {rule.conditionLogic}
@@ -389,7 +405,7 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
 
                             {needsValue(condition.operator) && (
                               <div className="flex-1">
-                                {fields.find(f => f.id === condition.fieldId)?.type === 'select' ? (
+                                {['select', 'radio'].includes(fields.find(f => f.id === condition.fieldId)?.type || '') ? (
                                   <select
                                     value={condition.value as string}
                                     onChange={(e) => updateCondition(rule.id, condition.id, { value: e.target.value })}
@@ -445,11 +461,12 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
                         {rule.actions.map((action) => {
                           const ActionIcon = getActionIcon(action.type)
                           const color = getActionColor(action.type)
-                          
+                          const colorClasses = ACTION_COLOR_CLASSES[color] || ACTION_COLOR_CLASSES.gray
+
                           return (
-                            <div key={action.id} className={`flex items-center gap-2 p-3 bg-${color}-50 rounded-lg`}>
-                              <div className={`w-6 h-6 rounded bg-${color}-100 flex items-center justify-center`}>
-                                <ActionIcon className={`w-3 h-3 text-${color}-600`} />
+                            <div key={action.id} className={`flex flex-wrap items-center gap-2 p-3 ${colorClasses.bg} rounded-lg`}>
+                              <div className={`w-6 h-6 rounded ${colorClasses.iconBg} flex items-center justify-center`}>
+                                <ActionIcon className={`w-3 h-3 ${colorClasses.icon}`} />
                               </div>
 
                               <select
@@ -470,8 +487,8 @@ export default function FormLogicBuilder({ fields, logic, onLogicChange }: FormL
                                 className="flex-1 text-xs border border-gray-200 rounded px-2 py-1"
                               >
                                 <option value="">Select field...</option>
-                                {fields.filter(f => 
-                                  action.type === 'set_options' ? f.type === 'select' : true
+                                {fields.filter(f =>
+                                  action.type === 'set_options' ? ['select', 'radio'].includes(f.type) : true
                                 ).map(field => (
                                   <option key={field.id} value={field.id}>{field.label}</option>
                                 ))}

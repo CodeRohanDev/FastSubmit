@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { FormField, FormLogic, FormRule, FormCondition } from '@/types'
-import { Calculator, Zap, Info } from 'lucide-react'
+import { Calculator, Zap, Info, Star } from 'lucide-react'
+import FileUpload from './FileUpload'
 
 interface SmartFormRendererProps {
   fields: FormField[]
@@ -13,6 +14,7 @@ interface SmartFormRendererProps {
   infoCardTitle?: string
   infoCardContent?: string
   debugMode?: boolean
+  uploadUrl?: string // Endpoint used for image/video field uploads
 }
 
 interface FieldState {
@@ -32,7 +34,8 @@ export default function SmartFormRenderer({
   showInfoCard = false,
   infoCardTitle = "Form Information",
   infoCardContent = "",
-  debugMode = false
+  debugMode = false,
+  uploadUrl
 }: SmartFormRendererProps) {
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [fieldStates, setFieldStates] = useState<Record<string, FieldState>>({})
@@ -312,6 +315,13 @@ export default function SmartFormRenderer({
 
     return (
       <div key={field.id} className="space-y-1">
+        {field.questionImage && (
+          <img
+            src={field.questionImage}
+            alt=""
+            className="max-h-56 w-full object-cover rounded-lg border border-gray-200 mb-2"
+          />
+        )}
         <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
           {field.label}
           {state?.required && <span className="text-red-500">*</span>}
@@ -329,7 +339,86 @@ export default function SmartFormRenderer({
           )}
         </label>
 
-        {field.type === 'textarea' ? (
+        {field.type === 'radio' ? (
+          <div className="space-y-2">
+            {(state?.options || field.options || []).map((option, i) => (
+              <label key={i} className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
+                <input
+                  type="radio"
+                  name={field.id}
+                  value={option}
+                  checked={value === option}
+                  onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                  disabled={state?.disabled}
+                  className="w-4 h-4 border-gray-300 text-gray-900 focus:ring-gray-500"
+                />
+                {option}
+              </label>
+            ))}
+          </div>
+        ) : field.type === 'linear_scale' ? (
+          (() => {
+            const min = field.minValue ?? 1
+            const max = field.maxValue ?? 5
+            const current = value !== '' && value !== undefined ? Number(value) : min
+            const percent = max > min ? ((current - min) / (max - min)) * 100 : 0
+            return (
+              <div className="pt-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-gray-500">{field.minLabel || min}</span>
+                  <span className="text-sm font-semibold text-gray-900 tabular-nums">
+                    {value !== '' && value !== undefined ? current : '—'}
+                  </span>
+                  <span className="text-xs text-gray-500">{field.maxLabel || max}</span>
+                </div>
+                <input
+                  type="range"
+                  name={field.id}
+                  min={min}
+                  max={max}
+                  step={1}
+                  value={current}
+                  onChange={(e) => handleFieldChange(field.id, Number(e.target.value))}
+                  disabled={state?.disabled}
+                  style={{
+                    background: `linear-gradient(to right, #111827 ${percent}%, #e5e7eb ${percent}%)`,
+                  }}
+                  className="w-full h-2 rounded-full appearance-none bg-gray-200 accent-gray-900 cursor-pointer touch-pan-y disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-900 [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-gray-900 [&::-moz-range-thumb]:cursor-pointer"
+                />
+                <div className="flex justify-between mt-1.5 px-0.5">
+                  {Array.from({ length: max - min + 1 }, (_, i) => min + i).map((n) => (
+                    <span key={n} className="text-[10px] text-gray-400">{n}</span>
+                  ))}
+                </div>
+              </div>
+            )
+          })()
+        ) : field.type === 'rating' ? (
+          <div className="flex items-center gap-1">
+            {Array.from({ length: field.maxRating ?? 5 }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                type="button"
+                disabled={state?.disabled}
+                onClick={() => handleFieldChange(field.id, n)}
+                className="p-0.5"
+              >
+                <Star
+                  size={22}
+                  className={Number(value) >= n ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}
+                />
+              </button>
+            ))}
+          </div>
+        ) : field.type === 'image' || field.type === 'video' ? (
+          <FileUpload
+            value={value}
+            onChange={(url) => handleFieldChange(field.id, url)}
+            accept={field.type}
+            uploadUrl={uploadUrl || ''}
+            disabled={state?.disabled}
+          />
+        ) : field.type === 'textarea' ? (
           <textarea
             value={value}
             onChange={(e) => handleFieldChange(field.id, e.target.value)}
@@ -371,7 +460,15 @@ export default function SmartFormRenderer({
           </label>
         ) : (
           <input
-            type={field.type === 'calculated' ? 'text' : field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : field.type === 'email' ? 'email' : 'text'}
+            type={
+              field.type === 'calculated' ? 'text' :
+              field.type === 'number' ? 'number' :
+              field.type === 'date' ? 'date' :
+              field.type === 'time' ? 'time' :
+              field.type === 'datetime' ? 'datetime-local' :
+              field.type === 'url' ? 'url' :
+              field.type === 'email' ? 'email' : 'text'
+            }
             value={value}
             onChange={(e) => handleFieldChange(field.id, e.target.value)}
             placeholder={field.placeholder}

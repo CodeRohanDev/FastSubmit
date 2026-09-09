@@ -17,6 +17,11 @@ interface PublicForm {
     redirectUrl?: string
     successMessage?: string
   }
+  branding?: {
+    logo?: string
+    companyName?: string
+    tagline?: string
+  }
 }
 
 export default function PublicFormPage() {
@@ -209,13 +214,38 @@ export default function PublicFormPage() {
 
   // Form content
   const formContent = (
-    <div className={`p-4 md:p-6 ${embedded ? '' : 'min-h-screen'} ${theme === 'dark' ? 'bg-gray-900' : 'bg-[#fafafa]'}`}>
-      <div className={`max-w-2xl mx-auto ${embedded ? '' : 'py-8 md:py-12'}`}>
+    <div className={`p-4 sm:p-6 lg:p-8 ${embedded ? '' : 'min-h-screen'} ${theme === 'dark' ? 'bg-gray-900' : 'bg-[#fafafa]'}`}>
+      <div className={`max-w-3xl mx-auto ${embedded ? '' : 'py-8 md:py-14'}`}>
         {/* Form Card */}
-        <div className={`rounded-2xl overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${embedded ? '' : 'border border-gray-100'}`}>
+        <div className={`rounded-2xl overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${embedded ? '' : 'border border-gray-100 shadow-sm'}`}>
           {/* Header Section */}
-          <div className={`px-6 md:px-10 pt-10 pb-8 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
-            <h1 className={`text-3xl md:text-4xl font-semibold tracking-tight mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+          <div className={`px-6 sm:px-10 lg:px-14 pt-10 sm:pt-12 pb-8 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
+            {(form.branding?.logo || form.branding?.companyName || form.branding?.tagline) && (
+              <div className="flex items-center gap-3 mb-6">
+                {form.branding?.logo && (
+                  <img
+                    src={form.branding.logo}
+                    alt={form.branding.companyName || 'Logo'}
+                    className="h-11 w-auto object-contain"
+                  />
+                )}
+                {(form.branding?.companyName || form.branding?.tagline) && (
+                  <div>
+                    {form.branding?.companyName && (
+                      <p className={`text-sm font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {form.branding.companyName}
+                      </p>
+                    )}
+                    {form.branding?.tagline && (
+                      <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {form.branding.tagline}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            <h1 className={`text-3xl md:text-4xl lg:text-[2.75rem] font-semibold tracking-tight mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
               {form.name}
             </h1>
             <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -224,16 +254,17 @@ export default function PublicFormPage() {
           </div>
 
           {/* Form Section */}
-          <div className="px-6 md:px-10 py-10">
+          <div className="px-6 sm:px-10 lg:px-14 py-10 sm:py-12">
             <SmartFormRenderer
               fields={form.fields}
               logic={form.logic}
               onSubmit={handleSmartFormSubmit}
               showLogicIndicators={false}
               showInfoCard={false}
-              className="space-y-6"
+              className="space-y-7"
+              uploadUrl={`/api/public/forms/${formId}/upload`}
             />
-            
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start gap-3 mt-6">
                 <svg className="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -246,7 +277,7 @@ export default function PublicFormPage() {
 
           {/* Footer */}
           {!embedded && (
-            <div className={`px-6 md:px-10 py-5 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
+            <div className={`px-6 sm:px-10 lg:px-14 py-5 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-100'}`}>
               <p className={`text-xs text-center ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
                 Powered by{' '}
                 <a
@@ -265,7 +296,7 @@ export default function PublicFormPage() {
 
         {/* Promotional CTA Section */}
         {!embedded && (
-          <div className="mt-8 p-8 md:p-10 rounded-2xl bg-gray-900 border border-gray-800">
+          <div className="mt-8 p-8 md:p-12 rounded-2xl bg-gray-900 border border-gray-800">
             <div className="text-center max-w-2xl mx-auto">
               <h3 className="text-2xl md:text-3xl font-semibold tracking-tight text-white mb-3">
                 Create your own form

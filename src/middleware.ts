@@ -3,6 +3,12 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // Pass OPTIONS preflight through unchanged — never redirect preflight requests
+  if (request.method === 'OPTIONS') {
+    return NextResponse.next()
+  }
+
   const response = NextResponse.next()
 
   // Protected dashboard routes

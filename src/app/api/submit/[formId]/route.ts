@@ -5,6 +5,17 @@ import { rateLimit, RATE_LIMITS } from '@/lib/rate-limiter'
 import { CORS_CONFIG, createCorsResponse } from '@/lib/cors'
 import { isOriginAllowed } from '@/lib/dns-verification'
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, x-api-key, X-API-Key, Authorization',
+}
+
+function withCors(response: NextResponse): NextResponse {
+  Object.entries(CORS_HEADERS).forEach(([k, v]) => response.headers.set(k, v))
+  return response
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ formId: string }> }
@@ -14,24 +25,22 @@ export async function POST(
     // Rate limiting - 10 submissions per minute per IP
     const rateLimitResult = rateLimit(request, RATE_LIMITS.SUBMIT)
     if (!rateLimitResult.allowed) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: 'Too many submissions. Please try again later.' },
-        { 
+        {
           status: 429,
           headers: {
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
           }
         }
-      )
+      ))
     }
 
-
-    
     // Get form config using Admin SDK
     const formDoc = await adminDb.collection('forms').doc(formId).get()
     if (!formDoc.exists) {
-      return NextResponse.json({ error: 'Form not found' }, { status: 404 })
+      return withCors(NextResponse.json({ error: 'Form not found' }, { status: 404 }))
     }
 
     const form = formDoc.data()
@@ -40,26 +49,25 @@ export async function POST(
     // Domain verification check
     if (form?.requireDomainVerification && form?.allowedDomains?.length > 0) {
       const origin = request.headers.get('origin') || request.headers.get('referer')
-      
-      // Allow localhost and development domains
+
       const isDevelopment = origin && (
-        origin.includes('localhost') || 
+        origin.includes('localhost') ||
         origin.includes('127.0.0.1') ||
         origin.includes('192.168.')
       )
 
       if (!isDevelopment && !isOriginAllowed(origin, form.allowedDomains)) {
-        return NextResponse.json(
+        return withCors(NextResponse.json(
           { error: 'Domain not authorized. Please verify your domain in form settings.' },
           { status: 403 }
-        )
+        ))
       }
     }
 
     // Parse request body
     let body: Record<string, unknown>
     const contentType = request.headers.get('content-type') || ''
-    
+
     if (contentType.includes('application/json')) {
       body = await request.json()
     } else if (contentType.includes('application/x-www-form-urlencoded')) {
@@ -71,7 +79,7 @@ export async function POST(
 
     // Honeypot spam check
     if (body._honeypot) {
-      return NextResponse.json({ success: true }) // Silent fail for bots
+      return withCors(NextResponse.json({ success: true }))
     }
 
     // Validate required fields
@@ -83,7 +91,7 @@ export async function POST(
     }
 
     if (errors.length > 0) {
-      return NextResponse.json({ error: 'Validation failed', errors }, { status: 400 })
+      return withCors(NextResponse.json({ error: 'Validation failed', errors }, { status: 400 }))
     }
 
     // Sanitize and prepare data
@@ -96,8 +104,8 @@ export async function POST(
     }
 
     // Get client info
-    const userIP = request.headers.get('x-forwarded-for') || 
-                   request.headers.get('x-real-ip') || 
+    const userIP = request.headers.get('x-forwarded-for') ||
+                   request.headers.get('x-real-ip') ||
                    'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
@@ -113,13 +121,7 @@ export async function POST(
         submittedAt: new Date(),
       })
 
-    // Handle redirect or JSON response
-    const redirectUrl = request.headers.get('referer')
-    if (contentType.includes('application/x-www-form-urlencoded') && redirectUrl) {
-      return NextResponse.redirect(new URL(redirectUrl), 303)
-    }
-
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: true, message: 'Submission received' },
       {
         headers: {
@@ -127,10 +129,10 @@ export async function POST(
           'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
         }
       }
-    )
+    ))
   } catch (error) {
     console.error('Submission error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return withCors(NextResponse.json({ error: 'Internal server error' }, { status: 500 }))
   }
 }
 

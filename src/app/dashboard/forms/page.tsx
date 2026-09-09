@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore'
+import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Form } from '@/types'
-import { Plus, ChevronRight } from 'lucide-react'
+import { Plus, ChevronRight, Copy } from 'lucide-react'
 import EmailVerificationGate from '@/components/EmailVerificationGate'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 
@@ -13,34 +13,64 @@ export default function FormsPage() {
   const { user } = useAuth()
   const [forms, setForms] = useState<Form[]>([])
   const [loading, setLoading] = useState(true)
+  const [duplicating, setDuplicating] = useState<string | null>(null)
+
+  async function fetchForms() {
+    if (!user) return
+    try {
+      const q = query(
+        collection(db, 'forms'),
+        where('userId', '==', user.uid),
+        orderBy('createdAt', 'desc')
+      )
+      const snapshot = await getDocs(q)
+      const formsData = snapshot.docs
+        .filter(doc => !doc.data().deleted)
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          updatedAt: doc.data().updatedAt?.toDate(),
+        })) as Form[]
+      setForms(formsData)
+    } catch (error) {
+      console.error('Error fetching forms:', error)
+    }
+  }
 
   useEffect(() => {
-    async function fetchForms() {
-      if (!user) return
-      try {
-        const q = query(
-          collection(db, 'forms'),
-          where('userId', '==', user.uid),
-          orderBy('createdAt', 'desc')
-        )
-        const snapshot = await getDocs(q)
-        // Filter out soft-deleted forms
-        const formsData = snapshot.docs
-          .filter(doc => !doc.data().deleted)
-          .map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate(),
-            updatedAt: doc.data().updatedAt?.toDate(),
-          })) as Form[]
-        setForms(formsData)
-      } catch (error) {
-        console.error('Error fetching forms:', error)
-      }
+    async function load() {
+      await fetchForms()
       setLoading(false)
     }
-    fetchForms()
+    load()
   }, [user])
+
+  async function duplicateForm(e: React.MouseEvent, form: Form) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!user || duplicating) return
+    setDuplicating(form.id)
+    try {
+      await addDoc(collection(db, 'forms'), {
+        name: `Copy of ${form.name}`,
+        fields: form.fields || [],
+        ...(form.logic ? { logic: form.logic } : {}),
+        ...(form.branding ? { branding: form.branding } : {}),
+        allowedDomains: form.allowedDomains || [],
+        requireDomainVerification: form.requireDomainVerification || false,
+        userId: user.uid,
+        apiKey: crypto.randomUUID(),
+        deleted: false,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      })
+      await fetchForms()
+    } catch (error) {
+      console.error('Error duplicating form:', error)
+    }
+    setDuplicating(null)
+  }
 
   if (loading) {
     return (
@@ -97,6 +127,19 @@ export default function FormsPage() {
               href={`/dashboard/forms/${form.id}`}
               className="group relative p-4 sm:p-6 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all"
             >
+              {/* Duplicate Button */}
+              <button
+                onClick={(e) => duplicateForm(e, form)}
+                disabled={duplicating === form.id}
+                title="Duplicate form"
+                className="absolute top-3 right-3 p-1.5 rounded-lg text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-700 hover:bg-gray-100 transition-all disabled:opacity-50 z-10"
+              >
+                {duplicating === form.id
+                  ? <div className="w-3.5 h-3.5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                  : <Copy size={14} />
+                }
+              </button>
+
               {/* Form Icon */}
               <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-105 transition-transform">
                 <svg className="w-5 sm:w-6 h-5 sm:h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

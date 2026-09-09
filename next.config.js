@@ -63,6 +63,23 @@ const nextConfig = {
         ],
       },
       {
+        source: '/api/submit/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'POST, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, x-api-key, X-API-Key, Authorization',
+          },
+        ],
+      },
+      {
         source: '/api/(.*)',
         headers: [
           {

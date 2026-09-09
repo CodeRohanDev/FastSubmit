@@ -8,14 +8,16 @@ import { collection, addDoc, serverTimestamp, query, where, limit, getDocs } fro
 import { db } from '@/lib/firebase'
 import { FormField, VerifiedDomain, FormLogic } from '@/types'
 import { generateApiKey } from '@/lib/utils'
-import { 
+import {
   Plus, Trash2, GripVertical, ArrowLeft, Eye, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
   ChevronDown, ChevronUp, Copy, X, Shield, CheckCircle, Clock, ExternalLink,
-  Calculator, Zap, Info, Brain, Image, Building2, MessageSquare
+  Calculator, Zap, Info, Brain, Image, Building2, MessageSquare,
+  CircleDot, Video, Link2, SlidersHorizontal, Star, CalendarClock
 } from 'lucide-react'
 import FormLogicBuilder from '@/components/FormLogicBuilder'
 import SmartFormRenderer from '@/components/SmartFormRenderer'
+import FileUpload from '@/components/FileUpload'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type, desc: 'Single line text' },
@@ -23,8 +25,16 @@ const fieldTypes = [
   { value: 'textarea', label: 'Textarea', icon: AlignLeft, desc: 'Multi-line text' },
   { value: 'number', label: 'Number', icon: Hash, desc: 'Numeric input' },
   { value: 'date', label: 'Date', icon: Calendar, desc: 'Date picker' },
-  { value: 'select', label: 'Dropdown', icon: List, desc: 'Select options' },
+  { value: 'time', label: 'Time', icon: Clock, desc: 'Time picker' },
+  { value: 'datetime', label: 'Date & Time', icon: CalendarClock, desc: 'Date and time together' },
+  { value: 'url', label: 'Link', icon: Link2, desc: 'URL with validation' },
+  { value: 'select', label: 'Dropdown', icon: List, desc: 'Select one option' },
+  { value: 'radio', label: 'Multiple Choice', icon: CircleDot, desc: 'Pick one of many options' },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare, desc: 'Yes/No toggle' },
+  { value: 'linear_scale', label: 'Linear Scale', icon: SlidersHorizontal, desc: 'Numeric scale (e.g. 1-5)' },
+  { value: 'rating', label: 'Rating', icon: Star, desc: 'Star rating' },
+  { value: 'image', label: 'Image Upload', icon: Image, desc: 'Let respondents upload an image' },
+  { value: 'video', label: 'Video Upload', icon: Video, desc: 'Let respondents upload a video' },
   { value: 'calculated', label: 'Calculated', icon: Calculator, desc: 'Auto-calculated value' },
   { value: 'display', label: 'Display Text', icon: Info, desc: 'Information text only' },
 ] as const
@@ -65,6 +75,7 @@ export default function NewFormPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [expandedField, setExpandedField] = useState<string | null>(null)
+  const [dragHandleActive, setDragHandleActive] = useState(false)
   const [showFieldPicker, setShowFieldPicker] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
@@ -193,12 +204,15 @@ export default function NewFormPage() {
       type,
       required: false,
       placeholder: '',
-      options: type === 'select' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
+      options: type === 'select' || type === 'radio' ? ['Option 1', 'Option 2', 'Option 3'] : undefined,
+      minValue: type === 'linear_scale' ? 1 : undefined,
+      maxValue: type === 'linear_scale' ? 5 : undefined,
+      maxRating: type === 'rating' ? 5 : undefined,
       // Add a stable key that won't change during editing
       _stableKey: `field_key_${timestamp}`,
     }
     setFields([...fields, newField])
-    setExpandedField(newField.id)
+    setExpandedField(newField._stableKey || newField.id)
     setShowFieldPicker(false)
   }
 
@@ -237,7 +251,7 @@ export default function NewFormPage() {
     const updated = [...fields]
     updated.splice(index + 1, 0, newField)
     setFields(updated)
-    setExpandedField(newField.id)
+    setExpandedField(newField._stableKey || newField.id)
   }
 
   const moveField = (fromIndex: number, toIndex: number) => {
@@ -318,7 +332,13 @@ export default function NewFormPage() {
       if (field.calculation) cleanField.calculation = field.calculation
       if (field.displayText) cleanField.displayText = field.displayText
       if (field.validationRules && field.validationRules.length > 0) cleanField.validationRules = field.validationRules
-      
+      if (field.questionImage) cleanField.questionImage = field.questionImage
+      if (field.minValue !== undefined) cleanField.minValue = field.minValue
+      if (field.maxValue !== undefined) cleanField.maxValue = field.maxValue
+      if (field.minLabel) cleanField.minLabel = field.minLabel
+      if (field.maxLabel) cleanField.maxLabel = field.maxLabel
+      if (field.maxRating !== undefined) cleanField.maxRating = field.maxRating
+
       return cleanField
     })
 
@@ -363,7 +383,7 @@ export default function NewFormPage() {
   }
 
   return (
-    <div className={showPreview ? "max-w-7xl mx-auto" : "max-w-4xl mx-auto"}>
+    <div className={showPreview ? "max-w-6xl mx-auto" : "max-w-5xl mx-auto"}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/dashboard/forms" className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -390,7 +410,7 @@ export default function NewFormPage() {
         </div>
       )}
 
-      <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 sm:gap-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Form Name */}
           <div>
@@ -523,24 +543,31 @@ export default function NewFormPage() {
             <div className="space-y-2">
               {fields.map((field, index) => {
                 const FieldIcon = getFieldIcon(field.type)
-                const isExpanded = expandedField === field.id
+                const fieldKey = field._stableKey || field.id
+                const isExpanded = expandedField === fieldKey
 
                 return (
                   <div
                     key={field._stableKey || field.id}
-                    draggable
+                    draggable={dragHandleActive}
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={(e) => handleDragOver(e, index)}
-                    onDragEnd={handleDragEnd}
+                    onDragEnd={() => { handleDragEnd(); setDragHandleActive(false) }}
                     className={`border rounded-lg transition-all ${
                       draggedIndex === index ? 'opacity-50 border-gray-400' : 'border-gray-200'
                     } ${isExpanded ? 'bg-gray-50' : 'bg-white hover:border-gray-300'}`}
                   >
                     <div
                       className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 cursor-pointer"
-                      onClick={() => setExpandedField(isExpanded ? null : field.id)}
+                      onClick={() => setExpandedField(isExpanded ? null : fieldKey)}
                     >
-                      <GripVertical className="text-gray-300 cursor-grab flex-shrink-0" size={14} />
+                      <GripVertical
+                        className="text-gray-300 cursor-grab active:cursor-grabbing flex-shrink-0"
+                        size={14}
+                        onMouseDown={(e) => { e.stopPropagation(); setDragHandleActive(true) }}
+                        onMouseUp={() => setDragHandleActive(false)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                       <div className="w-6 sm:w-7 h-6 sm:h-7 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
                         <FieldIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-600" />
                       </div>
@@ -601,9 +628,12 @@ export default function NewFormPage() {
                             <label className="block text-xs text-gray-500 mb-1">Type</label>
                             <select
                               value={field.type}
-                              onChange={(e) => updateField(index, { 
+                              onChange={(e) => updateField(index, {
                                 type: e.target.value as FormField['type'],
-                                options: e.target.value === 'select' ? ['Option 1', 'Option 2'] : undefined
+                                options: ['select', 'radio'].includes(e.target.value) ? (field.options && field.options.length > 0 ? field.options : ['Option 1', 'Option 2']) : undefined,
+                                minValue: e.target.value === 'linear_scale' ? (field.minValue ?? 1) : undefined,
+                                maxValue: e.target.value === 'linear_scale' ? (field.maxValue ?? 5) : undefined,
+                                maxRating: e.target.value === 'rating' ? (field.maxRating ?? 5) : undefined,
                               })}
                               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                             >
@@ -623,7 +653,7 @@ export default function NewFormPage() {
                           </div>
                         </div>
 
-                        {field.type === 'select' && (
+                        {(field.type === 'select' || field.type === 'radio') && (
                           <div>
                             <label className="block text-xs text-gray-500 mb-2">Options</label>
                             <div className="space-y-2">
@@ -682,6 +712,84 @@ export default function NewFormPage() {
                             />
                             <p className="text-xs text-gray-400 mt-1">
                               This text will be displayed in the info card on the right side of the form
+                            </p>
+                          </div>
+                        )}
+
+                        {field.type === 'linear_scale' && (
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div>
+                              <label className="block text-xs text-gray-500 mb-1">Min value</label>
+                              <input
+                                type="number"
+                                value={field.minValue ?? 1}
+                                onChange={(e) => updateField(index, { minValue: Number(e.target.value) })}
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-gray-500 mb-1">Max value</label>
+                              <input
+                                type="number"
+                                value={field.maxValue ?? 5}
+                                onChange={(e) => updateField(index, { maxValue: Number(e.target.value) })}
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-gray-500 mb-1">Min label</label>
+                              <input
+                                type="text"
+                                value={field.minLabel || ''}
+                                onChange={(e) => updateField(index, { minLabel: e.target.value })}
+                                placeholder="e.g. Not likely"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-gray-500 mb-1">Max label</label>
+                              <input
+                                type="text"
+                                value={field.maxLabel || ''}
+                                onChange={(e) => updateField(index, { maxLabel: e.target.value })}
+                                placeholder="e.g. Very likely"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {field.type === 'rating' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Number of stars</label>
+                            <input
+                              type="number"
+                              min={2}
+                              max={10}
+                              value={field.maxRating ?? 5}
+                              onChange={(e) => updateField(index, { maxRating: Number(e.target.value) })}
+                              className="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            />
+                          </div>
+                        )}
+
+                        {(field.type === 'image' || field.type === 'video') && (
+                          <p className="text-xs text-gray-400">
+                            Respondents will be able to upload {field.type === 'image' ? 'an image' : 'a video'} directly on the form (stored on R2).
+                          </p>
+                        )}
+
+                        {field.type !== 'display' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-2">Question image (optional)</label>
+                            <FileUpload
+                              value={field.questionImage}
+                              onChange={(url) => updateField(index, { questionImage: url })}
+                              accept="image"
+                              uploadUrl="/api/dashboard/upload"
+                            />
+                            <p className="text-xs text-gray-400 mt-1">
+                              Shown above the question label on the live form
                             </p>
                           </div>
                         )}
@@ -949,6 +1057,7 @@ export default function NewFormPage() {
                   onSubmit={(data) => console.log('Preview submission:', data)}
                   showLogicIndicators={true}
                   showInfoCard={true}
+                  uploadUrl="/api/dashboard/upload"
                   infoCardTitle="Form Preview"
                   infoCardContent={`This is a live preview of your form.
 

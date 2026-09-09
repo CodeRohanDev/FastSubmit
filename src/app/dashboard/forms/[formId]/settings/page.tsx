@@ -6,12 +6,14 @@ import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Form, FormField, VerifiedDomain, FormLogic } from '@/types'
 import FormLogicBuilder from '@/components/FormLogicBuilder'
-import { 
+import {
   ArrowLeft, Trash2, Plus, GripVertical, Save,
   Type, Mail, AlignLeft, Hash, Calendar, List, CheckSquare,
-  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare, Zap, Calculator
+  ChevronDown, ChevronUp, Copy, X, AlertTriangle, Shield, CheckCircle, Image, Building2, MessageSquare, Zap, Calculator,
+  Clock, CalendarClock, Link2, CircleDot, SlidersHorizontal, Star, Video
 } from 'lucide-react'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import FileUpload from '@/components/FileUpload'
 
 const fieldTypes = [
   { value: 'text', label: 'Text', icon: Type },
@@ -19,8 +21,16 @@ const fieldTypes = [
   { value: 'textarea', label: 'Textarea', icon: AlignLeft },
   { value: 'number', label: 'Number', icon: Hash },
   { value: 'date', label: 'Date', icon: Calendar },
+  { value: 'time', label: 'Time', icon: Clock },
+  { value: 'datetime', label: 'Date & Time', icon: CalendarClock },
+  { value: 'url', label: 'Link', icon: Link2 },
   { value: 'select', label: 'Dropdown', icon: List },
+  { value: 'radio', label: 'Multiple Choice', icon: CircleDot },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare },
+  { value: 'linear_scale', label: 'Linear Scale', icon: SlidersHorizontal },
+  { value: 'rating', label: 'Rating', icon: Star },
+  { value: 'image', label: 'Image Upload', icon: Image },
+  { value: 'video', label: 'Video Upload', icon: Video },
   { value: 'calculated', label: 'Calculated', icon: Calculator },
   { value: 'display', label: 'Display Text', icon: MessageSquare },
 ] as const
@@ -127,9 +137,12 @@ export default function FormSettingsPage() {
       type,
       required: false,
       placeholder: '',
-      options: type === 'select' ? ['Option 1', 'Option 2'] : undefined,
+      options: ['select', 'radio'].includes(type) ? ['Option 1', 'Option 2'] : undefined,
       displayText: type === 'display' ? 'Enter your information text here...' : undefined,
       calculation: type === 'calculated' ? 'field1 + field2' : undefined,
+      minValue: type === 'linear_scale' ? 1 : undefined,
+      maxValue: type === 'linear_scale' ? 5 : undefined,
+      maxRating: type === 'rating' ? 5 : undefined,
       _stableKey: `field_key_${timestamp}`,
     }
     setFields([...fields, newField])
@@ -461,7 +474,17 @@ export default function FormSettingsPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs text-gray-500 mb-1">Type</label>
-                        <select value={field.type} onChange={(e) => updateField(index, { type: e.target.value as FormField['type'], options: e.target.value === 'select' ? ['Option 1', 'Option 2'] : undefined })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                        <select
+                          value={field.type}
+                          onChange={(e) => updateField(index, {
+                            type: e.target.value as FormField['type'],
+                            options: ['select', 'radio'].includes(e.target.value) ? (field.options && field.options.length > 0 ? field.options : ['Option 1', 'Option 2']) : undefined,
+                            minValue: e.target.value === 'linear_scale' ? (field.minValue ?? 1) : undefined,
+                            maxValue: e.target.value === 'linear_scale' ? (field.maxValue ?? 5) : undefined,
+                            maxRating: e.target.value === 'rating' ? (field.maxRating ?? 5) : undefined,
+                          })}
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
+                        >
                           {fieldTypes.map((t) => (<option key={t.value} value={t.value}>{t.label}</option>))}
                         </select>
                       </div>
@@ -470,7 +493,7 @@ export default function FormSettingsPage() {
                         <input type="text" value={field.placeholder || ''} onChange={(e) => updateField(index, { placeholder: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                       </div>
                     </div>
-                    {field.type === 'select' && (
+                    {(field.type === 'select' || field.type === 'radio') && (
                       <div>
                         <label className="block text-xs text-gray-500 mb-2">Options</label>
                         <div className="space-y-2">
@@ -512,6 +535,49 @@ export default function FormSettingsPage() {
                         <p className="text-xs text-gray-500 mt-1">
                           Use field IDs and basic math operators (+, -, *, /, parentheses)
                         </p>
+                      </div>
+                    )}
+                    {field.type === 'linear_scale' && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Min value</label>
+                          <input type="number" value={field.minValue ?? 1} onChange={(e) => updateField(index, { minValue: Number(e.target.value) })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Max value</label>
+                          <input type="number" value={field.maxValue ?? 5} onChange={(e) => updateField(index, { maxValue: Number(e.target.value) })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Min label</label>
+                          <input type="text" value={field.minLabel || ''} onChange={(e) => updateField(index, { minLabel: e.target.value })} placeholder="e.g. Not likely" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Max label</label>
+                          <input type="text" value={field.maxLabel || ''} onChange={(e) => updateField(index, { maxLabel: e.target.value })} placeholder="e.g. Very likely" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                        </div>
+                      </div>
+                    )}
+                    {field.type === 'rating' && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Number of stars</label>
+                        <input type="number" min={2} max={10} value={field.maxRating ?? 5} onChange={(e) => updateField(index, { maxRating: Number(e.target.value) })} className="w-32 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                      </div>
+                    )}
+                    {(field.type === 'image' || field.type === 'video') && (
+                      <p className="text-xs text-gray-400">
+                        Respondents will be able to upload {field.type === 'image' ? 'an image' : 'a video'} directly on the form (stored on R2).
+                      </p>
+                    )}
+                    {field.type !== 'display' && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-2">Question image (optional)</label>
+                        <FileUpload
+                          value={field.questionImage}
+                          onChange={(url) => updateField(index, { questionImage: url })}
+                          accept="image"
+                          uploadUrl="/api/dashboard/upload"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">Shown above the question label on the live form</p>
                       </div>
                     )}
                     <div className="flex items-center justify-between pt-2">

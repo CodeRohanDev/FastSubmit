@@ -5,11 +5,16 @@ import Link from 'next/link'
 import { doc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Form, Submission } from '@/types'
-import { Copy, Download, Settings, Eye, Check, ArrowLeft, Code, X, Share2, ExternalLink } from 'lucide-react'
+import { Copy, Download, Settings, Eye, Check, ArrowLeft, Code, X, Share2, ExternalLink, ChevronDown, Loader2, FileSpreadsheet, FileText, FileJson } from 'lucide-react'
 import { getSubmitEndpoint } from '@/lib/config'
-import Papa from 'papaparse'
 import dynamic from 'next/dynamic'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import {
+  exportSubmissionsCSV,
+  exportSubmissionsJSON,
+  exportSubmissionsExcel,
+  exportSubmissionsPDF,
+} from '@/lib/export-submissions'
 
 // Dynamically import ShareModal to improve initial page load
 const ShareModal = dynamic(() => import('@/components/ShareModal'), {
@@ -24,6 +29,8 @@ export default function FormDetailPage() {
   const [copied, setCopied] = useState('')
   const [showEmbedModal, setShowEmbedModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [showExportMenu, setShowExportMenu] = useState(false)
+  const [exporting, setExporting] = useState<string | null>(null)
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
 
   const apiEndpoint = getSubmitEndpoint(formId as string)
@@ -33,16 +40,16 @@ export default function FormDetailPage() {
 <div id="fastsubmit-form"></div>
 
 <!-- Add this before closing </body> tag -->
-<script 
-  src="https://fastsubmit.cloud/embed.js"
+<script
+  src="https://www.fastsubmit.cloud/embed.js"
   data-form-id="${formId}"
   data-theme="light">
 </script>`
 
-  const iframeCode = `<iframe 
-  src="https://fastsubmit.cloud/f/${formId}" 
-  width="100%" 
-  height="600" 
+  const iframeCode = `<iframe
+  src="https://www.fastsubmit.cloud/f/${formId}"
+  width="100%"
+  height="600"
   frameborder="0">
 </iframe>`
 
@@ -90,19 +97,19 @@ export default function FormDetailPage() {
     setTimeout(() => setCopied(''), 2000)
   }
 
-  const exportCSV = () => {
+  const handleExport = async (format: 'csv' | 'excel' | 'pdf' | 'json') => {
     if (!submissions.length || !form) return
-    const data = submissions.map(s => ({
-      ...s.data,
-      submittedAt: s.submittedAt?.toISOString(),
-    }))
-    const csv = Papa.unparse(data)
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${form.name}-submissions.csv`
-    a.click()
+    setShowExportMenu(false)
+    setExporting(format)
+    try {
+      if (format === 'csv') exportSubmissionsCSV(form, submissions)
+      else if (format === 'json') exportSubmissionsJSON(form, submissions)
+      else if (format === 'excel') await exportSubmissionsExcel(form, submissions)
+      else if (format === 'pdf') await exportSubmissionsPDF(form, submissions)
+    } catch (error) {
+      console.error('Export failed:', error)
+    }
+    setExporting(null)
   }
 
   if (loading) {
@@ -200,12 +207,53 @@ export default function FormDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 border-b border-gray-100">
           <h2 className="font-medium text-gray-900">Submissions ({submissions.length})</h2>
           {submissions.length > 0 && (
-            <button
-              onClick={exportCSV}
-              className="inline-flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 self-start sm:self-auto"
-            >
-              <Download size={14} className="sm:w-4 sm:h-4" /> Export CSV
-            </button>
+            <div className="relative self-start sm:self-auto">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                disabled={!!exporting}
+                className="inline-flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              >
+                {exporting ? (
+                  <Loader2 size={14} className="sm:w-4 sm:h-4 animate-spin" />
+                ) : (
+                  <Download size={14} className="sm:w-4 sm:h-4" />
+                )}
+                Export
+                <ChevronDown size={12} />
+              </button>
+
+              {showExportMenu && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setShowExportMenu(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                    <button
+                      onClick={() => handleExport('csv')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <FileText size={14} className="text-gray-400" /> CSV
+                    </button>
+                    <button
+                      onClick={() => handleExport('excel')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <FileSpreadsheet size={14} className="text-gray-400" /> Excel (.xlsx)
+                    </button>
+                    <button
+                      onClick={() => handleExport('pdf')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <FileText size={14} className="text-gray-400" /> PDF
+                    </button>
+                    <button
+                      onClick={() => handleExport('json')}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <FileJson size={14} className="text-gray-400" /> JSON
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
 
@@ -238,7 +286,7 @@ export default function FormDetailPage() {
                             typeof sub.data[f.id] === 'boolean' ? (
                               sub.data[f.id] ? (
                                 <span className="inline-flex items-center gap-1 text-green-600">
-                                  <Check size={12} className="sm:w-[14px] sm:h-[14px]" /> 
+                                  <Check size={12} className="sm:w-[14px] sm:h-[14px]" />
                                   <span className="hidden sm:inline">Yes</span>
                                   <span className="sm:hidden">✓</span>
                                 </span>
@@ -248,6 +296,20 @@ export default function FormDetailPage() {
                                   <span className="sm:hidden">✗</span>
                                 </span>
                               )
+                            ) : f.type === 'image' ? (
+                              <a href={String(sub.data[f.id])} target="_blank" rel="noopener noreferrer">
+                                <img src={String(sub.data[f.id])} alt="" className="h-8 w-8 rounded object-cover border border-gray-200" />
+                              </a>
+                            ) : f.type === 'video' ? (
+                              <a href={String(sub.data[f.id])} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                                View video
+                              </a>
+                            ) : f.type === 'rating' ? (
+                              <span>{'★'.repeat(Number(sub.data[f.id]))}{'☆'.repeat((f.maxRating ?? 5) - Number(sub.data[f.id]))}</span>
+                            ) : f.type === 'url' ? (
+                              <a href={String(sub.data[f.id])} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                                {String(sub.data[f.id])}
+                              </a>
                             ) : (
                               String(sub.data[f.id])
                             )
@@ -287,6 +349,7 @@ export default function FormDetailPage() {
         onClose={() => setShowShareModal(false)}
         shareUrl={shareUrl}
         formName={form?.name || 'Form'}
+        formId={formId as string}
       />
 
       {/* Submission Detail Modal */}
@@ -330,6 +393,21 @@ export default function FormDetailPage() {
                             ) : (
                               <span className="text-gray-500">No</span>
                             )
+                          ) : field.type === 'image' ? (
+                            <a href={String(value)} target="_blank" rel="noopener noreferrer">
+                              <img src={String(value)} alt="" className="max-h-48 rounded-lg border border-gray-200" />
+                            </a>
+                          ) : field.type === 'video' ? (
+                            <video src={String(value)} controls className="max-h-48 rounded-lg border border-gray-200" />
+                          ) : field.type === 'rating' ? (
+                            <span className="text-amber-500">
+                              {'★'.repeat(Number(value))}
+                              <span className="text-gray-300">{'★'.repeat((field.maxRating ?? 5) - Number(value))}</span>
+                            </span>
+                          ) : field.type === 'url' ? (
+                            <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline break-words">
+                              {String(value)}
+                            </a>
                           ) : (
                             <span className="whitespace-pre-wrap break-words">{String(value)}</span>
                           )

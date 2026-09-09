@@ -8,15 +8,15 @@ export const CORS_CONFIG = {
   SUBMIT: {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, x-api-key, X-API-Key, Authorization',
     'Access-Control-Max-Age': '86400', // 24 hours
   },
-  
+
   // API endpoints - more restrictive, require API key
   API: {
     'Access-Control-Allow-Origin': '*', // Allow all but require API key
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, x-api-key, X-API-Key, Authorization',
     'Access-Control-Max-Age': '86400',
   },
 }

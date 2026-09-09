@@ -38,14 +38,20 @@ export interface FormLogic {
 export interface FormField {
   id: string
   label: string
-  type: 'text' | 'email' | 'textarea' | 'number' | 'date' | 'select' | 'checkbox' | 'calculated' | 'display'
+  type: 'text' | 'email' | 'textarea' | 'number' | 'date' | 'time' | 'datetime' | 'select' | 'radio' | 'checkbox' | 'calculated' | 'display' | 'url' | 'image' | 'video' | 'linear_scale' | 'rating'
   required: boolean
   placeholder?: string
-  options?: string[] // for select type
+  options?: string[] // for select/radio type
   defaultHidden?: boolean // Whether field is hidden by default
   calculation?: string // Formula for calculated fields (e.g., "field1 + field2")
   validationRules?: ValidationRule[]
   displayText?: string // For display type fields - text content to show
+  questionImage?: string // URL of an image shown above the question (any field type)
+  minValue?: number // Linear scale: lower bound (default 1)
+  maxValue?: number // Linear scale: upper bound (default 5)
+  minLabel?: string // Linear scale: label for the low end
+  maxLabel?: string // Linear scale: label for the high end
+  maxRating?: number // Star rating: number of stars (default 5)
   _stableKey?: string // Internal stable key for React rendering
   // Removed field-level conditional rules - now managed at form level
 }

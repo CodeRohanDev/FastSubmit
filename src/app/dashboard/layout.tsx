@@ -52,13 +52,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         
         {/* Sidebar */}
         <div className={`
-          fixed lg:static inset-y-0 left-0 z-50 lg:z-auto
+          fixed lg:sticky inset-y-0 lg:inset-y-auto lg:top-0 left-0 z-50 lg:z-auto
+          h-screen lg:h-screen overflow-y-auto
           transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
           transition-transform duration-300 ease-in-out lg:transition-none
         `}>
           <Sidebar onNavigate={() => setSidebarOpen(false)} />
         </div>
-        
+
         {/* Main content */}
         <main className="flex-1 lg:ml-0 min-w-0">
           <div className="p-4 sm:p-6 lg:p-8">

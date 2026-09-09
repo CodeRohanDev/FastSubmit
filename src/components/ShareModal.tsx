@@ -1,18 +1,42 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { X, Copy, Check, ExternalLink, Download, Share2 } from 'lucide-react'
+import { X, Copy, Check, ExternalLink, Download, Share2, Link2, Loader2 } from 'lucide-react'
 
 interface ShareModalProps {
   isOpen: boolean
   onClose: () => void
   shareUrl: string
   formName: string
+  formId: string
 }
 
-export default function ShareModal({ isOpen, onClose, shareUrl, formName }: ShareModalProps) {
+export default function ShareModal({ isOpen, onClose, shareUrl, formName, formId }: ShareModalProps) {
   const [copied, setCopied] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [shortCode, setShortCode] = useState<string | null>(null)
+  const [shorteningLoading, setShorteningLoading] = useState(false)
+  const shortUrl = shortCode && typeof window !== 'undefined' ? `${window.location.origin}/s/${shortCode}` : ''
+
+  useEffect(() => {
+    if (!isOpen) return
+    fetch(`/api/dashboard/forms/${formId}/shorten`)
+      .then(res => res.json())
+      .then(data => setShortCode(data.code || null))
+      .catch(() => {})
+  }, [isOpen, formId])
+
+  const createShortLink = async () => {
+    setShorteningLoading(true)
+    try {
+      const res = await fetch(`/api/dashboard/forms/${formId}/shorten`, { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) setShortCode(data.code)
+    } catch (error) {
+      console.error('Error creating short link:', error)
+    }
+    setShorteningLoading(false)
+  }
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
@@ -239,6 +263,54 @@ export default function ShareModal({ isOpen, onClose, shareUrl, formName }: Shar
                   )}
                 </button>
               </div>
+            </div>
+
+            {/* Short Link */}
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                <Link2 size={14} className="inline -mt-0.5 mr-1" /> Short Link
+              </label>
+              {shortUrl ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 flex items-center gap-2 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200">
+                    <code className="flex-1 text-sm font-mono text-gray-700 truncate">{shortUrl}</code>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(shortUrl, 'short')}
+                    className={`px-5 py-3 rounded-xl font-medium text-sm transition-all ${
+                      copied === 'short'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                    }`}
+                  >
+                    {copied === 'short' ? (
+                      <span className="flex items-center gap-2">
+                        <Check size={16} /> Copied!
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Copy size={16} /> Copy
+                      </span>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={createShortLink}
+                  disabled={shorteningLoading}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all disabled:opacity-50"
+                >
+                  {shorteningLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> Creating short link...
+                    </>
+                  ) : (
+                    <>
+                      <Link2 size={16} /> Create short link
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Social Share */}
